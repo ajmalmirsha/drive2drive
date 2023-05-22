@@ -71,7 +71,6 @@ function LoginComponent (){
                 <button>Sign in</button>
             </form>
             <GoogleLogin onSuccess={googleSuccess} onError={googleError}  />
-            <div>hellooooo</div>
             <p>You do have an account? <span onClick={()=> navigate('/signup')}>Signup</span></p>
         </div>
         <ToastContainer/>

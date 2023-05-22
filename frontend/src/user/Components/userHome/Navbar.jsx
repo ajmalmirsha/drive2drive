@@ -12,13 +12,13 @@ export default  function Navbar(){
        
                 {menuOpen &&  <ul className='listed-menu'>
             <div className="menu">
-                    <li>Profile</li>
+                    <li onClick={()=> navigate('/profile')}>Profile</li>
                     <li>settings</li>
                     <li>
             <button onClick={()=>{ 
             localStorage.removeItem('user') 
             navigate('/login')
-            }} type="button" class="btn btn-outline-danger">Danger</button>
+            }} type="button" class="btn btn-outline-danger">LogOut</button>
             </li>
             </div>
                 </ul> }

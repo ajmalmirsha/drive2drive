@@ -1,0 +1,20 @@
+.main-wrapper{
+   border: solid #777b82 1px;
+   border-radius: 10px;
+   margin-right: 0px;
+}
+
+.main-wrapper h1 {
+    font-size: medium;
+}
+.main-wrapper h3 {
+    font-size: small;
+}
+.main-wrapper img {
+   border-radius: 50%;
+   width: 150px;
+}
+.main-wrapper label {
+   font-size: xx-large;
+   margin-top: 40px;
+}
