@@ -14,8 +14,7 @@
     justify-content: center;
 }
 .menuItemsactive {
-    background: #D7DF23;
-    opacity: 30%;
+    background: #d6df2379 ;
     height: 45px;
     display: flex;
     align-items: center;
@@ -25,7 +24,6 @@
 }
 .menuItems {
     background: #ffffff;
-    opacity: 30%;
     height: 45px;
     display: flex;
     align-items: center;
@@ -63,4 +61,8 @@
     border: solid #E5E7EB 1px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+}
+
+.menuItems p {
+    color: black;
 }

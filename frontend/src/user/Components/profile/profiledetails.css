@@ -13,8 +13,80 @@
 .main-wrapper img {
    border-radius: 50%;
    width: 150px;
+   height: fit-content;
 }
-.main-wrapper label {
+.main-wrapper .plus {
    font-size: xx-large;
-   margin-top: 40px;
+   position: relative;
+   top: 110px;
+   left: 174px;
+   z-index: 1;
+   cursor: pointer;
+}
+
+/* .profile-form{
+   border: solid #cccccc 1px;
+   border-radius: 10px;
+} */
+
+.profile-tag{
+   display: block;
+}
+
+.profile-input{
+   width: 100%;
+   border-radius: 10px;
+   height: 35px;
+   border: solid #cccccc 1px;
+   cursor: pointer;
+}
+.profile-input:focus {
+   border: none;
+   background-color: #ebeaea;
+   opacity: 50%;
+   cursor: auto;
+}
+
+.profile-heading{
+   font: 500;
+   font-weight: 500;
+   
+}
+
+.licence .front , .back{
+   height: 200px;
+   background-color: #ffffff;
+   border: solid #c9c9c9 1px;
+   border-radius: 5px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 50px;
+   text-align: center;
+   cursor: pointer;
+}
+
+
+
+.profile-submit-btn{
+   display: block;
+  margin: 15px auto;
+  margin-bottom: 30px;
+  text-align: center;
+   background-color: #ADB507;
+   border-radius: 10px;
+   border: none;
+   padding: 10px;
+   color: black;
+   cursor: pointer;
+}
+
+.save-btn{
+float: right;
+background: rgb(75, 75, 238);
+border: none;
+width: 50px;
+height: 30px;
+border-radius: 5px;
+color: white;
 }
