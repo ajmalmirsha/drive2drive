@@ -7,24 +7,34 @@ const userSchema = new mongoose.Schema({
     },
     email:{
         type:String,
-        required:true ['email required !']
+        required:true ['email required !'],
+        unique:true
     },
     password:{
         type:String,
         required:true ['password required']
     },
+    phone:{
+        type:Number,
+        default:null,
+        unique:false
+    },
     image:{
         type:String,
+        default:''
     },
     dob:{
-        type:Date
+        type:String,
+        default:''
     },
-    drivinglisence:{
+    license:{
         front:{
-            type:String
+            type:String,
+            default:''
         },
         rear:{
-            type:String
+            type:String,
+            default:''
         }
     }
 

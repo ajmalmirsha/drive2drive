@@ -5,8 +5,12 @@ import {toast,ToastContainer} from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import {GoogleLogin} from '@react-oauth/google'
 import jwt_decode from 'jwt-decode'
+import {useDispatch} from 'react-redux'
+import { setUserDetails } from '../../redux/userSlice'
+
 function Signup(){
    const [user,setUser] = useState({username:'',email:'',password:''})
+   const dispatch = useDispatch()
    const navigate = useNavigate()
    useEffect(()=>{
     const token = localStorage.getItem('user')
@@ -26,6 +30,7 @@ function Signup(){
         toast.error('password required !')
     }else{
         const response = await axios.post(process.env.REACT_APP_URL+'/signup',{user})
+
         console.log(response.data.token);
         localStorage.setItem('user',response.data.token)
         navigate('/')
@@ -34,17 +39,43 @@ function Signup(){
  async function googleSuccess (response) {
     console.log('success',response);
  const decoded =  jwt_decode(response.credential)
- console.log(decoded);
+ console.log(decoded,987);
  console.log(decoded.email,decoded.name,decoded.sub);
  const user ={
     username:decoded.name,
     email:decoded.email,
-    password:decoded.sub
+    password:decoded.sub,
+    image:decoded.picture
  }
- const respo = await axios.post(process.env.REACT_APP_URL+'/signup',{user})
- console.log('resfpoif',respo);
- localStorage.setItem('user',respo.data.token)
-        navigate('/')
+ try {
+     const respo = await axios.post(process.env.REACT_APP_URL+'/signup',{user})
+     console.log('resfpoif',respo);
+    
+     const {data} = respo
+     dispatch(
+        setUserDetails({
+            id: data.user._id,
+            username: data.user.username,
+            email: data.user.email,
+            phone: data.user?.phone,
+            image: data.user?.image,
+            dob: data.user?.dob,
+            license:{
+                front : data.user.license?.front,
+                back  : data.user.license?.back,
+            }
+        })
+    )
+     localStorage.setItem('user',respo.data.token)
+            navigate('/')
+ } catch (error) {
+    console.log(error);
+    console.log(error.response.data.message);
+    if(error.response.status == 403) {
+        console.log('error code is 403');
+        return toast.error(error.response.data.message)
+     }
+ }
 
 }
 function googleError (response) {

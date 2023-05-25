@@ -7,7 +7,7 @@ export default function ProfilePage(){
         <>
         <Navbar/>
         <div className="container-fluid">
-            <div className="row ">
+            <div className="row mr-0">
                     <SideBar />
                     <ProfileDetails />
             </div>

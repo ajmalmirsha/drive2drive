@@ -13,7 +13,7 @@
 .main-wrapper img {
    border-radius: 50%;
    width: 150px;
-   height: fit-content;
+   height: 150px;
 }
 .main-wrapper .plus {
    font-size: xx-large;
@@ -22,6 +22,8 @@
    left: 174px;
    z-index: 1;
    cursor: pointer;
+   height: 0;
+   margin-bottom: 0;
 }
 
 /* .profile-form{
@@ -39,6 +41,16 @@
    height: 35px;
    border: solid #cccccc 1px;
    cursor: pointer;
+   padding-left: 10px;
+}
+.profile-input-error , .profile-input-error:focus{
+   width: 100%;
+   border-radius: 10px;
+   height: 35px;
+   border: solid #cccccc 1px;
+   cursor: pointer;
+   padding-left: 10px;
+   border: red solid 3px;
 }
 .profile-input:focus {
    border: none;
@@ -90,3 +102,8 @@ height: 30px;
 border-radius: 5px;
 color: white;
 }
+
+.save-alert{
+   float: right;
+}
+

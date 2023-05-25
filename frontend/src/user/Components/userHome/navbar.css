@@ -27,6 +27,7 @@
   border: solid 2px black;
   border-bottom: none;
   border-radius: 5px;
+  z-index: 1000;
 }
 
 .listed-menu li {
@@ -37,4 +38,8 @@
 .listed-menu li button {
     width: 100%;
     height: 28px;
+  }
+
+  .logout-btn{
+    z-index: 1;
   }

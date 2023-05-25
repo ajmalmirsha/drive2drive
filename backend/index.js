@@ -9,7 +9,7 @@ app.use(cors({
     method: ['GET','POST','DELETE'],
     credentials:true
 }))
-
+app.use('/public/images',express.static('public/images'))
 mongoose.connect(process.env.MONGO_URL).then(()=>{
     console.log('connected to database');
 })
