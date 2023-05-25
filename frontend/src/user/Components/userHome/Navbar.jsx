@@ -1,17 +1,18 @@
 import { useNavigate } from 'react-router-dom'
 import '../userHome/navbar.css'
-import pro from '../../../images/default.png'
+import img from '../../../images/default.png'
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setUserDetails } from '../../../redux/userSlice'
 export default  function Navbar(){
+    const user = useSelector((state) => state.user)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [menuOpen,setMenu] = useState(false)
     return(
        <div className="nav">
         navbar
-        <img src={pro} onClick={()=>{ menuOpen ? setMenu(false) : setMenu(true)}}  alt="" className='profile-img' />
+        <img src={ user.image.slice(0,33) == 'https://lh3.googleusercontent.com'  ?   user.image  : user.image ? `${process.env.REACT_APP_URL}/public/images/${user.image}` : img} onClick={()=>{ menuOpen ? setMenu(false) : setMenu(true)}}  alt="" className='profile-img' />
        
                 {menuOpen &&  <ul className='listed-menu'>
             <div className="menu">

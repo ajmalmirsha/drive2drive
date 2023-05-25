@@ -15,6 +15,10 @@ export default function ProfileDetails(){
     let [emailVerified,setEmailVerification] = useState(true)
     let [phoneValid,setPhoneValidation] = useState(true)
     let [userUpdated,setUserUpdation] = useState(false)
+    const [license,setLicense] = useState({
+      front:null,
+      back:null
+    })
     const dispatch = useDispatch()
     const [user,setUser] = useState({
         id:reduxUser.id,
@@ -28,21 +32,18 @@ export default function ProfileDetails(){
         console.log('redux',reduxUser);
         setUserUpdation(true)
         // toast.success('click on the save button')
-    },[user])
+    },[user,reduxUser])
 
     
 
     // uploading or updating profile pictures 
 
     const uploadProfileImage = () => {
-        // console.log('upload image reached',typeof e.target.files[0]);
-        // setImage(e.target.files[0],()=>{
-            
-            // })
-                console.log(image,989);
+
         const formData = new  FormData()
-        formData.append('image',image)
-        console.log('formdata appeded',formData);
+        formData.append('license[front]', license.front);
+        formData.append('license[back]', license.back);
+
         const config = {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -51,13 +52,11 @@ export default function ProfileDetails(){
             withCredentials: true,
           };
 
-          console.log('confiqqed',image,9889);
     if(image){
-        console.log('image uploadindf');
-        console.log(image,909);
+      
     axios.post( process.env.REACT_APP_URL + '/upload-profile-image', formData, config).then((response)=>{
+   
       setImage('')
-
    
         dispatch(
             setUserDetails({
@@ -129,7 +128,12 @@ if (emailRegex.test(email)) {
 }
 
   }
-      
+       
+  function uploadLicense () {
+    const formData = new FormData()
+    formData.append('image',license)
+    axios.post(process.env.REACT_APP_URL + '/add-license',{license,userid:reduxUser._id})
+  }
    
     return(
         <>
@@ -144,7 +148,7 @@ if (emailRegex.test(email)) {
           { image ? <label className='plus' onClick={()=> uploadProfileImage()} ><FontAwesomeIcon color='green' icon={faCheckCircle} /> </label> :  <label className='plus' htmlFor="profile-upload"> <FontAwesomeIcon  icon={faCirclePlus} />  </label>}
         
 
-             <img className='col-md-2' src={ reduxUser.image.slice(0,33) == 'https://lh3.googleusercontent.com'  ?   reduxUser.image  :   reduxUser.image ? `${process.env.REACT_APP_URL}/public/images/${reduxUser.image}` : img} alt="" />
+             <img className='img col-md-2' src={ reduxUser.image.slice(0,33) == 'https://lh3.googleusercontent.com'  ?   reduxUser.image  :   reduxUser.image ? `${process.env.REACT_APP_URL}/public/images/${reduxUser.image}` : img} alt="" />
             <div  className="col-md-9">
 
             {userUpdated && emailVerified && (
@@ -186,19 +190,19 @@ if (emailRegex.test(email)) {
             <div className='col-md-5 mx-3 my-3'>
          <div className='col-md-5 p-0'>Front side</div>
             <label htmlFor='front-side-image' className="front mt-3">
-            Click here to upload the front side of your driving license.
-            <input type="file" id='front-side-image' hidden />
+           {license.front ? <img src={license.front} alt="" /> : 'Click here to upload the front side of your driving license.'}
+            <input type="file" onChange={(e)=> setLicense({...license,front:URL.createObjectURL(e.target.files[0])})} id='front-side-image' hidden />
             </label >
             </div>
             <div className='col-md-5 mx-3 my-3'>
   <div className='col-md-5 p-0'>Back side</div>
   <label  htmlFor="back-side-image" className="back mt-3">
-    Click here to upload the back side of your driving license.
-    <input type="file" id='back-side-image' hidden />
+  {license.back ? <img src={license.back} alt="" /> : 'Click here to upload the front side of your driving license.'}
+    <input onChange={(e)=> setLicense({...license,back:URL.createObjectURL(e.target.files[0])})} type="file" id='back-side-image' hidden />
   </label>
 </div>     
      </div>
-         <button className='profile-submit-btn '>save and continue</button>
+         <button className='profile-submit-btn' onClick={uploadLicense}>save and continue</button>
            </div>
         </div>
         <ToastContainer/>
