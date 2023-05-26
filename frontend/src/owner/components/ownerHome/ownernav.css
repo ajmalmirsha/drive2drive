@@ -1,0 +1,13 @@
+.nav-bar-owner {
+    height: 50px;
+    background-color: rgb(147, 154, 160);
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.profile-img-nav {
+    width: 40px;
+    border-radius: 50%;
+}

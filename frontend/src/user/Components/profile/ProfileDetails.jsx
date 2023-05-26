@@ -16,8 +16,8 @@ export default function ProfileDetails(){
     let [phoneValid,setPhoneValidation] = useState(true)
     let [userUpdated,setUserUpdation] = useState(false)
     const [license,setLicense] = useState({
-      front:null,
-      back:null
+      front: reduxUser?.license?.front,
+      back: reduxUser?.license?.back
     })
     const dispatch = useDispatch()
     const [user,setUser] = useState({
@@ -41,8 +41,7 @@ export default function ProfileDetails(){
     const uploadProfileImage = () => {
 
         const formData = new  FormData()
-        formData.append('license[front]', license.front);
-        formData.append('license[back]', license.back);
+        formData.append('image', image);
 
         const config = {
             headers: {
@@ -68,7 +67,7 @@ export default function ProfileDetails(){
                 dob:response.data.user?.dob,
                 license:{
                     front : response.data.user.license?.front,
-                    back  : response.data.user.license?.back,
+                    back  : response.data.user.license?.rear,
                 }
             })
         )
@@ -85,7 +84,7 @@ export default function ProfileDetails(){
       
         const { userData } = data
 const {setUserDetails} = await import('../../../redux/userSlice')
-
+    console.log(userData.license?.rear,84);
         dispatch(
             setUserDetails({
                 id: userData._id,
@@ -96,7 +95,7 @@ const {setUserDetails} = await import('../../../redux/userSlice')
                 dob:userData?.dob,
                 license:{
                     front : userData.license?.front,
-                    back  : userData.license?.back,
+                    back  : userData.license?.rear,
                 }
             })
         )
@@ -130,9 +129,43 @@ if (emailRegex.test(email)) {
   }
        
   function uploadLicense () {
+    console.log(license);
     const formData = new FormData()
-    formData.append('image',license)
-    axios.post(process.env.REACT_APP_URL + '/add-license',{license,userid:reduxUser._id})
+    formData.append('license[front]', license.front);
+    formData.append('license[back]', license.back);
+
+    const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          userId: reduxUser.id
+        },
+        withCredentials: true,
+      };
+    axios.post(process.env.REACT_APP_URL + '/add-license',formData,config) .then(({data})=> {
+      console.log(data,687, data.user.license?.front, data.user.license?.rear,);
+      dispatch (
+        setUserDetails (
+          {
+            id: data.user._id,
+            username: data.user.username,
+            email: data.user.email,
+            phone: data.user?.phone,
+            image: data.user?.image,
+            dob: data.user?.dob,
+            license:{
+                front : data.user.license?.front,
+                back  : data.user.license?.rear,
+            }
+          }
+        )
+        )
+        toast.success('license updated successfully')
+      // Handle the response
+    })
+    .catch(error => {
+      // Handle the error
+      console.log(error);
+    });
   }
    
     return(
@@ -188,17 +221,17 @@ if (emailRegex.test(email)) {
          <div className="row mt-3">
            
             <div className='col-md-5 mx-3 my-3'>
-         <div className='col-md-5 p-0'>Front side</div>
+         <div className='col-md-5 p-0'>Front side {reduxUser.lisence?.front}</div>
             <label htmlFor='front-side-image' className="front mt-3">
-           {license.front ? <img src={license.front} alt="" /> : 'Click here to upload the front side of your driving license.'}
-            <input type="file" onChange={(e)=> setLicense({...license,front:URL.createObjectURL(e.target.files[0])})} id='front-side-image' hidden />
+           {license.front ? <img src={ reduxUser.license?.front ? `${process.env.REACT_APP_URL}/public/images/license/${reduxUser.license.front}` : URL.createObjectURL(license?.front)} alt="" /> : 'Click here to upload the front side of your driving license.'}
+            <input type="file" onChange={(e)=> setLicense({...license,front:e.target.files[0]})} id='front-side-image' hidden />
             </label >
             </div>
             <div className='col-md-5 mx-3 my-3'>
   <div className='col-md-5 p-0'>Back side</div>
   <label  htmlFor="back-side-image" className="back mt-3">
-  {license.back ? <img src={license.back} alt="" /> : 'Click here to upload the front side of your driving license.'}
-    <input onChange={(e)=> setLicense({...license,back:URL.createObjectURL(e.target.files[0])})} type="file" id='back-side-image' hidden />
+  {license.back ? <img src={ reduxUser.license?.back ? `${process.env.REACT_APP_URL}/public/images/license/${reduxUser.license?.back}` : URL.createObjectURL(license.back)} alt="" /> : 'Click here to upload the front side of your driving license.'}
+    <input onChange={(e)=> setLicense({...license,back:e.target.files[0]})} type="file" id='back-side-image' hidden />
   </label>
 </div>     
      </div>
@@ -206,6 +239,6 @@ if (emailRegex.test(email)) {
            </div>
         </div>
         <ToastContainer/>
-        </>
+        </>  
     )
 }

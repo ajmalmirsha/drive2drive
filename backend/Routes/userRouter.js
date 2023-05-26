@@ -10,6 +10,9 @@ router.post('/update-user',updateUser)
 
 router.post('/upload-profile-image',uploadOptions.single('image'),uploadProfileImage)
 
-router.post('/add-license',uploadlicense.single('image'),uploadLisence)
+router.post('/add-license', uploadlicense.fields([
+    { name: 'license[front]', maxCount: 1 },
+    { name: 'license[back]', maxCount: 1 }
+  ]), uploadLisence);
 
 module.exports = router

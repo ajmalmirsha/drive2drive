@@ -33,7 +33,7 @@ const storage = multer.diskStorage({
 
 const uploadOptions = multer({ storage: storage });
 
-const imagesPath = path.join(__dirname, '../../public/lisence/');
+const imagesPath = path.join(__dirname, '../../public/images/license/');
 
 // Create the directory if it doesn't exist
 if (!fs.existsSync(imagesPath)) {
@@ -48,7 +48,7 @@ const storages = multer.diskStorage({
     if (isValid) {
       uploadError = null;
     }
-    cb(uploadError, imagesDirectory);
+    cb(uploadError, imagesPath);
   },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);

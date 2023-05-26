@@ -11,7 +11,9 @@ export default  function Navbar(){
     const [menuOpen,setMenu] = useState(false)
     return(
        <div className="nav">
-        navbar
+        <h3 onClick={()=>{
+            navigate('/')
+        }}>Home</h3>
         <img src={ user.image.slice(0,33) == 'https://lh3.googleusercontent.com'  ?   user.image  : user.image ? `${process.env.REACT_APP_URL}/public/images/${user.image}` : img} onClick={()=>{ menuOpen ? setMenu(false) : setMenu(true)}}  alt="" className='profile-img' />
        
                 {menuOpen &&  <ul className='listed-menu'>

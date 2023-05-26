@@ -40,7 +40,7 @@ function LoginComponent() {
                     dob:user?.dob,
                     license:{
                         front : user.license?.front,
-                        back  : user.license?.back,
+                        back  : user.license?.rear,
                     }
                 })
             )

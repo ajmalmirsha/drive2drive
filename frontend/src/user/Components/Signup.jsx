@@ -9,7 +9,7 @@ import {useDispatch} from 'react-redux'
 import { setUserDetails } from '../../redux/userSlice'
 
 function Signup(){
-   const [user,setUser] = useState({username:'',email:'',password:''})
+   const [user,setUser] = useState({username:'',email:'',password:''}) 
    const dispatch = useDispatch()
    const navigate = useNavigate()
    useEffect(()=>{
@@ -30,10 +30,15 @@ function Signup(){
         toast.error('password required !')
     }else{
         const response = await axios.post(process.env.REACT_APP_URL+'/signup',{user})
-
-        console.log(response.data.token);
-        localStorage.setItem('user',response.data.token)
-        navigate('/')
+        const data = response.data
+        console.log(response,456,data);
+        console.log(data.message);
+        toast.error(data.message)
+        if(data.status === 403){
+        }
+        // console.log(response.data.token);
+        // localStorage.setItem('user',response.data.token)
+        // navigate('/')
     }
 }
  async function googleSuccess (response) {
