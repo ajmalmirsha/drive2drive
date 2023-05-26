@@ -23,7 +23,9 @@ function App() {
 
       <Route exact path='/owner-register' element={<OwnerRegister/>} />
       <Route exact path='/owner-login' element={<OwnerLogin/>} />
-      <Route exact path='/owner-Home' element={<OwnerHome/>} />
+      <Route exact path='/owner-Home' element={<OwnerHome props={'home'}/>} />
+      <Route exact path='/owner/list-vehicle' element={<OwnerHome props={'list-vehicle'}/>} />
+      <Route exact path='/owner/add-vehicle' element={<OwnerHome props={'add-vehicle'}/>} />
 
 
     </Routes>

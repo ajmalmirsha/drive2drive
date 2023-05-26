@@ -1,0 +1,18 @@
+.side-bar {
+    background-color: #F2F2F2;
+}
+
+.menu-items {
+    background-color: #3C3939;
+    margin: 5%;
+    height: 35px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.menu-items-active {
+    background-color: #7f7d80;
+    margin: 5%;
+    height: 35px;
+    border-radius: 3px;
+    cursor: pointer;
+}

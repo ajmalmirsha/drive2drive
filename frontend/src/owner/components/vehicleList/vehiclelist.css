@@ -1,0 +1,10 @@
+.custom-table th , tr , td {
+    border: solid black 1px;
+    padding-left: 5px;
+}
+.custom-table thead {
+   height: 40px;
+}
+.custom-table td {
+   height: 35px;
+}

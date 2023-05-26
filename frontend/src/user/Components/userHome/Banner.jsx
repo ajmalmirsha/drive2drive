@@ -3,34 +3,29 @@
 
 function Banner () {
     return (
-       
-        <div id="carouselExampleIndicators" className="carousel slide px-5 m-5" data-ride="carousel">
-  <ol className="carousel-indicators">
-    <li data-target="#carouselExampleIndicators" data-slide-to="0" className="active"></li>
-    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-  </ol>
-  <div className="carousel-inner">
-    <div className="carousel-item active">
-      <img className="d-block w-100" src={`${process.env.REACT_APP_URL}/public/images/banner/car-rental-banner.jpg`} alt="First slide" />
+      
+      <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src={`${process.env.REACT_APP_URL}/public/images/banner/car-rental-banner.jpg`} class="d-block w-100" alt="..." />
     </div>
-    <div className="carousel-item">
-      <img className="d-block w-100" src={`${process.env.REACT_APP_URL}/public/images/banner/download (5).jpeg`} alt="Second slide" />
+    <div class="carousel-item">
+      <img src={`${process.env.REACT_APP_URL}/public/images/banner/download (5).jpeg`} class="d-block w-100" alt="..." />
     </div>
-    <div className="carousel-item">
-      <img className="d-block w-100" src={`${process.env.REACT_APP_URL}/public/images/banner/1651808622.png`} alt="Third slide" />
+    <div class="carousel-item">
+      <img src={`${process.env.REACT_APP_URL}/public/images/banner/1651808622.png`} class="d-block w-100" alt="..." />
     </div>
   </div>
-  <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span className="sr-only">Previous</span>
-  </a>
-  <a className="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-    <span className="carousel-control-next-icon" aria-hidden="true"></span>
-    <span className="sr-only">Next</span>
-  </a>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
 </div>
-       
+
     )
 }
 
