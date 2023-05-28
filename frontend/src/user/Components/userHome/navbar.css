@@ -33,11 +33,13 @@
 .listed-menu li {
   border-bottom: solid 2px black;
   height: 28px;
+  cursor: pointer;
 }
 
 .listed-menu li button {
     width: 100%;
     height: 28px;
+    cursor: pointer;
   }
 
   .logout-btn{

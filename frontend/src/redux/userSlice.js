@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
 
 const initialState = {
@@ -8,16 +8,16 @@ const initialState = {
     phone: null,
     image: "",
     dob: null,
-    license:{
-        front : '',
-        back  : '',
+    license: {
+        front: '',
+        back: '',
     }
 }
 
 const userSlice = createSlice({
-    name:'user',
+    name: 'user',
     initialState,
-    reducers:{
+    reducers: {
         setUserDetails: (state, action) => {
             state.id = action.payload.id;
             state.username = action.payload.username;
@@ -27,7 +27,7 @@ const userSlice = createSlice({
             state.dob = action.payload.dob
             state.license.front = action.payload.license.front
             state.license.back = action.payload.license.back
-          } 
+        }
     }
 })
 

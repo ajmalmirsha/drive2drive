@@ -14,9 +14,9 @@ export default  function Navbar(){
         <h3 onClick={()=>{
             navigate('/')
         }}>Home</h3>
-        <img src={ user.image.slice(0,33) == 'https://lh3.googleusercontent.com'  ?   user.image  : user.image ? `${process.env.REACT_APP_URL}/public/images/${user.image}` : img} onClick={()=>{ menuOpen ? setMenu(false) : setMenu(true)}}  alt="" className='profile-img' />
+        <img src={ user?.image?.slice(0,33) == 'https://lh3.googleusercontent.com'  ?   user.image  : user.image ? `${process.env.REACT_APP_URL}/public/images/${user.image}` : img} onClick={()=>{ menuOpen ? setMenu(false) : setMenu(true)}}  alt="" className='profile-img' />
        
-                {menuOpen &&  <ul className='listed-menu'>
+                {menuOpen &&  <ul className='listed-menu p-0 '>
             <div className="menu">
                     <li onClick={()=> navigate('/profile')}>Profile</li>
                     <li>settings</li>

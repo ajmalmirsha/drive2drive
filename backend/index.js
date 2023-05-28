@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const userRouter = require('./Routes/userRouter')
 const ownerRouter = require('./Routes/ownerRouter')
+const adminRouter = require('./Routes/adminRouter')
 
 const mongoose = require('mongoose')
 const app = express()
@@ -25,3 +26,4 @@ app.listen(PORT,()=>{
 
 app.use('/',userRouter)
 app.use('/owner',ownerRouter)
+app.use('/admin',adminRouter)

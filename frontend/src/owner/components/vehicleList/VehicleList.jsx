@@ -8,9 +8,8 @@ function VehicleList () {
   useEffect(()=>{
     async function getUsers  () {
       const { data, status } = await axios.get(process.env.REACT_APP_URL + "/owner/get-all-vehicles")
-      console.log(data);
     if(status == 200) {
-      setUsers(data.allusers)
+      setUsers(data.allVehicle)
     }
     }
     getUsers()

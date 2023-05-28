@@ -1,7 +1,7 @@
 const multer = require("multer");
 const fs = require('fs');
 const path = require('path');
-// const dd = require ('../../public/images')
+
 const FILE_TYPE_MAP = {
   "image/png": "png",
   "image/jpeg": "jpeg",
@@ -9,9 +9,10 @@ const FILE_TYPE_MAP = {
   "image/webp": "webp",
 };
 
+//profile images
+
 const imagesDirectory = path.join(__dirname, '../../public/images/');
 
-// Create the directory if it doesn't exist
 if (!fs.existsSync(imagesDirectory)) {
   fs.mkdirSync(imagesDirectory, { recursive: true });
 }
@@ -33,9 +34,14 @@ const storage = multer.diskStorage({
 
 const uploadOptions = multer({ storage: storage });
 
+
+
+
+// lisense images 
+
 const imagesPath = path.join(__dirname, '../../public/images/license/');
 
-// Create the directory if it doesn't exist
+
 if (!fs.existsSync(imagesPath)) {
   fs.mkdirSync(imagesPath, { recursive: true });
 }

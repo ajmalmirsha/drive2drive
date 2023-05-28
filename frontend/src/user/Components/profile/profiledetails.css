@@ -13,13 +13,13 @@
 .main-wrapper .img {
    border-radius: 50%;
    width: 150px;
-   height: 150px;
+   height: 130px;
 }
 .main-wrapper .plus {
    font-size: xx-large;
    position: relative;
-   top: 110px;
-   left: 174px;
+   top: 75px;
+   left: 107px;
    z-index: 1;
    cursor: pointer;
    height: 0;
