@@ -12,6 +12,9 @@ function AddVehicle() {
     category: null,
     price: null,
     description: null,
+    model:null,
+    brand:null,
+    year:null,
     image: {
 
     }
@@ -86,7 +89,25 @@ function AddVehicle() {
               <label className="form-label" htmlFor="form7Example6">Category</label>
               <input name="category" onBlur={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
             </div>
+            <div className="row">
+  <div className="col-md-4 form-outline mb-4">
+    <label className="form-label" htmlFor="form7Example6">Model</label>
+    <input name="model" onBlur={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
+  </div>
 
+  <div className="col-md-4 form-outline mb-4">
+    <label className="form-label" htmlFor="form7Example6">Brand</label>
+    <input name="brand" onBlur={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
+  </div>
+
+  <div className="col-md-4 form-outline mb-4">
+    <label className="form-label" htmlFor="form7Example6">Year</label>
+    <input name="year" onBlur={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
+  </div>
+
+</div>
+
+         
 
             <div className="form-outline mb-4">
               <label className="form-label" htmlFor="form7Example7">Price</label>

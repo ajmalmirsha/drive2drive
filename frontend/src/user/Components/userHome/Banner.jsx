@@ -4,7 +4,7 @@
 function Banner () {
     return (
       
-      <div id="carouselExampleFade" className="carousel slide carousel-fade" data-bs-ride="carousel">
+      <div id="carouselExampleFade" className="carousel slide carousel-fade mx-3" data-bs-ride="carousel">
   <div className="carousel-inner">
     <div className="carousel-item active">
       <img src={`${process.env.REACT_APP_URL}/public/images/banner/car-rental-banner.jpg`} className="d-block w-100" alt="..." />

@@ -2,9 +2,12 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import './listproduct.css'
+import {useNavigate} from 'react-router-dom'
 
 function ListProducts () {
     const [ vehicle, setVehicles] = useState([])
+    const navigate = useNavigate()
+
     useEffect(()=>{
       async function getVehicles  () {
        const {data} = await axios.get(process.env.REACT_APP_URL + '/list-all-vehicle')
@@ -15,9 +18,11 @@ function ListProducts () {
     },[])
     console.log(vehicle ,909);
     return (
-       <div className='row justify-content-center py-5 gap-2' >
+       <div className='row justify-content-center mx-0 py-5 gap-2' >
             {  vehicle.map((x)=>(
-                <div className="card " style={{ width: "18rem" }}>
+                <div onClick={()=>{
+                    navigate(`/veiw-detail/${x._id}`)
+                }} className="card " style={{ width: "18rem" }}>
                     <img style={{ height: '12rem'}} src={`${process.env.REACT_APP_URL}/public/images/${x.image}`} className="card-img-top" alt="..." />
                     <div className="card-body">
                         <h5 className="card-title">{x.product_name}</h5>
