@@ -2,19 +2,23 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ToastContainer, toast } from "react-toastify"
-
+import { useDispatch, useSelector } from "react-redux"
+import { setOwnerDetails } from "../../redux/ownerSlice"
 
 
 function OwnerLoginComponent () {
+   
     const navigate = useNavigate()
     const [ owner, setOwner] = useState({
         email:'',
         password:''
     })
+    const dispatch = useDispatch()
     useEffect (() => {
+    
         const token = localStorage.getItem('owner')
         if (token){
-            navigate('/')
+            navigate('/owner-Home')
         }
     },[])
     const handleSubmit = (e) => {
@@ -28,10 +32,21 @@ function OwnerLoginComponent () {
             verifyAdmin(owner)
         }
     }
-    const verifyAdmin = async (owner) => {
-        const {data} = await axios.post(process.env.REACT_APP_URL + '/owner/login', { owner })
-       
+    const verifyAdmin = async (ownerData) => {
+        const {data} = await axios.post(process.env.REACT_APP_URL + '/owner/login', { ownerData })
+       console.log(data,'owner details');
         if (data.success){
+            dispatch(
+                setOwnerDetails({
+                    id:data.owner._id,
+                    email:data.owner.email,
+                    phone:data.owner?.phone,
+                    image:data.owner?.image,
+                    username:data.owner?.username,
+                    adminverify:data.owner?.adminverify,
+                    dob:data.owner?.dob
+                })
+            )
             localStorage.setItem('owner',data.token)
             navigate('/owner-Home')
         } else {

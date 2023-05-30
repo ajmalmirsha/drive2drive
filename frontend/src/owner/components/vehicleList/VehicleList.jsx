@@ -3,11 +3,13 @@ import {Table, Thead, Tbody, Tr, Th, Td} from 'react-super-responsive-table'
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import './vehiclelist.css'
 import { useEffect, useState } from 'react'
+import { useSelector } from "react-redux";
 function VehicleList () {
+  const { id } = useSelector(state => state.owner)
   const [ users, setUsers] = useState([])
   useEffect(()=>{
     async function getUsers  () {
-      const { data, status } = await axios.get(process.env.REACT_APP_URL + "/owner/get-all-vehicles")
+      const { data, status } = await axios.get(`${process.env.REACT_APP_URL}/owner/get-all-vehicles/${id}`)
     if(status == 200) {
       setUsers(data.allVehicle)
     }

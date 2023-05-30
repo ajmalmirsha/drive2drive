@@ -29,7 +29,6 @@ function LoginComponent() {
             toast.error(message)
         } else {
             localStorage.setItem('user', token)
-            console.log(user,9000);
             dispatch(
                 setUserDetails({
                     id: user._id,

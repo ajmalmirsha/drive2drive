@@ -1,6 +1,6 @@
 
 const { ownerRegister, ownerLogin } = require('../controller/authController')
-const { addVehicle, allVehicles } = require('../controller/ownerController')
+const { addVehicle, allVehicles, getReviews } = require('../controller/ownerController')
 const { uploadOptions } = require('../middlewares/multer/multer')
 
 const router = require('express').Router()
@@ -11,7 +11,9 @@ router.post('/login', ownerLogin)
 
 router.post('/add-vehicle',uploadOptions.single('image'), addVehicle)
 
-router.get('/get-all-vehicles', allVehicles)
+router.get('/get-all-vehicles/:id', allVehicles)
+
+router.get('/get-reviews/:id', getReviews)
 
 
 

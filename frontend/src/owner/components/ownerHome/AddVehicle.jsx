@@ -3,10 +3,11 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
-
+import { useSelector } from "react-redux"
 
 
 function AddVehicle() {
+  const owner = useSelector(state => state.owner)
   const [product, setProduct] = useState({
     product_name: null,
     category: null,
@@ -15,6 +16,7 @@ function AddVehicle() {
     model:null,
     brand:null,
     year:null,
+    ownerId:owner.id,
     image: {
 
     }

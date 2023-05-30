@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SideBar from "../../components/ownerHome/SideBar";
 import VehicleList from "../../components/vehicleList/VehicleList";
 import AddVehicle from "../../components/ownerHome/AddVehicle";
+import ReviewList from "../../components/ownerHome/ReviewList";
 
 
 function OwnerHome ({props}) {
@@ -24,6 +25,7 @@ function OwnerHome ({props}) {
 
         { props == 'add-vehicle' &&  <AddVehicle/>}
        
+        <ReviewList/>
         </div>
         </div>
     )

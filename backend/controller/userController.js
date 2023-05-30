@@ -47,5 +47,21 @@ module.exports = {
                     } catch (error) {
             console.log(error.message);
         }
+    },
+    async getVehicleData (req,res) {
+      try {
+       const data = await vehicleModel.find({category:req.params.vehicle})
+       res.status(200).json({success:true,data})
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+    async getAllVehicleDetails (req,res) {
+      try {
+        const allVehicle = await vehicleModel.find({})
+        res.status(200).json({ success: true, allVehicle })
+    } catch (error) {
+        console.log(error.message);
+    }
     }
 }

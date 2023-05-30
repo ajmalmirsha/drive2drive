@@ -108,7 +108,7 @@ module.exports = {
     },
     async ownerLogin  ( req, res) {
         try {
-            const { email, password } = req.body.owner
+            const { email, password } = req.body.ownerData
             const owner = await ownerModel.findOne({ email })
             if (owner) {
                 bcrypt.compare(password, owner.password).then((response) => {

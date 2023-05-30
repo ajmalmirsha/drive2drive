@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import '../userHome/navbar.css'
 import img from '../../../images/default.png'
 import { useState } from 'react'
@@ -14,6 +14,17 @@ export default  function Navbar(){
         <h3 onClick={()=>{
             navigate('/')
         }}>Home</h3>
+    <div className="ms-3 categories">
+  <NavLink className="nav-item me-3" to="/list-all/car">
+    Cars
+  </NavLink>
+  <NavLink className='nav-item'  to="/list-all/bikes">
+    Bikes
+  </NavLink>
+</div>
+
+
+
         <img src={ user?.image?.slice(0,33) == 'https://lh3.googleusercontent.com'  ?   user.image  : user.image ? `${process.env.REACT_APP_URL}/public/images/${user.image}` : img} onClick={()=>{ menuOpen ? setMenu(false) : setMenu(true)}}  alt="" className='profile-img' />
        
                 {menuOpen &&  <ul className='listed-menu p-0 '>

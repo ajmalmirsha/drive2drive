@@ -3,7 +3,7 @@ import './viewPage.css'
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSquareCheck } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faSquareCheck } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import img from '../../../../src/images/default.png'
 const ViewPageComponent = () => {
@@ -11,6 +11,7 @@ const ViewPageComponent = () => {
   const [vehicle, setVehicle] = useState({});
   const [reviews,setReviews] = useState([])
   const { id } = useParams();
+  const [avgRating,setAvgRating] = useState(0)
 
   useEffect(() => {
     async function getVehicleData() {
@@ -21,9 +22,17 @@ const ViewPageComponent = () => {
     }
     getVehicleData();
     console.log(reviews,88864);
+    
   }, []);
   
-
+useEffect(()=>{
+  console.log(reviews);
+  const ratingsSum = reviews.reduce((sum, review) => sum + review.rating, 0);
+  const avgRating = ratingsSum / reviews.length;
+  const roundedAvgRating = avgRating.toFixed(); // Round to 1 decimal place
+  console.log(roundedAvgRating,87878);
+  setAvgRating(roundedAvgRating)
+},[reviews])
  
 
   
@@ -98,12 +107,26 @@ const ViewPageComponent = () => {
         <div className="col-lg-6 ">
           <div className="product-info">
             <h2 className="product-name">{vehicle?.product_name}</h2>
+              {/* total average stars */}
+              <div className="total-review-stars">
+                      {[1, 2, 3, 4, 5].map((value) => (
+                        <span
+                          key={value}
+                          style={{fontSize: '24px'}}
+                          className={`star-icon ${value <= avgRating ? 'filled' : ''}`}
+                        >
+                          ★
+                        </span>
+
+                      ))}
+                    </div>
             <div className="product-brand">Brand: {vehicle?.brand}</div>
             <div className="product-model">Model: {vehicle?.model}</div>
             <div className="product-year">Year: {vehicle?.year}</div>
             <div className="product-price">{vehicle?.price}</div>
             <div className="product-description">{vehicle?.description}</div>
 
+          
             <form onSubmit={handleSubmit}>
               <div className="rating-container">
                 <span className="rating-label">Rate this product:</span>
@@ -122,7 +145,7 @@ const ViewPageComponent = () => {
               </div>
 
               <div className="review-container">
-                <span className="review-label">Write a review:</span>
+                <span className="review-label">Write a review:  <label htmlFor="image-upload"><FontAwesomeIcon icon={faImage} /></label></span>
                 <textarea
                   className="review-textarea form-control"
                   rows={4}
@@ -143,11 +166,8 @@ const ViewPageComponent = () => {
               </div> */}
 
               <div className="mb-3">
-                <label className="image-input-label" htmlFor="image-upload">
-                  Select Images
-                </label>
                 <input
-              
+                hidden
                   className="image-input form-control"
                   id="image-upload"
                   type="file"

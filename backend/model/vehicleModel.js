@@ -43,6 +43,10 @@ const vehicleSchema = new mongoose.Schema({
     image:{
         type:String
     },
+    ownerId:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'owner'
+    },
     reviews:[reviewSchema],
 })
 

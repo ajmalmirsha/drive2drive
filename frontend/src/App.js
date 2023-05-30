@@ -10,6 +10,8 @@ import OwnerLogin from './owner/pages/owner-login/OwnerLogin';
 import AdminHome from './admin/pages/admin-home/AdminHome';
 import AdminLogin from './admin/pages/admin-login/AdminLogin';
 import VehicleView from './user/pages/vehicle-detail-page/VehicleView';
+import VehicleList from './owner/components/vehicleList/VehicleList';
+import VehicleListPage from './user/pages/vehicleList/VehicleListPage';
 
 function App() {
   const user = localStorage.getItem('user')
@@ -23,8 +25,9 @@ function App() {
       <Route exact  path='/profile' element={<ProfilePage/>} />
       <Route exact path='/' element={<UserHome/>} />
       <Route exact path='/veiw-detail/:id' element={<VehicleView/>} />
+      <Route exact path='/list-all/:vehicle' element={<VehicleListPage/>} />
 
-    {/* seller routes */}
+    {/* owner routes */}
 
       <Route exact path='/owner-register' element={<OwnerRegister/>} />
       <Route exact path='/owner-login' element={<OwnerLogin/>} />
