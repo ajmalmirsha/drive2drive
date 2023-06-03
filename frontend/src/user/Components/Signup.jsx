@@ -8,6 +8,7 @@ import jwt_decode from 'jwt-decode'
 import { useDispatch } from 'react-redux'
 import { setUserDetails } from '../../redux/userSlice'
 
+
 function Signup() {
     const [user, setUser] = useState({ username: '', email: '', password: '' })
     const dispatch = useDispatch()
@@ -100,6 +101,7 @@ function Signup() {
                     <button>Sign up</button>
                 </form>
                 <GoogleLogin onSuccess={googleSuccess} onError={googleError} />
+
                 <p>You do have an account? <span onClick={() => navigate('/login')}>Login</span></p>
             </div>
             <ToastContainer />

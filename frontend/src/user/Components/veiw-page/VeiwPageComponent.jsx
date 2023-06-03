@@ -5,6 +5,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage, faSquareCheck } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
+import ReactImageMagnify from 'react-image-magnify'
 import img from '../../../../src/images/default.png'
 const ViewPageComponent = () => {
   const user = useSelector(state => state.user)
@@ -12,7 +13,7 @@ const ViewPageComponent = () => {
   const [reviews,setReviews] = useState([])
   const { id } = useParams();
   const [avgRating,setAvgRating] = useState(0)
-
+ const [mainImage,setMainImage] = useState(0)
   useEffect(() => {
     async function getVehicleData() {
       const { data } = await axios.get(process.env.REACT_APP_URL + `/vehicle/data/${id}`);
@@ -71,6 +72,7 @@ useEffect(()=>{
     console.log('Rating:', rating);
     console.log('Review:', review);
     console.log('Selected Images:', selectedImages);
+    console.log('vehiovle:', vehicle);
     // Reset rating, review, and selected images after submission
   
     try {
@@ -101,8 +103,33 @@ useEffect(()=>{
   return (
     <div className="product-details-container">
       <div className="row w-100">
-        <div className="col-lg-6">
-          <img className="product-image img-fluid" src={`${process.env.REACT_APP_URL}/public/images/${vehicle?.image}`} alt={vehicle?.name} />
+        <div className="col-lg-6 " >
+          {/* <img className="product-image img-fluid" src={`${process.env.REACT_APP_URL}/public/images/${vehicle?.image?.length && vehicle?.image[mainImage]}`} alt={vehicle?.name} /> */}
+          <ReactImageMagnify className='zoom-image'
+                        {...{
+                            smallImage: {
+                                alt: 'Wristwatch by Ted Baker London',
+                                isFluidWidth: true,
+                                src: `${process.env.REACT_APP_URL}/public/images/${vehicle?.image?.length && vehicle?.image[mainImage]}`,
+                            },
+                            largeImage: {
+                                src: `${process.env.REACT_APP_URL}/public/images/${vehicle?.image?.length && vehicle?.image[mainImage]}`,
+                                width: 1200,
+                                height: 1200,
+                            },
+                            enlargedImageContainerDimensions: {
+                                width: '100%',
+                                height: '100%',
+                            },
+                        }}
+                    />
+       <div className="gap-5">{
+      vehicle?.image?.length &&  vehicle?.image.map((x,i)=>{
+      
+         return(   i !== mainImage  && <img key={i} src={`${process.env.REACT_APP_URL}/public/images/${x}`} alt="" onClick={()=>{ setMainImage(i) }} className="col-md-3 my-5 me-3  sub-images" /> )
+
+        })
+       }</div>
         </div>
         <div className="col-lg-6 ">
           <div className="product-info">
@@ -181,7 +208,7 @@ useEffect(()=>{
             </form>
 
             <ul className="reviews-list h-25 my-4">
-              {reviews.map((review) => (
+              { reviews.length ? reviews.map((review) => (
                 <li className="review-item">
                 
                   <div className="review-rating">
@@ -201,7 +228,7 @@ useEffect(()=>{
                   </div>   
                   <p className="review-text">{review.review}</p>
                 </li>
-              ))}
+              )) : "add your first review"}
             </ul>
           </div>
         </div>

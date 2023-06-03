@@ -12,6 +12,8 @@ import AdminLogin from './admin/pages/admin-login/AdminLogin';
 import VehicleView from './user/pages/vehicle-detail-page/VehicleView';
 import VehicleList from './owner/components/vehicleList/VehicleList';
 import VehicleListPage from './user/pages/vehicleList/VehicleListPage';
+import VehiclePage from './owner/pages/vehiclePage/VehiclePage';
+
 
 function App() {
   const user = localStorage.getItem('user')
@@ -32,8 +34,9 @@ function App() {
       <Route exact path='/owner-register' element={<OwnerRegister/>} />
       <Route exact path='/owner-login' element={<OwnerLogin/>} />
       <Route exact path='/owner-Home' element={<OwnerHome props={'home'}/>} />
-      <Route exact path='/owner/list-vehicle' element={<OwnerHome props={'list-vehicle'}/>} />
-      <Route exact path='/owner/add-vehicle' element={<OwnerHome props={'add-vehicle'}/>} />
+      <Route exact path='/owner/list-vehicle' element={<VehiclePage props={'list-vehicle'}/>} />
+      <Route exact path='/owner/add-vehicle' element={<VehiclePage props={'add-vehicle'}/>} />
+      <Route exact path='/owner/edit-vehicle/:id' element={<VehiclePage props={'edit-vehicle'} />} />
       
     {/* admin routes */}
 

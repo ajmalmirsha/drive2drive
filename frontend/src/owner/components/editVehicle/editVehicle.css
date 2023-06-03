@@ -1,0 +1,12 @@
+
+
+.image-list-edit img {
+    width: 100px;
+    margin-right: 10px;
+    border: solid 1px black;
+}
+
+
+.dropped-add-image  img {
+    width: 100px;
+}

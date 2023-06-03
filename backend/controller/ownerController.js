@@ -1,14 +1,21 @@
 
 const vehicleModel = require("../model/vehicleModel");
-
-
+const fs = require('fs')
+const path = require('path')
 
 module.exports = {
     addVehicle(req, res) {
         try {
             const { product_name, category, price, description, brand, year, model, ownerId } = JSON.parse(req.body.product);
             const proPrice = price - ''
-            vehicleModel.create({ product_name, category, price: proPrice, description, image: req.file.filename,brand, year, model, ownerId }).then((response) => {
+            const images = []
+            console.log('req.files:' , req.files);
+
+            for(const file of req.files){
+                images.push(file.filename)
+            }
+            console.log('images:' , images);
+            vehicleModel.create({ product_name, category, price: proPrice, description, image:images ,brand, year, model, ownerId }).then((response) => {
                 res.status(200).json({ success: true, message: 'vehicle added successfully' })
             }).catch((err) => {
                 console.log(err);
@@ -41,6 +48,47 @@ module.exports = {
           console.log(data,11111);
           console.log(data[0].reviews,11111);
           res.status(200).json({success:true,data})
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+    async deleteVehicleImage (req,res) {
+        try {
+            const {id,vehicleId} = req.params
+             vehicleModel.findByIdAndUpdate({_id:vehicleId},{$pull:{image:id}},{new:true}).then((response)=>{
+                console.log(response,656);
+                fs.unlink(path.join(__dirname,'../../backend/public/images/',id),(err)=>{})
+                res.status(200).json({success:true,data:response})
+             })
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+    EditVehicleDetials (req,res) {
+        try {
+            console.log(req.body,78);
+            const {data} = req.body
+            vehicleModel.findOneAndUpdate({_id:data.id},{...data},{new:true}).then((response)=>{
+                console.log(response,87);
+                res.status(200).json({success:true,message:"details updated successfully"})
+            })
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+    async addVehicleImages (req,res) {
+        try {
+            console.log('req.files:', req.headers['vehcleid']);
+
+            let images = []
+            for(const file of req.files){
+                images.push(file.filename)
+            }
+            console.log('images:' , images);
+            vehicleModel.findOneAndUpdate({_id:req.headers['vehcleid']},{ $push: { image: { $each: [...images] } } },{new:true}).then((response)=>{
+                console.log(response,899);
+                res.status(200).json({success:true,data:response})
+            })
         } catch (error) {
             console.log(error.message);
         }

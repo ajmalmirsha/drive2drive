@@ -1,0 +1,27 @@
+.review-list{
+    background-color: #F2F2F2;
+  
+ 
+}
+
+.head img {
+    width: 25px;
+    border-radius: 50%;
+}
+
+.review-content {
+    border: solid 1px rgba(179, 179, 179, 0.685);
+    border-radius: 5px;
+}
+
+.main {
+    overflow-y: auto;
+    height: 300px;
+}
+
+
+.main::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  

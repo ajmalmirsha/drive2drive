@@ -11,7 +11,7 @@
 
 .product-image {
   width: 100%;
-  height: auto;
+  height: 350px;
   border-radius: 4px;
   margin-right: 20px;
 }
@@ -149,3 +149,10 @@
 .review-stars {}
 
 
+.sub-images {
+  cursor: pointer;
+}
+
+.zoom-image {
+  height: 500px;
+}

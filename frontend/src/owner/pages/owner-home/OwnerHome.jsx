@@ -5,10 +5,11 @@ import SideBar from "../../components/ownerHome/SideBar";
 import VehicleList from "../../components/vehicleList/VehicleList";
 import AddVehicle from "../../components/ownerHome/AddVehicle";
 import ReviewList from "../../components/ownerHome/ReviewList";
+import Graph from "../../components/ownerHome/Graph";
+import EditVehicle from "../../components/editVehicle/EditVehicle";
 
 
 function OwnerHome ({props}) {
-    console.log(props,898);
     const navigate = useNavigate()
     useEffect ( () => {
         const token = localStorage.getItem('owner')
@@ -19,12 +20,14 @@ function OwnerHome ({props}) {
     return (
         <div>
         <OwnerNavBar/>
-        <div className="row mx-2">
+        <div className="row my-4 mx-2 gap-2">
         <SideBar props={props} />
         { props == 'list-vehicle' &&  <VehicleList/>}
 
         { props == 'add-vehicle' &&  <AddVehicle/>}
-       
+
+        { props == 'edit-vehicle' &&  <EditVehicle/>}
+        <Graph/>
         <ReviewList/>
         </div>
         </div>

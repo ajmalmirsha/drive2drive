@@ -4,9 +4,11 @@ import { toast, ToastContainer } from 'react-toastify'
 import axios from 'axios'
 import { GoogleLogin } from '@react-oauth/google'
 import jwt_decode from 'jwt-decode'
+
 import {useDispatch,useSelector} from 'react-redux'
 import { setUserDetails } from '../../redux/userSlice'
 function LoginComponent() {
+
     const navigate = useNavigate()
     const [user, setUser] = useState({ email: '', password: '' })
     const dispatch = useDispatch()
@@ -85,6 +87,7 @@ function LoginComponent() {
                 </form>
                 <GoogleLogin onSuccess={googleSuccess} onError={googleError} />
                 <p>You do have an account? <span onClick={() => navigate('/signup')}>Signup</span></p>
+                {/* <button onClick={() => loginWithRedirect()}>Log In</button> */}
             </div>
             <ToastContainer />
         </div>

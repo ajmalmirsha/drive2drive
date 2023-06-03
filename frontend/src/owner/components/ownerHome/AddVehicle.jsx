@@ -17,9 +17,7 @@ function AddVehicle() {
     brand:null,
     year:null,
     ownerId:owner.id,
-    image: {
-
-    }
+    images: []
   })
   const navigate = useNavigate()
 
@@ -42,8 +40,12 @@ function AddVehicle() {
         theme: "dark",
       });
     } else {
-      const formData = new FormData()
-      formData.append('image', product.image)
+      const formData = new FormData() 
+      console.log(product.images,89889);
+      for (let i = 0; i < product.images.length; i++) {
+        formData.append('images', product.images[i]);
+      }
+      
       formData.append('product', JSON.stringify(product));
       const config = {
         headers: {
@@ -94,7 +96,7 @@ function AddVehicle() {
             <div className="row">
   <div className="col-md-4 form-outline mb-4">
     <label className="form-label" htmlFor="form7Example6">Model</label>
-    <input name="model" onBlur={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
+    <input name="model" onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
   </div>
 
   <div className="col-md-4 form-outline mb-4">
@@ -124,7 +126,7 @@ function AddVehicle() {
 
             <div className="form-outline mb-4">
               <label className="form-label" htmlFor="form7Example7">image</label>
-              <input name="image" onBlur={(e) => setProduct({ ...product, [e.target.name]: e.target.files[0] })} type="file" id="form7Example7" className="form-control" />
+              <input multiple name="images" onBlur={(e) => setProduct({ ...product, [e.target.name]: Array.from(e.target.files) })} type="file" id="form7Example7" className="form-control" />
             </div>
 
 

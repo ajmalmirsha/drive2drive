@@ -41,7 +41,7 @@ const vehicleSchema = new mongoose.Schema({
         type:String
     },
     image:{
-        type:String
+        type:Array
     },
     ownerId:{
       type:mongoose.Schema.Types.ObjectId,

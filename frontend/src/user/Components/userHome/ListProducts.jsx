@@ -23,7 +23,7 @@ function ListProducts () {
                 <div onClick={()=>{
                     navigate(`/veiw-detail/${x._id}`)
                 }} className="card " style={{ width: "18rem" }}>
-                    <img style={{ height: '12rem'}} src={`${process.env.REACT_APP_URL}/public/images/${x.image}`} className="card-img-top" alt="..." />
+                    <img style={{ height: '12rem'}} src={`${process.env.REACT_APP_URL}/public/images/${x.image[0]}`} className="card-img-top" alt="..." />
                     <div className="card-body">
                         <h5 className="card-title">{x.product_name}</h5>
                         <p className="card-text">{x.description}</p>

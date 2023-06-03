@@ -1,7 +1,6 @@
-const userModel = require('../model/userModel')
+ const userModel = require('../model/userModel')
 const vehicleModel = require('../model/vehicleModel')
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
 module.exports = {
     uploadLisence (req,res) {
         try {
@@ -63,5 +62,14 @@ module.exports = {
     } catch (error) {
         console.log(error.message);
     }
+    },
+  async editProductDetails ({params:{id}},res) {
+    try {
+      console.log(id);
+      const data = await vehicleModel.findById(id)
+      res.status(200).json({success:true,data})
+    } catch (error) {
+      console.log(error.message);
     }
+  }
 }

@@ -6,8 +6,8 @@ function SideBar ({ props }) {
     console.log(props,7676);
     const navigate = useNavigate()
     return (
-        <div className="side-bar ms-4 mt-3 px-0  py-2 col-md-2 col-sm-4 ">
-            <div className="menu-items pt-1 text-center text-white">
+        <div className="side-bar ms-4  px-0  py-2 col-md-2 col-sm-4 ">
+            <div onClick={()=>{ navigate('/owner-Home') }} className="menu-items pt-1 text-center text-white">
                Home
             </div>
             <div className="menu-items pt-1 text-center text-white">
