@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 
 export default function ListVehicleComponent ({props}) {
+  const navigate = useNavigate()
     console.log(props,897);
     const [vehicles,setVehicles] = useState([])
     // useEffect(()=>{
@@ -42,9 +44,11 @@ export default function ListVehicleComponent ({props}) {
             />
         </div>
     </div>
-           { filteredVehicles.map((x)=>{
+           { filteredVehicles.length > 0 ? filteredVehicles.map((x)=>{
                 return (
-    <div class="row justify-content-center mb-3">
+    <div class="row justify-content-center mb-3" onClick={()=>{
+      navigate(`/veiw-detail/${x._id}`)
+    }} >
       <div class="col-md-12 col-xl-10">
         <div class="card shadow-0 border rounded-3">
           <div class="card-body">
@@ -69,39 +73,21 @@ export default function ListVehicleComponent ({props}) {
                     <i class="fa fa-star"></i>
                     <i class="fa fa-star"></i>
                   </div>
-                  <span>310</span>
                 </div>
-                <div class="mt-1 mb-0 text-muted small">
-                  <span>100% cotton</span>
-                  <span class="text-primary"> • </span>
-                  <span>Light weight</span>
-                  <span class="text-primary"> • </span>
-                  <span>Best finish<br /></span>
-                </div>
-                <div class="mb-2 text-muted small">
-                  <span>Unique design</span>
-                  <span class="text-primary"> • </span>
-                  <span>For men</span>
-                  <span class="text-primary"> • </span>
-                  <span>Casual<br /></span>
-                </div>
+             
                 <p class="text-truncate mb-4 mb-md-0">
                  {x.description}
                 </p>
               </div>
-              <div class="col-md-6 col-lg-3 col-xl-3 border-sm-start-none border-start">
-                <div class="d-flex flex-row align-items-center mb-1">
-                  <h4 class="mb-1 me-1">₹{x.price}</h4>
-                  <span class="text-danger"><s>$20.99</s></span>
-                </div>
-                <h6 class="text-success">Free shipping</h6>
-                <div class="d-flex flex-column mt-4">
-                  <button class="btn btn-primary btn-sm" type="button">Details</button>
-                  <button class="btn btn-outline-primary btn-sm mt-2" type="button">
-                    Add to wishlist
-                  </button>
-                </div>
-              </div>
+              <div class="col-md-6 col-lg-3 col-xl-3 align-items-center border-sm-start-none border-start d-flex flex-column justify-content-center align-items-center">
+  <div class="d-flex flex-row justify-content-center align-items-center mb-1">
+    <h4 class="mb-1">₹{x.price}</h4>
+  </div>
+  <div class="d-flex flex-column mt-4">
+    <button class="btn btn-primary btn-sm" type="button">Book now</button>
+  </div>
+</div>
+
             </div>
           </div>
         </div>
@@ -109,7 +95,10 @@ export default function ListVehicleComponent ({props}) {
     </div>
 
        )
-})
+}) :
+
+<img src="https://cdn.dribbble.com/users/2382015/screenshots/6065978/no_result_still_2x.gif?compress=1&resize=400x300&vertical=top" alt="" />
+
 }
   </div>
   </section>

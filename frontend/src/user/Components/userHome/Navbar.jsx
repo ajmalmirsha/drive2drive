@@ -18,7 +18,7 @@ export default  function Navbar(){
   <NavLink className="nav-item me-3" to="/list-all/car">
     Cars
   </NavLink>
-  <NavLink className='nav-item'  to="/list-all/bikes">
+  <NavLink className='nav-item'  to="/list-all/bike">
     Bikes
   </NavLink>
 </div>

@@ -7,6 +7,7 @@ import jwt_decode from 'jwt-decode'
 
 import {useDispatch,useSelector} from 'react-redux'
 import { setUserDetails } from '../../redux/userSlice'
+import FacebookLogin from 'react-facebook-login';
 function LoginComponent() {
 
     const navigate = useNavigate()
@@ -76,6 +77,9 @@ function LoginComponent() {
 
         }
     }
+    const responseFacebook = (response) => {
+        console.log('facebook response : ',response);
+      }
     return (
         <div className="formContainer">
             <div className="formWrapper">
@@ -86,6 +90,14 @@ function LoginComponent() {
                     <button>Sign in</button>
                 </form>
                 <GoogleLogin onSuccess={googleSuccess} onError={googleError} />
+                <FacebookLogin
+                 appId="597111955733507"
+                  autoLoad={false}
+                   fields="name,email,picture"
+                    callback={responseFacebook}
+                     cssClass="my-facebook-button-class"
+                      icon="fa-facebook"
+                />
                 <p>You do have an account? <span onClick={() => navigate('/signup')}>Signup</span></p>
                 {/* <button onClick={() => loginWithRedirect()}>Log In</button> */}
             </div>

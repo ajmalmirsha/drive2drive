@@ -16,6 +16,10 @@ const reviewSchema = new mongoose.Schema({
       type: String,
       default:'',
     },
+    image: {
+      type: String,
+      default:''
+    }
   });
   
 const vehicleSchema = new mongoose.Schema({

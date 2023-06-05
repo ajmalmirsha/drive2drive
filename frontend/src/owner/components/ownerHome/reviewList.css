@@ -4,9 +4,13 @@
  
 }
 
-.head img {
+.review-content .user-profile {
     width: 25px;
     border-radius: 50%;
+}
+
+.vehicles-review-list .vehicle-image{
+     width: 80px;
 }
 
 .review-content {

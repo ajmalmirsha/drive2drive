@@ -1,11 +1,13 @@
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import './listproduct.css'
 import {useNavigate} from 'react-router-dom'
+// import { GoogleMap, LoadScript, StandaloneSearchBox } from '@react-google-maps/api';
 
 function ListProducts () {
     const [ vehicle, setVehicles] = useState([])
+    const inputRef = useRef()
     const navigate = useNavigate()
 
     useEffect(()=>{
@@ -16,9 +18,31 @@ function ListProducts () {
        getVehicles()
        
     },[])
-    console.log(vehicle ,909);
+    function handlePlacechanged () {
+        const [place] = inputRef.current.getPlaces()
+        if (place){
+            console.log(place.formatted_address);
+        }
+    }
+    console.log(vehicle ,909); 
     return (
+        <>
+        
+
+{/* <LoadScript
+      googleMapsApiKey="AIzaSyCX18gyddDFiinajAC7AXHGIRx6FNuTIas"
+      libraries={['places']}
+    >
+      <StandaloneSearchBox
+      onLoad={ref => (inputRef.current = ref )}
+      onPlacesChanged={handlePlacechanged}
+      >
+        <input type="text" placeholder='Enter location' />
+      </StandaloneSearchBox>
+    </LoadScript> */}
        <div className='row justify-content-center mx-0 py-5 gap-2' >
+
+
             {  vehicle.map((x)=>(
                 <div onClick={()=>{
                     navigate(`/veiw-detail/${x._id}`)
@@ -38,6 +62,7 @@ function ListProducts () {
                 </div>
            )) }
        </div>
+       </>
     )
 }
 

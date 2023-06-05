@@ -1,4 +1,5 @@
- const userModel = require('../model/userModel')
+ const { json } = require('express');
+const userModel = require('../model/userModel')
 const vehicleModel = require('../model/vehicleModel')
 const mongoose = require('mongoose');
 module.exports = {
@@ -22,19 +23,18 @@ module.exports = {
     },
     async addReview ( req, res) {
         try {
-            console.log('reached add review');
-            console.log(req.body,998);
-            const {vehicleId,rating,review,selectedImages,userImage,username} = req.body
+            const {vehicleId,rating,review,userImage,username} = JSON.parse(req.body.reviewData)
             
             vehicleModel.findOneAndUpdate(
-                { _id: vehicleId }, // Filter condition to find the vehicle by its ID
+                { _id: vehicleId }, 
                 {
                   $push: {
                     reviews: {
                       rating,
                       review,
                       userimage:userImage,
-                      username
+                      username,
+                      image:req?.file?.filename
                     }
                   }
                 },

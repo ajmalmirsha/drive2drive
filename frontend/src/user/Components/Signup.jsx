@@ -19,43 +19,7 @@ function Signup() {
             navigate('/')
         }
     }, [])
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        const { username, email, password } = user
-        if (!username) {
-            toast.error('username required')
-        } else if (!email) {
-            toast.error('email required !')
-        } else if (!password) {
-            toast.error('password required !')
-        } else {
-            try {
-                const response = await axios.post(process.env.REACT_APP_URL + '/signup', { user })
-                const data = response.data
-                console.log(response, 456, data);
-                console.log(response.status);
-                if (response.status === 200) {
-                    localStorage.setItem('user', response.data.token)
-                    navigate('/')
-                }
-            } catch ({ response }) {
-                if (response.status == 401) {
-                    toast.error(response.data.message)
-                }
-            }
-
-        }
-    }
-    async function googleSuccess(response) {
-
-        const decoded = jwt_decode(response.credential)
-
-        const user = {
-            username: decoded.name,
-            email: decoded.email,
-            password: decoded.sub,
-            image: decoded.picture
-        }
+     async function userSignup (user) {
         try {
             const respo = await axios.post(process.env.REACT_APP_URL + '/signup', { user })
 
@@ -82,20 +46,58 @@ function Signup() {
                 return toast.error(error.response.data.message)
             }
         }
+    }
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const { username, email, password } = user
+        if (!username) {
+            toast.error('username required')
+        } else if (!email) {
+            toast.error('email required !')
+        } else if (!password) {
+            toast.error('password required !')
+        } else if (!emailRegex.test(email)) {
+            toast.error('should be a email format !')
+        } else {
+            userSignup(user)
+
+        }
+    }
+    async function googleSuccess(response) {
+
+        const decoded = jwt_decode(response.credential)
+
+        const user = {
+            username: decoded.name,
+            email: decoded.email,
+            password: decoded.sub,
+            image: decoded.picture
+        }
+        userSignup(user)
 
     }
     function googleError(response) {
         console.log('error', response);
     }
+    const verifyEmial = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+        if (!emailRegex.test(email)) {
+            toast.error('should be a email format !')
+        }
+    
+      }
     return (
 
         <div className="formContainer">
             <div className="formWrapper">
-                <span className="logo">chat app</span>
                 <span className="title">Register</span>
                 <form onSubmit={handleSubmit} >
                     <input type="text" name='username' onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })} placeholder='name' />
-                    <input type="email" name='email' onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })} placeholder='email' />
+                    <input type="email" onBlur={(e)=>{
+                      e.target.value &&  verifyEmial(e.target.value)
+                    }} name='email' onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })} placeholder='email' />
                     <input type="password" name='password' onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })} placeholder='password' />
 
                     <button>Sign up</button>

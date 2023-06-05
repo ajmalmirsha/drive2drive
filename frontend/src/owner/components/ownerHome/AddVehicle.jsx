@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
@@ -19,6 +19,7 @@ function AddVehicle() {
     ownerId:owner.id,
     images: []
   })
+ 
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -89,10 +90,17 @@ function AddVehicle() {
             </div>
 
 
-            <div className="form-outline mb-4">
+            {/* <div className="form-outline mb-4">
               <label className="form-label" htmlFor="form7Example6">Category</label>
               <input name="category" onBlur={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
-            </div>
+            </div> */}
+            <select onChange={(e)=>{
+   setProduct({ ...product, category: e.target.value })
+  }} class="form-select" aria-label="Default select example">
+  <option  selected>select a category</option>
+  <option value="car">car</option>
+  <option value="bike">bike</option>
+</select>
             <div className="row">
   <div className="col-md-4 form-outline mb-4">
     <label className="form-label" htmlFor="form7Example6">Model</label>

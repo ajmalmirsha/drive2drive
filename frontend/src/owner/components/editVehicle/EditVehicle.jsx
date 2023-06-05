@@ -234,12 +234,15 @@ export default function EditVehicle () {
                   <label className="form-label" htmlFor="form7Example5">Product name</label>
                   <input name="product_name" value={product.product_name} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example5" className="form-control" />
                 </div>
+                <select onChange={(e)=>{
+   setProduct({ ...product, category: e.target.value })
+  }} class="form-select" aria-label="Default select example">
+  <option  selected>{product.category}</option>
+  <option value="car">car</option>
+  <option value="bike">bike</option>
+</select>
     
-    
-                <div className="form-outline mb-4">
-                  <label className="form-label" htmlFor="form7Example6">Category</label>
-                  <input name="category" value={product.category} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value.trim() })} type="text" id="form7Example6" className="form-control" />
-                </div>
+               
                 <div className="row">
       <div className="col-md-4 form-outline mb-4">
         <label className="form-label" htmlFor="form7Example6">Model</label>

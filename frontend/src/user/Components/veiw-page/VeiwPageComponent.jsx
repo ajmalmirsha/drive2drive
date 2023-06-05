@@ -19,7 +19,7 @@ const ViewPageComponent = () => {
       const { data } = await axios.get(process.env.REACT_APP_URL + `/vehicle/data/${id}`);
       console.log(data,767  );
       setVehicle(data.data);
-      setReviews(data.data.reviews)
+      setReviews(data.data.reviews.reverse())
     }
     getVehicleData();
     console.log(reviews,88864);
@@ -44,7 +44,7 @@ useEffect(()=>{
   const [review, setReview] = React.useState('');
 
   // State for selected images
-  const [ selectedImages, setSelectedImages] = React.useState('');
+  const [ selectedImages, setSelectedImages] = React.useState({});
 
   // Handle rating change
   const handleRatingChange = (value) => {
@@ -60,9 +60,9 @@ useEffect(()=>{
 
   // Handle image selection
   const handleImageSelect = (e) => {
-    const images =  URL.createObjectURL( e.target.files[0])
-    console.log(images,89);
-    setSelectedImages(images);
+    // const images =  URL.createObjectURL( e.target.files[0])
+  
+    setSelectedImages(e.target.files[0]);
   };
 
   // Handle form submission
@@ -78,8 +78,25 @@ useEffect(()=>{
     try {
       // const axios = await import('axios')
       console.log('axios gone');
-      
-      axios.post( process.env.REACT_APP_URL + '/vehicle/review/add',{rating,review,selectedImages,vehicleId:vehicle._id,userId:user.id,userImage:user.image,username:user.username} ).then((response)=>{
+      const reviewData = {
+        rating,
+        review,
+        vehicleId:vehicle._id,
+        userId:user.id,
+        userImage:user.image,
+        username:user.username
+      }
+      const formData = new FormData()
+      formData.append('image',selectedImages)
+      formData.append('reviewData',JSON.stringify(reviewData))
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+        withCredentials: true,
+      };
+     
+      axios.post( process.env.REACT_APP_URL + '/vehicle/review/add',formData, config).then((response)=>{
         console.log(response,878878);
         const data = response.data
         console.log(data,45);
@@ -88,7 +105,7 @@ useEffect(()=>{
         // newArray.push(data)
         // console.log(newArray.length,98);
         // console.log(newArray,98);
-        setReviews(data.data.reviews)
+        setReviews(data.data.reviews.reverse())
       })
       setRating(0);
       setReview('');
@@ -167,7 +184,7 @@ useEffect(()=>{
                       ★
                     </span>
                   ))}
-                 { rating ?<FontAwesomeIcon icon={faSquareCheck} style={{color: "#459136",}} /> : null}
+              
                 </div>
               </div>
 
@@ -207,10 +224,10 @@ useEffect(()=>{
               <button className="submit-button btn btn-primary" type="submit">Submit {reviews?.userimage}</button>
             </form>
 
-            <ul className="reviews-list h-25 my-4">
+            <ul className="reviews-list h-25 my-4 ">
               { reviews.length ? reviews.map((review) => (
-                <li className="review-item">
-                
+                <li className="review-item row">
+                <div className="col-md-9">
                   <div className="review-rating">
                   <img className='me-2'  src={ review?.userimage?.slice(0,33) == 'https://lh3.googleusercontent.com'  ?   review.userimage  : review.userimage ? `${process.env.REACT_APP_URL}/public/images/${review.userimage}` : img} alt="" />
                     <span className="review-rating-label">{review.username}</span>
@@ -227,6 +244,10 @@ useEffect(()=>{
                     </div>
                   </div>   
                   <p className="review-text">{review.review}</p>
+                  </div>
+               { review.image &&   <div className="col-md-3">
+                  <img className='review-image' src={`${process.env.REACT_APP_URL}/public/images/reviewImages/${review.image}`} alt="" />
+                  </div> }
                 </li>
               )) : "add your first review"}
             </ul>

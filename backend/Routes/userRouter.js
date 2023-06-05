@@ -2,7 +2,7 @@ const router = require('express').Router()
 const { signup, login, updateUser, uploadProfileImage} =  require('../controller/authController')
 const { allVehicles, getVehiclesDetails } = require('../controller/ownerController')
 const { uploadLisence, addReview, getVehicleData, getAllVehicleDetails, editProductDetails } = require('../controller/userController')
-const { uploadOptions, uploadlicense } = require('../middlewares/multer/multer')
+const { uploadOptions, uploadlicense, reviewImage } = require('../middlewares/multer/multer')
 router.post('/signup',signup)
 
 router.post('/login',login)
@@ -20,7 +20,7 @@ router.get('/list-all-vehicle',getAllVehicleDetails)
 
 router.get('/vehicle/data/:id',getVehiclesDetails)
 
-router.post('/vehicle/review/add',addReview)
+router.post('/vehicle/review/add',reviewImage.single('image'),addReview)
 
 router.get('/list-all/:vehicle',getVehicleData)
 

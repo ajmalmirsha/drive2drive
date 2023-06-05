@@ -19,6 +19,7 @@ export default function ProfileDetails() {
     front: reduxUser?.license?.front,
     back: reduxUser?.license?.back
   })
+  const [licenseUploaded,setLicenseUploaded] = useState(false)
   const dispatch = useDispatch()
   const [user, setUser] = useState({
     id: reduxUser.id,
@@ -79,6 +80,12 @@ export default function ProfileDetails() {
 
   async function handleSubmit() {
     console.log(user, 737);
+    const { username, email } = user
+        if (!username) {
+            toast.error('username required')
+        } else if (!email) {
+            toast.error('email required !')
+        } else {
     const { data, status } = await axios.post(process.env.REACT_APP_URL + '/update-user', { user })
     if (status === 200) {
 
@@ -103,6 +110,7 @@ export default function ProfileDetails() {
     } else {
       toast.error(data.message)
     }
+  }
   }
   const validPhone = (phoneNumber) => {
     const phoneRegex = /^(\+?91|0)?[6789]\d{9}$/;
@@ -142,7 +150,6 @@ export default function ProfileDetails() {
       withCredentials: true,
     };
     axios.post(process.env.REACT_APP_URL + '/add-license', formData, config).then(({ data }) => {
-      console.log(data, 687, data.user.license?.front, data.user.license?.rear,);
       dispatch(
         setUserDetails(
           {
@@ -158,7 +165,8 @@ export default function ProfileDetails() {
             }
           }
         )
-      )
+        )
+        setLicenseUploaded(false)
       toast.success('license updated successfully')
       // Handle the response
     })
@@ -184,7 +192,7 @@ export default function ProfileDetails() {
           <img className='img col-md-2' src={reduxUser.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ? reduxUser.image : reduxUser.image ? `${process.env.REACT_APP_URL}/public/images/${reduxUser.image}` : img} alt="" />
           <div className="col-md-9">
 
-            {userUpdated && emailVerified && (
+            {userUpdated && emailVerified && user.username && (
               <button onClick={handleSubmit} className='save-btn my-2'>Save</button>
             )}
 
@@ -224,18 +232,24 @@ export default function ProfileDetails() {
               <div className='col-md-5 p-0'>Front side {reduxUser.lisence?.front}</div>
               <label htmlFor='front-side-image' className="front mt-3">
                 {license.front ? <img src={reduxUser.license?.front ? `${process.env.REACT_APP_URL}/public/images/license/${reduxUser.license.front}` : URL.createObjectURL(license?.front)} alt="" /> : 'Click here to upload the front side of your driving license.'}
-                <input type="file" onChange={(e) => setLicense({ ...license, front: e.target.files[0] })} id='front-side-image' hidden />
+                <input type="file" onChange={(e) =>{
+                  setLicenseUploaded(true)
+                  setLicense({ ...license, front: e.target.files[0] })}
+                  } id='front-side-image' hidden />
               </label >
             </div>
             <div className='col-md-5 mx-3 my-3'>
               <div className='col-md-5 p-0'>Back side</div>
               <label htmlFor="back-side-image" className="back mt-3">
                 {license.back ? <img src={reduxUser.license?.back ? `${process.env.REACT_APP_URL}/public/images/license/${reduxUser.license?.back}` : URL.createObjectURL(license.back)} alt="" /> : 'Click here to upload the front side of your driving license.'}
-                <input onChange={(e) => setLicense({ ...license, back: e.target.files[0] })} type="file" id='back-side-image' hidden />
+                <input onChange={(e) =>{
+                  setLicenseUploaded(true)
+                   setLicense({ ...license, back: e.target.files[0] })}
+                   } type="file" id='back-side-image' hidden />
               </label>
             </div>
           </div>
-          <button className='profile-submit-btn' onClick={uploadLicense}>save and continue</button>
+         { licenseUploaded && <button className='profile-submit-btn' onClick={uploadLicense}>save and continue</button>}
         </div>
       </div>
       <ToastContainer />

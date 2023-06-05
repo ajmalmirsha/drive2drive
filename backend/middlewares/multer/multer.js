@@ -63,4 +63,29 @@ const storages = multer.diskStorage({
 
 const uploadlicense = multer({ storage: storages });
 
-module.exports = { uploadOptions, uploadlicense };
+// lisense images 
+
+const reviewimagesPath = path.join(__dirname, '../../public/images/reviewImages/');
+
+
+if (!fs.existsSync(reviewimagesPath)) {
+  fs.mkdirSync(reviewimagesPath, { recursive: true });
+}
+
+const reviewstorages = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const isValid = FILE_TYPE_MAP[file.mimetype];
+    let uploadError = new Error("invalid image type");
+    if (isValid) {
+      uploadError = null;
+    }
+    cb(uploadError, reviewimagesPath);
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const reviewImage = multer({ storage: reviewstorages });
+
+module.exports = { uploadOptions, uploadlicense, reviewImage };
