@@ -1,0 +1,12 @@
+.custom-link {
+    text-decoration: none;
+    color: inherit;
+  }
+.active {
+    background-color: rgba(var(--bs-primary-rgb),var(--bs-bg-opacity));
+}
+.active:hover {
+    color: white;
+    background-color: rgba(var(--bs-primary-rgb), 0.9);
+
+}

@@ -1,0 +1,11 @@
+.check-out-main-img {
+    width: 200px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.kms {
+    width: 30px;
+    height: 30px;
+    object-fit: fill;
+}

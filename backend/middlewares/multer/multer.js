@@ -88,4 +88,28 @@ const reviewstorages = multer.diskStorage({
 
 const reviewImage = multer({ storage: reviewstorages });
 
-module.exports = { uploadOptions, uploadlicense, reviewImage };
+
+const notificationimagesPath = path.join(__dirname, '../../public/images/notification/');
+
+
+if (!fs.existsSync(notificationimagesPath)) {
+  fs.mkdirSync(notificationimagesPath, { recursive: true });
+}
+
+const notificationstorages = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const isValid = FILE_TYPE_MAP[file.mimetype];
+    let uploadError = new Error("invalid image type");
+    if (isValid) {
+      uploadError = null;
+    }
+    cb(uploadError, notificationimagesPath);
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const notificationImage = multer({ storage: notificationstorages });
+
+module.exports = { uploadOptions, uploadlicense, reviewImage, notificationImage };

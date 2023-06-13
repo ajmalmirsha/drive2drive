@@ -13,7 +13,7 @@ function LoginComponent() {
     const navigate = useNavigate()
     const [user, setUser] = useState({ email: '', password: '' })
     const dispatch = useDispatch()
-    useEffect(() => {
+    useEffect(() => { 
         const token = localStorage.getItem('user')
         if (token) {
             console.log('redirecting');

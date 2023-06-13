@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 function VehicleList () {
+  
   const { id } = useSelector(state => state.owner)
   const navigate = useNavigate()
   const [ users, setUsers] = useState([])
@@ -18,6 +19,15 @@ function VehicleList () {
     }
     getUsers()
   },[])
+
+  const [ currentPage, setCurrentPage] = useState(1)
+const recordsPerPage = 4
+const lastIndex = currentPage * recordsPerPage
+const firstIndex = lastIndex - recordsPerPage
+const records = users.slice( firstIndex, lastIndex)
+const npage = Math.ceil( users.length / recordsPerPage )
+const numbers = [...Array( npage + 1 ).keys()].slice(1)
+
     return (
         <div className="col-md-9 mt-3">
         <Table className="custom-table" >
@@ -33,7 +43,7 @@ function VehicleList () {
     </Tr>
   </Thead>
   <Tbody>
-    { users.map((x,i)=>(
+    { records.map((x,i)=>(
     <Tr >
       <Td>{i+1}</Td>
       <Td><img className="vehicle-image" src={`${process.env.REACT_APP_URL}/public/images/${x.image[0]}`} alt="" /></Td>
@@ -47,8 +57,37 @@ function VehicleList () {
   }
   </Tbody>
 </Table>
+<nav className='d-flex  justify-content-center'>
+                <ul className="pagination">
+                    <li className="page-item">
+                        <a  className="page-link" onClick={prevPage} >Prev</a>
+                    </li>
+                    {
+                        numbers.map(( n, i)=>{
+                           return( <li className={`page-item ${currentPage === n && 'active'}`} key={i}>
+                                <a  className="page-link" onClick={()=>{changeCPage(n)}}  >{n}</a>
+                            </li> )
+                        })
+                    }
+                    <li className="page-item">
+                        <a  className="page-link" onClick={nextPage} >Next</a>
+                    </li>
+                </ul>
+            </nav>
 </div>
     )
+
+    function prevPage () {
+      currentPage !== 1 && setCurrentPage(currentPage - 1)
+      }
+      
+      function nextPage () {
+      currentPage !== npage && setCurrentPage(currentPage + 1)
+      }
+      
+      function changeCPage (id) {
+      setCurrentPage(id)
+      }
 }
 
 export default VehicleList

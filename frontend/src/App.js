@@ -19,10 +19,15 @@ import OwnerPrivateRoute from './owner/middlewares/OwnerPrivateRoute';
 import OwnerPublicRoute from './owner/middlewares/OwnerPublicRoute';
 import AdminPublicRoute from './admin/middlewares/AdminPublicRoutes';
 import AdminPrivateRoute from './admin/middlewares/AdminPrivateRoutes';
+import AdminRoutes from './admin/AdminRoutes';
+import CheckOut from './user/Components/checkout/CheckOut';
+import Completion from './user/Components/Stripe/Completion';
+import UserNotificationPage from './user/pages/notification/UserNotificationPage';
+import BookingVerifications from './owner/components/bookings/BookingVerifications';
 
 
 function App() {
-  const user = localStorage.getItem('user')
+ 
   return (
     <>
     <BrowserRouter>
@@ -34,6 +39,9 @@ function App() {
       <Route exact path='/' element={<UserPrivateRoute><UserHome/></UserPrivateRoute> } />
       <Route exact path='/veiw-detail/:id' element={<VehicleView/>} />
       <Route exact path='/list-all/:vehicle' element={<VehicleListPage/>} />
+      <Route exact path='/checkout/:vehicleId' element={<CheckOut/>} />
+      <Route exact path='/completion' element={<Completion/>} />
+      <Route exact path='/notifications/:role' element={<UserNotificationPage/>} />
 
     {/* owner routes */}
 
@@ -43,11 +51,12 @@ function App() {
       <Route exact path='/owner/list-vehicle' element={<OwnerPrivateRoute> <VehiclePage props={'list-vehicle'}/></OwnerPrivateRoute> } />
       <Route exact path='/owner/add-vehicle' element={<OwnerPrivateRoute> <VehiclePage props={'add-vehicle'}/> </OwnerPrivateRoute> } />
       <Route exact path='/owner/edit-vehicle/:id' element={<OwnerPrivateRoute> <VehiclePage props={'edit-vehicle'} /> </OwnerPrivateRoute> } />
+      <Route exact path='/bookings' element={<OwnerPrivateRoute> <BookingVerifications /> </OwnerPrivateRoute> } />
       
     {/* admin routes */}
 
-      <Route exact path='/admin/home' element={<AdminPrivateRoute><AdminHome/></AdminPrivateRoute> } />
-      <Route exact path='/admin/login' element={<AdminPublicRoute><AdminLogin/></AdminPublicRoute> } />
+      <Route exact path='/admin/*' element={<AdminRoutes/> } />
+   
 
 
     </Routes>

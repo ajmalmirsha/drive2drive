@@ -1,7 +1,9 @@
  const { json } = require('express');
 const userModel = require('../model/userModel')
 const vehicleModel = require('../model/vehicleModel')
+const notificationModel = require('../model/notificationModel')
 const mongoose = require('mongoose');
+const bookingModel = require('../model/bookingModel');
 module.exports = {
     uploadLisence (req,res) {
         try {
@@ -70,6 +72,33 @@ module.exports = {
       res.status(200).json({success:true,data})
     } catch (error) {
       console.log(error.message);
+    }
+  },
+
+  getAllNotifications ( req, res) {
+    try {
+      const { role } = req.params
+      console.log(role);
+      const filterCriteria = {};
+      filterCriteria[role] = true;
+      notificationModel.find(filterCriteria).then((response) => {
+        res.status(200).json({success:true,notifications:response})
+      })
+    } catch (e) {
+      console.log(e.message);
+    }
+  },
+
+  addBooking ( req, res) {
+    try {
+      // console.log(req.body);
+      // console.log(req.body.data.address);
+      bookingModel.create({...req.body.data}).then((response)=> {
+        console.log(response);
+        res.status(200).json({success:true,message:'your booking request sent to owner wait for response !'})
+      })
+    } catch (e) {
+      console.log(e.message);
     }
   }
 }

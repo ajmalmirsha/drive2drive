@@ -58,3 +58,8 @@
     font-size: 12px;
     margin-top: 10px;
 }
+
+
+.passwordError {
+    background-color: rgba(161, 14, 14, 0.434);
+}

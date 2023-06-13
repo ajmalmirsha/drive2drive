@@ -10,9 +10,12 @@ import { setUserDetails } from '../../redux/userSlice'
 
 
 function Signup() {
-    const [user, setUser] = useState({ username: '', email: '', password: '' })
+    const [user, setUser] = useState({ username: '', email: '', password: '' , confirmPassword: ''})
+    const [passwordMatch , setPasswordMatch] = useState(true)
+    const [passwordStrong , setPasswordStrong] = useState(true)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const passwordPattern = /^.{8,16}$/
     useEffect(() => {
         const token = localStorage.getItem('user')
         if (token) {
@@ -50,7 +53,8 @@ function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const { username, email, password } = user
+      
+        const { username, email, password, confirmPassword } = user
         if (!username) {
             toast.error('username required')
         } else if (!email) {
@@ -59,9 +63,13 @@ function Signup() {
             toast.error('password required !')
         } else if (!emailRegex.test(email)) {
             toast.error('should be a email format !')
+        } else if (confirmPassword !== password) {
+            toast.error('password not matched !')
+        } else if (!passwordPattern.test(password)) {
+            toast.error('password should be strong !')
         } else {
+            console.log(confirmPassword,'   ',password);
             userSignup(user)
-
         }
     }
     async function googleSuccess(response) {
@@ -75,7 +83,6 @@ function Signup() {
             image: decoded.picture
         }
         userSignup(user)
-
     }
     function googleError(response) {
         console.log('error', response);
@@ -98,9 +105,22 @@ function Signup() {
                     <input type="email" onBlur={(e)=>{
                       e.target.value &&  verifyEmial(e.target.value)
                     }} name='email' onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })} placeholder='email' />
-                    <input type="password" name='password' onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })} placeholder='password' />
+                    { !passwordStrong && <p className='text-danger p-0 m-0'>* should be a strong password</p>}
+                    <input type="password" onBlur={(e)=>{
+                        const value = e.target.value
+                        value !== 0 && !passwordPattern.test(value) ? setPasswordStrong(false) : setPasswordStrong(true)
+                    }} name='password' onChange={(e) =>{
+                        e.target.value !== 0 && !passwordPattern.test(e.target.value) && setPasswordStrong(false) 
+                         setUser({ ...user, [e.target.name]: e.target.value })
+                         }} placeholder='password' />
+                    <input type="password" onBlur={(e)=>{
+                        user.password !== e.target.value ? setPasswordMatch(false) : setPasswordMatch(true)
+                    }} name='confirmPassword' onChange={(e) =>{
+                        user.password == e.target.value && setPasswordMatch(true)
+                         setUser({ ...user, [e.target.name]: e.target.value })
+                         }}  className={ !passwordMatch && 'passwordError' }  placeholder='confirmPassword' />
 
-                    <button>Sign up</button>
+                  { !passwordMatch || !passwordStrong ?  <button disabled >Sign up</button> : <button >Sign up</button> }
                 </form>
                 <GoogleLogin onSuccess={googleSuccess} onError={googleError} />
 

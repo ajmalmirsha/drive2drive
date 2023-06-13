@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './viewPage.css'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage, faSquareCheck } from '@fortawesome/free-solid-svg-icons';
@@ -35,7 +35,7 @@ useEffect(()=>{
   setAvgRating(roundedAvgRating)
 },[reviews])
  
-
+const navigate = useNavigate()
   
   // State for rating
   const [rating, setRating] = React.useState(0);
@@ -170,7 +170,7 @@ useEffect(()=>{
             <div className="product-price">{vehicle?.price}</div>
             <div className="product-description">{vehicle?.description}</div>
 
-          
+          <button onClick={()=> { navigate(`/checkout/${vehicle._id}`) }} className='btn btn-primary'>Book Now</button>
             <form onSubmit={handleSubmit}>
               <div className="rating-container">
                 <span className="rating-label">Rate this product:</span>

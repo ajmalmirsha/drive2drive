@@ -1,0 +1,24 @@
+.set-notifications{
+    border: solid black 1px;
+    border-radius: 10px;
+}
+
+.remove-styles {
+    appearance: none;
+    border: none;
+    outline: none;
+    resize: none;
+}
+
+.message {
+    height: 100px;
+}
+
+.notification-image {
+    height: 100px;
+    object-fit: cover;
+}
+
+.for-who {
+    border-radius: 10px;
+}

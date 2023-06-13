@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 
 export default function ListVehicleComponent ({props}) {
+
   const navigate = useNavigate()
     console.log(props,897);
     const [vehicles,setVehicles] = useState([])
@@ -12,7 +13,6 @@ export default function ListVehicleComponent ({props}) {
     // },[])
     const [searchInput, setSearchInput] = useState("");
 
-    
   useEffect(() => {
     setVehicles(props);
   }, [props]);
@@ -27,6 +27,17 @@ export default function ListVehicleComponent ({props}) {
     vehicle.product_name.toLowerCase().includes(searchInput.toLowerCase())
   );
 
+  // pagination
+
+const [ currentPage, setCurrentPage] = useState(1)
+const recordsPerPage = 4
+const lastIndex = currentPage * recordsPerPage
+const firstIndex = lastIndex - recordsPerPage
+const records = filteredVehicles.slice( firstIndex, lastIndex)
+const npage = Math.ceil( filteredVehicles.length / recordsPerPage )
+const numbers = [...Array( npage + 1 ).keys()].slice(1)
+
+    
 
     return (
        
@@ -44,7 +55,7 @@ export default function ListVehicleComponent ({props}) {
             />
         </div>
     </div>
-           { filteredVehicles.length > 0 ? filteredVehicles.map((x)=>{
+           { records.length > 0 ? records.map((x)=>{
                 return (
     <div class="row justify-content-center mb-3" onClick={()=>{
       navigate(`/veiw-detail/${x._id}`)
@@ -92,6 +103,7 @@ export default function ListVehicleComponent ({props}) {
           </div>
         </div>
       </div>
+     
     </div>
 
        )
@@ -101,7 +113,37 @@ export default function ListVehicleComponent ({props}) {
 
 }
   </div>
+  <nav className='d-flex  justify-content-center'>
+                <ul className="pagination">
+                    <li className="page-item">
+                        <a  className="page-link" onClick={prevPage} >Prev</a>
+                    </li>
+                    {
+                        numbers.map(( n, i)=>{
+                           return( <li className={`page-item ${currentPage === n && 'active'}`} key={i}>
+                                <a  className="page-link" onClick={()=>{changeCPage(n)}}  >{n}</a>
+                            </li> )
+                        })
+                    }
+                    <li className="page-item">
+                        <a  className="page-link" onClick={nextPage} >Next</a>
+                    </li>
+                </ul>
+            </nav>
   </section>
 
     )
+
+    
+    function prevPage () {
+      currentPage !== 1 && setCurrentPage(currentPage - 1)
+      }
+      
+      function nextPage () {
+      currentPage !== npage && setCurrentPage(currentPage + 1)
+      }
+      
+      function changeCPage (id) {
+      setCurrentPage(id)
+      }
 }

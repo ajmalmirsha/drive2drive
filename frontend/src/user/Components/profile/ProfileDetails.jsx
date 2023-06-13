@@ -86,30 +86,35 @@ export default function ProfileDetails() {
         } else if (!email) {
             toast.error('email required !')
         } else {
-    const { data, status } = await axios.post(process.env.REACT_APP_URL + '/update-user', { user })
-    if (status === 200) {
-
-      const { userData } = data
-      const { setUserDetails } = await import('../../../redux/userSlice')
-      console.log(userData.license?.rear, 84);
-      dispatch(
-        setUserDetails({
-          id: userData._id,
-          username: userData.username,
-          email: userData.email,
-          phone: userData?.phone,
-          image: userData?.image,
-          dob: userData?.dob,
-          license: {
-            front: userData.license?.front,
-            back: userData.license?.rear,
+          try {
+            const { data, status } = await axios.post(process.env.REACT_APP_URL + '/update-user', { user })
+            if (status === 200) {
+        
+              const { userData } = data
+              const { setUserDetails } = await import('../../../redux/userSlice')
+              console.log(userData.license?.rear, 84);
+              dispatch(
+                setUserDetails({
+                  id: userData._id,
+                  username: userData.username,
+                  email: userData.email,
+                  phone: userData?.phone,
+                  image: userData?.image,
+                  dob: userData?.dob,
+                  license: {
+                    front: userData.license?.front,
+                    back: userData.license?.rear,
+                  }
+                })
+              )
+              toast.success(data.message)
+            } else {
+              toast.error(data.message)
+            }
+          } catch ({response : {data,status}}) {
+            status == 501 && toast.error(data.message)
           }
-        })
-      )
-      toast.success(data.message)
-    } else {
-      toast.error(data.message)
-    }
+  
   }
   }
   const validPhone = (phoneNumber) => {
@@ -178,7 +183,7 @@ export default function ProfileDetails() {
 
   return (
     <>
-      <div className='container-fluid my-3 col-md-9  main-wrapper'>
+      <div className='container-fluid col-md-9  main-wrapper'>
         <h1>My Profile</h1>
         <h3 className='my-3'>Account Information</h3>
         <input type="file" name='image' hidden onChange={(e) => {

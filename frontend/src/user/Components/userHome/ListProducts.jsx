@@ -10,6 +10,17 @@ function ListProducts () {
     const inputRef = useRef()
     const navigate = useNavigate()
 
+// pagination
+
+const [ currentPage, setCurrentPage] = useState(1)
+const recordsPerPage = 4
+const lastIndex = currentPage * recordsPerPage
+const firstIndex = lastIndex - recordsPerPage
+const records = vehicle.slice( firstIndex, lastIndex)
+const npage = Math.ceil( vehicle.length / recordsPerPage )
+const numbers = [...Array( npage + 1 ).keys()].slice(1)
+
+
     useEffect(()=>{
       async function getVehicles  () {
        const {data} = await axios.get(process.env.REACT_APP_URL + '/list-all-vehicle')
@@ -43,7 +54,7 @@ function ListProducts () {
        <div className='row justify-content-center mx-0 py-5 gap-2' >
 
 
-            {  vehicle.map((x)=>(
+            {  records.map((x)=>(
                 <div onClick={()=>{
                     navigate(`/veiw-detail/${x._id}`)
                 }} className="card " style={{ width: "18rem" }}>
@@ -62,8 +73,43 @@ function ListProducts () {
                 </div>
            )) }
        </div>
+
+            <nav className='d-flex  justify-content-center'>
+                <ul className="pagination">
+                    <li className="page-item">
+                        <a  className="page-link" onClick={prevPage} >Prev</a>
+                    </li>
+                    {
+                        numbers.map(( n, i)=>{
+                           return( <li className={`page-item ${currentPage === n && 'active'}`} key={i}>
+                                <a  className="page-link" onClick={()=>{changeCPage(n)}}  >{n}</a>
+                            </li> )
+                        })
+                    }
+                    <li className="page-item">
+                        <a  className="page-link" onClick={nextPage} >Next</a>
+                    </li>
+                </ul>
+            </nav>
+       
        </>
     )
+
+
+    
+    
+    function prevPage () {
+    currentPage !== 1 && setCurrentPage(currentPage - 1)
+    }
+    
+    function nextPage () {
+    currentPage !== npage && setCurrentPage(currentPage + 1)
+    }
+    
+    function changeCPage (id) {
+    setCurrentPage(id)
+    }
 }
+
 
 export default ListProducts

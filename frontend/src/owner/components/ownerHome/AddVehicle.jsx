@@ -25,9 +25,15 @@ function AddVehicle() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const nullProperties = Object.entries(product)
-      .filter(([key, value]) => value === null || (key === 'image' && Object.keys(value).length === 0 && value.constructor === Object))
-      .map(([key]) => key);
-
+    .filter(([key, value]) => 
+      value === null ||
+      (key === 'description' && value.trim() === '') ||
+      (key === 'images' && value.length === 0) ||
+      (key === 'model' && value.trim() === '') ||
+      (key === 'year' && value.trim() === '') ||
+      (key === 'brand' && value.trim() === '')
+    )
+    .map(([key]) => key);
 
     if (nullProperties.length > 0) {
       toast.error(nullProperties[0] + ' feild required !', {
@@ -104,7 +110,7 @@ function AddVehicle() {
             <div className="row">
   <div className="col-md-4 form-outline mb-4">
     <label className="form-label" htmlFor="form7Example6">Model</label>
-    <input name="model" onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
+    <input name="model" onBlur={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
   </div>
 
   <div className="col-md-4 form-outline mb-4">
@@ -118,12 +124,13 @@ function AddVehicle() {
   </div>
 
 </div>
-
-         
-
             <div className="form-outline mb-4">
               <label className="form-label" htmlFor="form7Example7">Price</label>
-              <input name="price" onBlur={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="number" id="form7Example7" className="form-control" />
+              <input value={product.price} name="price" onChange={(e) =>{ 
+
+                !isNaN(e.target.value) &&  setProduct({ ...product, [e.target.name]: e.target.value })
+
+                }} type="text" id="form7Example7" className="form-control" />
             </div>
 
 

@@ -62,7 +62,11 @@ module.exports = {
               )
                 .then(response => {
                   res.status(200).json({success:true,userData:response,message:'details updated successfully'})
-                })         
+                }).catch((err)=>{
+                    console.log('backend update user error',err);
+                    const error = handleError(err)
+                    res.status(501).json({ success: false, message: error })
+                })   
 
         } catch (error) {
             res.status(501).json({ success: false, message:error.message,userData:null})

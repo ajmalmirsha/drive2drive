@@ -1,7 +1,8 @@
 
 const vehicleModel = require("../model/vehicleModel");
 const fs = require('fs')
-const path = require('path')
+const path = require('path');
+const bookingModel = require("../model/bookingModel");
 
 module.exports = {
     addVehicle(req, res) {
@@ -92,6 +93,30 @@ module.exports = {
         } catch (error) {
             console.log(error.message);
         }
-    }
+    },
+
+    bookingVerifications ( req, res) {
+        try {
+            bookingModel.find({$and: [{'approvel.approved': false}, {'approvel.declined': false}]}).then((response) => {
+                res.status(200).json({success:true,data:response})
+            })
+        } catch (e) {
+            console.log(e.message);
+        }
+    },
+
+    verifyBooking (req, res) {
+        try {
+            const {id,verify} = req.body
+            const query = `approvel.${verify}`
+            bookingModel.updateOne({_id:id},{$set:{[query]:true}}).then(()=>{
+                bookingModel.find({$and: [{'approvel.approved': false}, {'approvel.declined': false}]}).then((response) => {
+                    res.status(200).json({success:true,data:response})
+                })
+            })
+        } catch (e) {
+            console.log(e.message);
+        }
+    } 
 }
 

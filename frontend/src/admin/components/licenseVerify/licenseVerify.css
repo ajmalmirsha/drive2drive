@@ -1,0 +1,22 @@
+
+
+.head-top-license-verify {
+   
+}
+
+.main-verify {
+     border: solid 1px grey;
+    border-radius: 5px;
+}
+
+.license-verfy-img {
+    width: 100px;
+    height: 80px;
+    object-fit: cover;
+}
+
+.user-profile {
+    width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}

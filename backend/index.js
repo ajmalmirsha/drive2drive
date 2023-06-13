@@ -3,10 +3,11 @@ const cors = require('cors')
 const userRouter = require('./Routes/userRouter')
 const ownerRouter = require('./Routes/ownerRouter')
 const adminRouter = require('./Routes/adminRouter')
+// const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 
+require('dotenv').config()
 const mongoose = require('mongoose')
 const app = express()
-require('dotenv').config()
 app.use(cors({
     origin:[process.env.BASE_URL],
     method: ['GET','POST','DELETE'],

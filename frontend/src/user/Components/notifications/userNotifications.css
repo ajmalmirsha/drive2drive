@@ -1,0 +1,14 @@
+.list-notifications {
+    border: 1px solid black ;
+}
+
+.notifications {
+    border: solid 1px grey;
+    border-radius: 5px;
+    background-color: #afadad29
+}
+
+.notification-img {
+    height: 100px;
+    object-fit: cover;
+}

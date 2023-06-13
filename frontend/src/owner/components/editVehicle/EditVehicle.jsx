@@ -265,7 +265,7 @@ export default function EditVehicle () {
     
                 <div className="form-outline mb-4">
                   <label className="form-label" htmlFor="form7Example7">Price</label>
-                  <input name="price" value={product.price} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="number" id="form7Example7" className="form-control" />
+                  <input name="price" value={product.price} onChange={(e) => !isNaN(e.target.value) && setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example7" className="form-control" />
                 </div>
     
     
