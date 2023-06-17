@@ -1,0 +1,37 @@
+.recived-msg {
+    background-color: #e5e1eb;
+    border-radius: 10px;
+    border-bottom-left-radius: 0;
+    margin-left: 5px;
+}
+
+.sent-msg {
+    background-color: #6b43ab;
+    border-radius: 10px;
+    border-bottom-right-radius: 0;
+    margin-right: 5px;
+}
+
+.body-sec::-webkit-scrollbar {
+    width: 0.5em; /* Adjust as needed */
+  }
+  
+  .body-sec::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  
+  .body-sec::-webkit-scrollbar-thumb {
+    background-color: #888;
+  }
+  
+.head-sec {
+    height: 50px;
+    margin: 0;
+    background-color: #888;
+}
+
+.chat-profile {
+    width: 40px;
+    height: 40px;
+
+}

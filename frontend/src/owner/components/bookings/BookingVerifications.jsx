@@ -5,22 +5,28 @@ import SideBar from "../ownerHome/SideBar";
 import './bookingVerification.css'
 import { faCircleCheck, faCircleXmark, faEye } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { ownerApi } from "../../../utils/Apis";
+import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler";
 
 
 export default function BookingVerifications () {
      const [verification, setVerification] = useState([])
+     const { ownerAuthenticationHandler } = useErrorHandler()
     useEffect(()=>{
-       ( async function (){
-        const {data:{data}} = await axios.get(`${process.env.REACT_APP_URL}/owner/get-all-booking-verifications`) 
-        console.log(data);    
-        setVerification(data)
+       (function (){
+        ownerApi.get(`/get-all-booking-verifications`).then( ({data:{data}}) => {  
+        setVerification(data)            
+        }).catch( err => {
+           ownerAuthenticationHandler(err)
+        })
         })()
     },[])
     
     function ConfirmVerification (id,verify) {
-        axios.put(`${process.env.REACT_APP_URL}/owner/verify/booking`,{id,verify}).then(({data:{data}})=>{
+        ownerApi.put(`/verify/booking`,{id,verify}).then(({data:{data}})=>{
          setVerification(data)
+        }).catch(err =>{
+            ownerAuthenticationHandler(err)
         })
     }
     return (

@@ -35,10 +35,11 @@ module.exports = {
     },
     async getVehiclesDetails (req,res) {
         try {
-            const id = req.params.id
+            const {id} = req.params
            const data = await vehicleModel.findById(id)
            res.status(200).json({success:true,data})
         } catch (error) {
+            console.log('on erro');
             console.log(error.message);
         }
     },
@@ -55,7 +56,7 @@ module.exports = {
     },
     async deleteVehicleImage (req,res) {
         try {
-            const {id,vehicleId} = req.params
+            const {id,vehicleId} = req.params 
              vehicleModel.findByIdAndUpdate({_id:vehicleId},{$pull:{image:id}},{new:true}).then((response)=>{
                 console.log(response,656);
                 fs.unlink(path.join(__dirname,'../../backend/public/images/',id),(err)=>{})
@@ -104,7 +105,17 @@ module.exports = {
             console.log(e.message);
         }
     },
-
+    
+    async editProductDetails ({params:{id}},res) {
+    try {
+      console.log(id);
+      const data = await vehicleModel.findById(id)
+      res.status(200).json({success:true,data})
+    } catch (error) {
+      console.log(error.message);
+    }
+    }
+    ,
     verifyBooking (req, res) {
         try {
             const {id,verify} = req.body
@@ -117,6 +128,6 @@ module.exports = {
         } catch (e) {
             console.log(e.message);
         }
-    } 
+    }
 }
 

@@ -1,28 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import './viewPage.css'
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage, faSquareCheck } from '@fortawesome/free-solid-svg-icons';
+import { faImage } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import ReactImageMagnify from 'react-image-magnify'
 import img from '../../../../src/images/default.png'
+import { userApi } from '../../../utils/Apis';
+import {  useErrorHandler } from '../../ErrorHandlers/ErrorHandler';
+import ChatPage from '../../pages/chat/ChatPage';
+
 const ViewPageComponent = () => {
+         const {userAuthenticationHandler} =  useErrorHandler()
   const user = useSelector(state => state.user)
   const [vehicle, setVehicle] = useState({});
   const [reviews,setReviews] = useState([])
   const { id } = useParams();
   const [avgRating,setAvgRating] = useState(0)
  const [mainImage,setMainImage] = useState(0)
+ const [ownerId,setOwnerId] = useState('')
   useEffect(() => {
-    async function getVehicleData() {
-      const { data } = await axios.get(process.env.REACT_APP_URL + `/vehicle/data/${id}`);
-      console.log(data,767  );
-      setVehicle(data.data);
-      setReviews(data.data.reviews.reverse())
-    }
-    getVehicleData();
-    console.log(reviews,88864);
+    ( function () {
+      userApi.get(`/vehicle/data/${id}`).then(({data:{data}}) => {
+      setVehicle(data);
+      setReviews(data.reviews.reverse())
+      }).catch((err) => {
+        userAuthenticationHandler(err)
+
+        
+      })
+    } )()
     
   }, []);
   
@@ -76,8 +83,6 @@ const navigate = useNavigate()
     // Reset rating, review, and selected images after submission
   
     try {
-      // const axios = await import('axios')
-      console.log('axios gone');
       const reviewData = {
         rating,
         review,
@@ -96,16 +101,11 @@ const navigate = useNavigate()
         withCredentials: true,
       };
      
-      axios.post( process.env.REACT_APP_URL + '/vehicle/review/add',formData, config).then((response)=>{
-        console.log(response,878878);
-        const data = response.data
-        console.log(data,45);
-        // const newArray = reviews
-        // console.log(newArray.length,98);
-        // newArray.push(data)
-        // console.log(newArray.length,98);
-        // console.log(newArray,98);
-        setReviews(data.data.reviews.reverse())
+      userApi.post( '/vehicle/review/add',formData, config).then(({data:{data}})=>{
+        setReviews(data.reviews.reverse())
+      }).catch((err) => {
+        console.log('on chache',err);
+        userAuthenticationHandler(err)
       })
       setRating(0);
       setReview('');
@@ -121,7 +121,6 @@ const navigate = useNavigate()
     <div className="product-details-container">
       <div className="row w-100">
         <div className="col-lg-6 " >
-          {/* <img className="product-image img-fluid" src={`${process.env.REACT_APP_URL}/public/images/${vehicle?.image?.length && vehicle?.image[mainImage]}`} alt={vehicle?.name} /> */}
           <ReactImageMagnify className='zoom-image'
                         {...{
                             smallImage: {
@@ -171,6 +170,26 @@ const navigate = useNavigate()
             <div className="product-description">{vehicle?.description}</div>
 
           <button onClick={()=> { navigate(`/checkout/${vehicle._id}`) }} className='btn btn-primary'>Book Now</button>
+            <button onClick={()=> navigate(`/chat/${vehicle?.ownerId}`)} >chat with owner</button>
+            {/* <!-- Button trigger modal --> */}
+<button type="button" onClick={()=> setOwnerId(vehicle?.ownerId) } class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Launch demo modal
+</button>
+
+{/* <!-- Modal --> */}
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog ">
+    <div class="modal-content">
+     
+      
+      <div class="modal-body p-0"  style={{height:'80vh'}} >
+        {/* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> */}
+        { ownerId && <ChatPage ownerId={ownerId} />}
+      </div>
+      
+    </div>
+  </div>
+</div>
             <form onSubmit={handleSubmit}>
               <div className="rating-container">
                 <span className="rating-label">Rate this product:</span>

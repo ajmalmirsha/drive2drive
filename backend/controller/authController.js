@@ -19,7 +19,7 @@ module.exports = {
         const { username, email, password } = req.body.user
         const image = req.body.user?.image
         userModel.create({ username, email, password, image }).then((response) => {
-            const token = jwt.sign({ email: response.email }, process.env.USER_JWT_SECRET, { expiresIn: 300 })
+            const token = jwt.sign({ userId: response._id }, process.env.USER_JWT_SECRET, { expiresIn: '1day' })
             res.status(200).json({ success: true, message: 'user registered successfully', token , user:response})
         }).catch((err) => {
            const error = handleError(err)
@@ -35,7 +35,7 @@ module.exports = {
         if (user) {
             bcrypt.compare(password, user.password).then((response) => {
                 if (response) {
-                    const token = jwt.sign({ email: email }, process.env.USER_JWT_SECRET, { expiresIn: 300 })
+                    const token = jwt.sign({ userId: user._id }, process.env.USER_JWT_SECRET, { expiresIn: '1day' })
                     res.json({ success: true, message: 'login successful', token , user})
                 } else {
                     res.json({ success: false, message: 'invalid password' })
@@ -63,7 +63,6 @@ module.exports = {
                 .then(response => {
                   res.status(200).json({success:true,userData:response,message:'details updated successfully'})
                 }).catch((err)=>{
-                    console.log('backend update user error',err);
                     const error = handleError(err)
                     res.status(501).json({ success: false, message: error })
                 })   
@@ -99,7 +98,7 @@ module.exports = {
             const image = req.body.user?.image
             const { username, email, password} = req.body.owner
             ownerModel.create({ username, email, password, image }).then((response) => {
-              const token =  jwt.sign({ email:response.email }, process.env.OWNER_JWT_SECRET, { expiresIn: 300})
+              const token =  jwt.sign({ ownerId:response._id }, process.env.OWNER_JWT_SECRET, { expiresIn: '1day'})
                 res.status(200).json({ success:true, owner:response, token})
             }).catch ((err) =>{
                 let errorMessage = handleError(err)
@@ -117,7 +116,7 @@ module.exports = {
             if (owner) {
                 bcrypt.compare(password, owner.password).then((response) => {
                     if (response) {
-                        const token = jwt.sign({ email: owner.email }, process.env.OWNER_JWT_SECRET, { expiresIn: 300 })
+                        const token = jwt.sign({ ownerId: owner._id }, process.env.OWNER_JWT_SECRET, { expiresIn: '1day' })
                         res.json({ success: true, message: 'login successful', token, owner })
                     } else {
                         res.status(200).json({ success: false, message: 'invalid password' })

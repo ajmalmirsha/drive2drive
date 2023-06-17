@@ -5,7 +5,7 @@ import axios from 'axios'
 import { GoogleLogin } from '@react-oauth/google'
 import jwt_decode from 'jwt-decode'
 
-import {useDispatch,useSelector} from 'react-redux'
+import {useDispatch} from 'react-redux'
 import { setUserDetails } from '../../redux/userSlice'
 import FacebookLogin from 'react-facebook-login';
 function LoginComponent() {
@@ -49,7 +49,7 @@ function LoginComponent() {
             navigate('/')
         }
     }
-    async function googleSuccess(response) {
+    async function googleSuccess(response) { 
 
         const decoded = jwt_decode(response.credential)
 

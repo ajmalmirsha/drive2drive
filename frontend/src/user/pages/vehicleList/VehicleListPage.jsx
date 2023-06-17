@@ -1,19 +1,21 @@
-import axios from "axios"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import ListVehicleComponent from "../../Components/listVehicle/ListVehicleComponent"
 import Navbar from "../../Components/userHome/Navbar"
+import { userApi } from "../../../utils/Apis"
+import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler"
 
 
 export default function VehicleListPage(){
-    
-     const [state,setState] = useState([])
+    const [state,setState] = useState([])
     const {vehicle} = useParams()
+    const authenticationHandler = useErrorHandler()
     useEffect(()=>{
         console.log('use Effect of vehicle list page' + vehicle);
-        axios.get(`${process.env.REACT_APP_URL}/list-all/${vehicle}`).then(({data:{data}})=>{
-            console.log(data,45);
+        userApi.get(`/list-all/${vehicle}`).then(({data:{data}})=>{
             setState(data)
+        }).catch( err => {
+           authenticationHandler(err)
         })
     },[vehicle])
     return(

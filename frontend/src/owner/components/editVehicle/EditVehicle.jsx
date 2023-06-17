@@ -1,10 +1,11 @@
-import axios from "axios"
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { ToastContainer, toast } from "react-toastify"
 import './editVehicle.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { ownerApi } from "../../../utils/Apis"
+import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler"
 export default function EditVehicle () {
     const {id} = useParams()
     const [product, setProduct] = useState({
@@ -19,9 +20,9 @@ export default function EditVehicle () {
         images: []
       })
       const [droppedImage,setDroppedImage] = useState([])
+      const {ownerAuthenticationHandler} = useErrorHandler()
     useEffect(()=>{
-        console.log('mounting');
-        axios.get(`${process.env.REACT_APP_URL}/edit-product-details/${id}`).then(({data:{data}})=>{
+        ownerApi.get(`/edit-product-details/${id}`).then(({data:{data}})=>{
             setProduct({
                 id: data._id,
                 product_name: data.product_name,
@@ -33,12 +34,12 @@ export default function EditVehicle () {
                 year:data.year,
                 images: data.image
             })
+        }).catch(err => {
+          ownerAuthenticationHandler(err)
         })
     },[])
 
-    useEffect(()=>{
-      setProduct({...product})
-    },[product.images])
+
 
 
 
@@ -89,26 +90,27 @@ export default function EditVehicle () {
           });
         }
          else {
-       console.log('ELSEEEE');
-          const { data:{message},status } = await axios.post(process.env.REACT_APP_URL + "/owner/edit-vehicle", { data: product })
-          console.log(status,message);
-          console.log('HAAI');
-    
-          if (status == 200) {
-            toast.success(message, {
-              position: "top-center",
-              autoClose: 1000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "dark",
-              onClose: () => {
-                navigate('/owner/list-vehicle')
-              }
-            })
-          }
+           ownerApi.post("/edit-vehicle", { data: product }).then(({ data:{message},status }) => {
+            if (status == 200) {
+              toast.success(message, {
+                position: "top-center",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+                onClose: () => {
+                  navigate('/owner/list-vehicle')
+                }
+              })
+            }
+           }).catch (err => {
+            ownerAuthenticationHandler (err)
+           })
+          
+          
         }
       }
 
@@ -116,7 +118,7 @@ export default function EditVehicle () {
   const handleDropImage = (imageId) => {
     // Do something with the dropped image ID
     console.log('Image dropped:', imageId);
-    axios.post( `${process.env.REACT_APP_URL}/owner/delete/vehicle/image/${imageId}/${product.id}`).then(({data:{data}})=>{
+    ownerApi.post( `/delete/vehicle/image/${imageId}/${product.id}`).then(({data:{data}})=>{
       console.log(data,54);
       setProduct({
         id: data._id,
@@ -129,6 +131,8 @@ export default function EditVehicle () {
         year:data.year,
         images:[...data.image]
       });
+    }).catch( err =>{
+      ownerAuthenticationHandler(err)
     })
 
   };
@@ -159,7 +163,7 @@ export default function EditVehicle () {
    
       withCredentials: true,
     };
-      axios.post( process.env.REACT_APP_URL + '/owner/upload-vehicle-images', formData  , config  ).then(({data:{data}})=>{
+      ownerApi.post( '/upload-vehicle-images', formData  , config  ).then(({data:{data}})=>{
         setProduct({
           id: data._id,
           product_name: data.product_name,
@@ -172,6 +176,8 @@ export default function EditVehicle () {
           images:[...data.image]
         });
         setDroppedImage([])
+      }).catch(err => {
+        ownerAuthenticationHandler(err)
       })
   }
   

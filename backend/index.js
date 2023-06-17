@@ -4,7 +4,7 @@ const userRouter = require('./Routes/userRouter')
 const ownerRouter = require('./Routes/ownerRouter')
 const adminRouter = require('./Routes/adminRouter')
 // const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
-
+const socket = require("socket.io");
 require('dotenv').config()
 const mongoose = require('mongoose')
 const app = express()
@@ -21,10 +21,39 @@ mongoose.connect(process.env.MONGO_URL).then(()=>{
 app.use(express.json())
 
 const PORT = process.env.PORT || 4000
-app.listen(PORT,()=>{
+const server =  app.listen(PORT,()=>{
     console.log(`server connected to ${PORT}` );
 })
 
 app.use('/',userRouter)
 app.use('/owner',ownerRouter)
 app.use('/admin',adminRouter)
+
+
+const io = socket(server, {
+    cors: {
+      origin: [process.env.BASE_URL],
+      credentials: true,
+    },
+  });
+  
+  global.onlineUsers = new Map();
+  io.on("connection", (socket) => {
+ 
+    global.chatSocket = socket;
+    socket.on("add-user", (userId) => {
+        console.log(socket.id,'hcvc',userId);
+      onlineUsers.set(userId, socket.id)
+    });
+  
+    socket.on("send-msg", (data) => {
+        console.log('on send msg',data);
+      const sendUserSocket = onlineUsers.get(data.to);
+      console.log(sendUserSocket);
+      if (sendUserSocket) {
+        console.log(data,897);
+        socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+      }
+    });
+  });
+  

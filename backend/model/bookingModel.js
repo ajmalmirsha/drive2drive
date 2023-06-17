@@ -46,8 +46,14 @@ totalAmount : {
     default:0
 },
 payment : {
-    type : String,
-    default:''
+    method :{
+        type: String,
+        default:''
+    },
+    paymentId :{
+        type:String,
+        default:''
+    }
 },
 address : {
     pickUp : {
@@ -74,6 +80,10 @@ approvel:{
 paid : {
     type: Boolean ,
     default : false
+},
+status:{
+    type: String,
+    default:'pending'
 }
     
 })

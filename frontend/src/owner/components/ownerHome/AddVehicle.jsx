@@ -1,9 +1,10 @@
-import axios from "axios";
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import { useSelector } from "react-redux"
+import { ownerApi } from "../../../utils/Apis";
+import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler";
 
 
 function AddVehicle() {
@@ -21,7 +22,8 @@ function AddVehicle() {
   })
  
   const navigate = useNavigate()
-
+  const { ownerAuthenticationHandler } = useErrorHandler()
+  
   const handleSubmit = async (e) => {
     e.preventDefault()
     const nullProperties = Object.entries(product)
@@ -60,7 +62,7 @@ function AddVehicle() {
         },
         withCredentials: true,
       };
-      const { data, status } = await axios.post(process.env.REACT_APP_URL + "/owner/add-vehicle", formData, config, { data: product })
+      ownerApi.post("/add-vehicle", formData, config, { data: product }).then(({ data, status }) => {
 
       if (status == 200) {
         toast.success(data.message, {
@@ -77,6 +79,10 @@ function AddVehicle() {
           }
         })
       }
+      }) .catch ( err => {
+        ownerAuthenticationHandler(err)
+      })
+
     }
   }
 

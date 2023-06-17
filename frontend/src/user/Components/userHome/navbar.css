@@ -53,3 +53,7 @@
   text-decoration: none;
   
 }
+.categories .active {
+  color: black  ;
+  text-decoration: underline;
+}

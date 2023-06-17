@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react"
-import axios from 'axios'
 import { useSelector } from "react-redux"
 import './reviewList.css'
 import img from '../../../images/default.png'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { ownerApi } from "../../../utils/Apis"
+import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler"
 export default function ReviewList() {
   const { id } = useSelector(state => state.owner)
   const [users, setUsers] = useState([])
   const [selectedUser, setSelectedUser] = useState(null);
+  const { ownerAuthenticationHandler } = useErrorHandler()
   useEffect(() => {
     if (localStorage.getItem('owner')) {
-      axios.get(`${process.env.REACT_APP_URL}/owner/get-reviews/${id}`).then(({ data: { data } }) => {
+      ownerApi.get(`/get-reviews/${id}`).then(({ data: { data } }) => {
         console.log(data, 666);
         const filteredData = data.filter((item) => item.reviews.length > 0);
 
         setUsers(filteredData)
+      }).catch ( err => {
+        ownerAuthenticationHandler(err)
       })
     }
 

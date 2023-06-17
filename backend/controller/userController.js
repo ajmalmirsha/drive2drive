@@ -4,6 +4,8 @@ const vehicleModel = require('../model/vehicleModel')
 const notificationModel = require('../model/notificationModel')
 const mongoose = require('mongoose');
 const bookingModel = require('../model/bookingModel');
+const chatModel = require('../model/chatModel');
+const ownerModel = require('../model/ownerModel');
 module.exports = {
     uploadLisence (req,res) {
         try {
@@ -65,15 +67,6 @@ module.exports = {
         console.log(error.message);
     }
     },
-  async editProductDetails ({params:{id}},res) {
-    try {
-      console.log(id);
-      const data = await vehicleModel.findById(id)
-      res.status(200).json({success:true,data})
-    } catch (error) {
-      console.log(error.message);
-    }
-  },
 
   getAllNotifications ( req, res) {
     try {
@@ -93,6 +86,9 @@ module.exports = {
     try {
       // console.log(req.body);
       // console.log(req.body.data.address);
+      req.body.data.userId = req.headers?.userId
+      console.log(req.headers?.userId);
+      console.log(req.body);
       bookingModel.create({...req.body.data}).then((response)=> {
         console.log(response);
         res.status(200).json({success:true,message:'your booking request sent to owner wait for response !'})
@@ -100,5 +96,88 @@ module.exports = {
     } catch (e) {
       console.log(e.message);
     }
-  }
+  },
+  paymentUpdation (req, res) {
+     try {
+      console.log(req.body);
+      const {paymentId,bookingId,paymentMethod} = req.body
+      bookingModel.findByIdAndUpdate({_id:bookingId},{$set:{paid:true,'payment.paymentId':paymentId,'payment.method':paymentMethod}},{new:true}).then((response) => {
+        const userId = req.headers?.userId
+        bookingModel.find({userId}).then((response) => {
+          res.status(200).json({success:true,data:response})
+        }) 
+      })
+     } catch (e) {
+      console.log(e.message);
+     }
+  },
+    getApprovedBookings (req,res) {
+        try {
+          const userId = req.headers?.userId
+          console.log('user Id',userId);
+            bookingModel.find({userId}).then((response) => {
+              console.log(response);
+              res.status(200).json({success:true,data:response})
+            })
+        } catch (e) {
+            console.log(e.message);
+        }
+    },
+    getSenderDetails ( req, res) {
+      try {
+        const {userId} = req.params
+        console.log(userId,'sdjfhds');
+        ownerModel.findById(userId).select('-password -_id') .then( data => {
+          res.status(200).json({success:true, data})
+        })
+      } catch (e) {
+        console.log(e.message);
+      }
+    },
+
+
+    // chat functions 
+
+    async setMessage ( req, res) {
+      try {
+         console.log(req.body);
+         const { msg, to} = req.body
+         const from = req.headers?.userId ?? req.headers?.ownerId
+         console.log(from);
+        const data = await chatModel.create ({
+          message: { text: msg },
+          users: [from, to],
+          sender: from,
+         })
+         if (data) return res.status(200).json({ msg: "Message added successfully." });
+         else return res.status(500).json({ msg: "Failed to add message to the database" });
+      } catch (e) {
+        console.log(e.message);
+      }
+    },
+
+    async getMessages ( req, res) {
+      try{
+        console.log('on get messages');
+        const { to } = req.body
+        const from = req.headers?.userId ?? req.headers?.ownerId
+        console.log(to,from);
+        const messages = await chatModel.find({
+          users: {
+            $all: [from, to],
+          },
+        }).sort({ updatedAt: 1 });
+    
+        const projectedMessages = messages.map((msg) => {
+          return {
+            fromSelf: msg.sender.toString() === from,
+            message: msg.message.text,
+          };
+        });
+        console.log(projectedMessages);
+        res.status(200).json({messages:projectedMessages});
+      } catch (e) {
+        console.log(e.message);
+      }
+    }
 }

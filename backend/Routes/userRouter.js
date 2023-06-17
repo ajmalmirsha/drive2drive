@@ -1,7 +1,8 @@
 const router = require('express').Router()
 const { signup, login, updateUser, uploadProfileImage} =  require('../controller/authController')
 const { allVehicles, getVehiclesDetails } = require('../controller/ownerController')
-const { uploadLisence, addReview, getVehicleData, getAllVehicleDetails, editProductDetails, getAllNotifications, addBooking } = require('../controller/userController')
+const { uploadLisence, addReview, getVehicleData, getAllVehicleDetails, editProductDetails, getAllNotifications, addBooking, getApprovedBookings, paymentUpdation, setMessage, getMessages, getSenderDetails } = require('../controller/userController')
+const { userAuthenticator } = require('../middlewares/Auth/auth')
 const { uploadOptions, uploadlicense, reviewImage } = require('../middlewares/multer/multer')
 require('dotenv').config();
 
@@ -14,29 +15,21 @@ router.post('/signup',signup)
 
 router.post('/login',login)
 
-router.post('/update-user',updateUser)
 
-router.post('/upload-profile-image',uploadOptions.single('image'),uploadProfileImage)
 
-router.post('/add-license', uploadlicense.fields([
-    { name: 'license[front]', maxCount: 1 },
-    { name: 'license[back]', maxCount: 1 }
-  ]), uploadLisence);
 
 router.get('/list-all-vehicle',getAllVehicleDetails)
 
-router.get('/vehicle/data/:id',getVehiclesDetails)
 
-router.post('/vehicle/review/add',reviewImage.single('image'),addReview)
 
 router.get('/list-all/:vehicle',getVehicleData)
 
-router.get('/edit-product-details/:id',editProductDetails)
 
-router.get('/get-all-notifications/:role',getAllNotifications)
 
-router.post('/add-booking',addBooking)
 
+
+
+// router.use(userAuthenticator)
 
 
 router.get("/config", (req, res) => {
@@ -69,5 +62,35 @@ router.post("/create-payment-intent", async (req, res) => {
   }
 });
 
+router.patch('/payment-success',userAuthenticator,paymentUpdation)
+
+router.get('/get-all-notifications/:role',userAuthenticator,getAllNotifications)
+
+router.post('/add-booking',userAuthenticator,addBooking)
+
+router.post('/update-user',userAuthenticator,updateUser)
+
+router.post('/upload-profile-image',userAuthenticator,uploadOptions.single('image'),uploadProfileImage)
+
+router.get('/vehicle/data/:id',userAuthenticator,getVehiclesDetails)
+
+router.get('/get-all-approved-bookings',userAuthenticator,getApprovedBookings)
+
+router.post('/vehicle/review/add',userAuthenticator,reviewImage.single('image'),addReview)
+
+router.post('/add-license', uploadlicense.fields([
+  { name: 'license[front]', maxCount: 1 },
+  { name: 'license[back]', maxCount: 1 }
+]), uploadLisence);
+
+
+router.get('/get-owner-details/:userId',getSenderDetails)
+
+
+//chat routes
+
+router.post('/sent-message',userAuthenticator,setMessage)
+
+router.post('/get-all-messages',userAuthenticator,getMessages)
 
 module.exports = router

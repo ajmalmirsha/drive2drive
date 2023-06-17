@@ -17,13 +17,14 @@ import UserPublicRoute from './user/AuthRoutes/UserPublicRoute';
 import UserPrivateRoute from './user/AuthRoutes/UserPrivateRoute';
 import OwnerPrivateRoute from './owner/middlewares/OwnerPrivateRoute';
 import OwnerPublicRoute from './owner/middlewares/OwnerPublicRoute';
-import AdminPublicRoute from './admin/middlewares/AdminPublicRoutes';
-import AdminPrivateRoute from './admin/middlewares/AdminPrivateRoutes';
 import AdminRoutes from './admin/AdminRoutes';
 import CheckOut from './user/Components/checkout/CheckOut';
 import Completion from './user/Components/Stripe/Completion';
 import UserNotificationPage from './user/pages/notification/UserNotificationPage';
 import BookingVerifications from './owner/components/bookings/BookingVerifications';
+import UserBookings from './user/Components/bookings/UserBookings';
+import ChatPage from './user/pages/chat/ChatPage';
+import OwnerChatPage from './owner/pages/owner-chat/OwnerChatPage';
 
 
 function App() {
@@ -42,6 +43,8 @@ function App() {
       <Route exact path='/checkout/:vehicleId' element={<CheckOut/>} />
       <Route exact path='/completion' element={<Completion/>} />
       <Route exact path='/notifications/:role' element={<UserNotificationPage/>} />
+      <Route exact path='/bookings' element={<UserBookings/>} />
+      <Route exact path='/chat/:ownerId' element={<ChatPage/>} />
 
     {/* owner routes */}
 
@@ -51,7 +54,8 @@ function App() {
       <Route exact path='/owner/list-vehicle' element={<OwnerPrivateRoute> <VehiclePage props={'list-vehicle'}/></OwnerPrivateRoute> } />
       <Route exact path='/owner/add-vehicle' element={<OwnerPrivateRoute> <VehiclePage props={'add-vehicle'}/> </OwnerPrivateRoute> } />
       <Route exact path='/owner/edit-vehicle/:id' element={<OwnerPrivateRoute> <VehiclePage props={'edit-vehicle'} /> </OwnerPrivateRoute> } />
-      <Route exact path='/bookings' element={<OwnerPrivateRoute> <BookingVerifications /> </OwnerPrivateRoute> } />
+      <Route exact path='/owner/bookings' element={<OwnerPrivateRoute> <BookingVerifications /> </OwnerPrivateRoute> } />
+      <Route exact path='/owner/messages' element={<OwnerPrivateRoute> <OwnerChatPage /> </OwnerPrivateRoute> } />
       
     {/* admin routes */}
 

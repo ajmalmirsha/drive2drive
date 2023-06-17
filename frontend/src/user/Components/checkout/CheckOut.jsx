@@ -9,7 +9,9 @@ import Creatable from 'react-select/creatable';
 import kms from '../../../images/kms.png'
 import refund from '../../../images/refund.png'
 import { toast, ToastContainer } from 'react-toastify'
-
+import { userApi } from "../../../utils/Apis";
+import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler";
+import Swal from 'sweetalert2'
 export default function CheckOut() {
   const { vehicleId } = useParams()
   const [vehicle, setVehicle] = useState({})
@@ -19,6 +21,8 @@ export default function CheckOut() {
   const [ booking, setBooking] = useState({})
   const [validation , setValidation] = useState({})
   const [submit,setSubmit] = useState(false)
+  const {userAuthenticationHandler} = useErrorHandler()
+  const [ paid, setPaid] = useState(false)
   const aquaticCreatures = states.map(label => ({
     label,
     value: label
@@ -29,10 +33,14 @@ export default function CheckOut() {
   }));
   const navigate = useNavigate()
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_URL}/vehicle/data/${vehicleId}`).then(({ data: { data } }) => {
+    userApi.get(`/vehicle/data/${vehicleId}`).then(({ data: { data } }) => {
       setVehicle(data)
+    }).catch( err => {
+      userAuthenticationHandler(err)
     })
 
+    
+    
 
     var config = {
       method: 'get',
@@ -107,7 +115,10 @@ export default function CheckOut() {
       },
       deposite : 0,
       userId: '',
-      payment: '',
+      payment: {
+        method: '',
+        paymentId:''
+      },
       totalAmount: vehicle.price,
       address : {
         pickUp : {
@@ -128,13 +139,21 @@ export default function CheckOut() {
 
     console.log(data);
 
-    axios.post(`${process.env.REACT_APP_URL}/add-booking`,{data}).then(({data:data})=> {
-        toast.success(data.message)
-        setSubmit(true)
-        setTimeout(()=>{
-          setSubmit(false)
-          navigate('/')
-        },1000)
+    userApi.post(`${process.env.REACT_APP_URL}/add-booking`,{data}).then(({data:data})=> {
+        Swal.fire({
+          title: 'Your Booking Sent succeeded!',
+          allowOutsideClick:false,
+          html:
+          'wait for owner approvel for your booking, check the approvels on ' +
+          '<a href="/bookings">Bookings</a> ' +
+          'page',
+         confirmButtonText:'Go To Home',
+          didClose: ()=>{
+           navigate('/')
+          }
+        })
+    }).catch( err => {
+      userAuthenticationHandler(err)
     })
   }
   }
@@ -146,7 +165,8 @@ export default function CheckOut() {
 
       <div className="container-fluid">
         <div className="row">
-          <div className="col-lg-12">
+       
+           <div className={`col-lg-${ payment && vehicle?.price ? 8 : 12 }`} > 
             <div className="card">
               <div className="card-body row">
                 <div className="col-md-6">
@@ -220,6 +240,14 @@ export default function CheckOut() {
                         }} className="my-2 form-control" placeholder="enter place" />
                       
                     </div>
+                     <div className="mb-3 ms-1" >
+                    <input onChange={(e) => {
+                      console.log(e.target.checked);
+                      setPayment(e.target.checked)
+                    }} className="me-1" type="checkbox" />
+                    <span className="pb-2">Are you paying now ?</span>
+
+                  </div>
                    { submit ? 
                     <button className="btn btn-primary" disabled >submit</button>
                        :
@@ -229,28 +257,20 @@ export default function CheckOut() {
                   </div>
                   <div>
                   </div>
-                  {/* <div className="" >
-                    <span className="d-block pb-2">Payment</span>
-                    <input onChange={(e) => {
-                      console.log(e.target.checked);
-                      setPayment(e.target.checked)
-                    }} className="me-1" type="checkbox" />
-                    <span>Card</span>
-                  </div> */}
+                 
                 </div>
               </div>
             </div>
           </div>
-          {/* <div className="col-lg-4">
+          { payment && vehicle?.price &&    
+          <div className="col-lg-4">
           <div className="card">
             <div className="card-body">
-           {  !payment && <button onClick={()=>{
-                setPayment(true)
-              }} >Proceed To Checkout</button>}
-          { payment && vehicle?.price &&   <Payment  props={vehicle?.price} />}
+         <Payment  props={vehicle?.price} />
             </div>
           </div>
-        </div> */}
+        </div>
+        }
         </div>
 
       </div>

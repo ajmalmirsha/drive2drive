@@ -26,8 +26,11 @@ function SideBar ({ props }) {
             <div className="menu-items pt-1 text-center text-white">
                Notifications
             </div>
-            <div onClick={()=> navigate('/bookings')} className="menu-items pt-1 text-center text-white">
+            <div onClick={()=> navigate('/owner/bookings')} className="menu-items pt-1 text-center text-white">
                bookings
+            </div>
+            <div onClick={()=> navigate('/owner/messages')} className="menu-items pt-1 text-center text-white">
+               messages
             </div>
         </div>
     )

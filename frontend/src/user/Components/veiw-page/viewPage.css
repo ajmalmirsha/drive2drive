@@ -160,3 +160,9 @@
 .review-image {
   width: 70px;
 }
+
+.custom-modal-dialog {
+  height: 500px; 
+  max-height: 80vh; 
+}
+
