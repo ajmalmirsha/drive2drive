@@ -3,7 +3,7 @@ const { ownerRegister, ownerLogin } = require('../controller/authController')
 const { addVehicle, allVehicles, getReviews, deleteVehicleImage, EditVehicleDetials, addVehicleImages, bookingVerifications, verifyBooking, editProductDetails } = require('../controller/ownerController')
 const { uploadOptions } = require('../middlewares/multer/multer')
 const { ownerAuthenticator, userAuthenticator } = require('../middlewares/Auth/auth')
-const  { setMessage, getMessages } = require('../controller/userController')
+const  { setMessage, getMessages, getContacts } = require('../controller/userController')
 const router = require('express').Router()
 
 router.post('/owner-register', ownerRegister)
@@ -31,5 +31,7 @@ router.post('/upload-vehicle-images',ownerAuthenticator,uploadOptions.array('ima
 router.post('/sent-message',ownerAuthenticator,setMessage)
 
 router.post('/get-all-messages',ownerAuthenticator,getMessages)
+
+router.get('/get-all-contacts',ownerAuthenticator,getContacts)
 
 module.exports = router

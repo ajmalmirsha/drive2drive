@@ -1,6 +1,8 @@
 
 import { useNavigate } from 'react-router-dom'
 import './sidebar.css'
+import OwnerListContacts from '../chat/OwnerListContacts';
+import OwnerChatPage from '../../pages/owner-chat/OwnerChatPage';
 
 function SideBar ({ props }) {
     console.log(props,7676);
@@ -32,6 +34,78 @@ function SideBar ({ props }) {
             <div onClick={()=> navigate('/owner/messages')} className="menu-items pt-1 text-center text-white">
                messages
             </div>
+            <div  className="menu-items pt-1 text-center text-white">
+            {/* <!-- Button trigger modal --> */}
+            <button type="button" className="btn btn-primary" 
+                data-bs-toggle="modal" data-bs-target="#GFG">
+            Click Me
+        </button>
+messages
+            </div>
+            
+{/* <!-- Modal --> */}
+<div className="modal fade" id="GFG">
+            <div className="modal-dialog modal-fullscreen">
+                <div className="modal-content">
+                                         
+                        {/* <button type="button" className="btn-close" 
+                                data-bs-dismiss="modal">
+                        </button> */}
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <div className="modal-body" >
+                   
+{/* <div class="container">
+<div class="row clearfix">
+    <div class="col-lg-12"> */}
+     <OwnerChatPage/>
+    {/* </div>
+</div>
+</div> */}
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
         </div>
     )
 }

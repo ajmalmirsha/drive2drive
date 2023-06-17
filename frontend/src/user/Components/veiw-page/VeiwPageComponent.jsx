@@ -168,14 +168,18 @@ const navigate = useNavigate()
             <div className="product-year">Year: {vehicle?.year}</div>
             <div className="product-price">{vehicle?.price}</div>
             <div className="product-description">{vehicle?.description}</div>
-
-          <button onClick={()=> { navigate(`/checkout/${vehicle._id}`) }} className='btn btn-primary'>Book Now</button>
-            <button onClick={()=> navigate(`/chat/${vehicle?.ownerId}`)} >chat with owner</button>
-            {/* <!-- Button trigger modal --> */}
-<button type="button" onClick={()=> setOwnerId(vehicle?.ownerId) } class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Launch demo modal
+<div className="row">
+  <div className="col-md-6"><button onClick={()=> { navigate(`/checkout/${vehicle._id}`) }} className='btn btn-primary'>Book Now</button>
+</div>
+  <div className="col-md-6">
+    <button type="button" onClick={()=> setOwnerId(vehicle?.ownerId) } class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+chat with owner
 </button>
+</div>
+            {/* <button onClick={()=> navigate(`/chat/${vehicle?.ownerId}`)} >chat with owner</button> */}
+            {/* <!-- Button trigger modal --> */}
 
+</div>
 {/* <!-- Modal --> */}
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog ">
@@ -183,7 +187,6 @@ const navigate = useNavigate()
      
       
       <div class="modal-body p-0"  style={{height:'80vh'}} >
-        {/* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> */}
         { ownerId && <ChatPage ownerId={ownerId} />}
       </div>
       

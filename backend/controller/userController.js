@@ -1,4 +1,4 @@
- const { json } = require('express');
+ const { json, response } = require('express');
 const userModel = require('../model/userModel')
 const vehicleModel = require('../model/vehicleModel')
 const notificationModel = require('../model/notificationModel')
@@ -167,7 +167,7 @@ module.exports = {
             $all: [from, to],
           },
         }).sort({ updatedAt: 1 });
-    
+
         const projectedMessages = messages.map((msg) => {
           return {
             fromSelf: msg.sender.toString() === from,
@@ -176,6 +176,23 @@ module.exports = {
         });
         console.log(projectedMessages);
         res.status(200).json({messages:projectedMessages});
+      } catch (e) {
+        console.log(e.message);
+      }
+    },
+
+    getContacts ( req, res) {
+      try {
+        console.log('ethi');
+        chatModel.distinct('sender').then((response) => {
+          const senderIds = response.map((sender) => sender.toString()).filter((x) => x !== req.headers?.ownerId)
+          console.log(senderIds);
+          userModel.find({ _id: { $in: senderIds } }, {  username: 1, image: 1 })
+  .then((users) => {
+    console.log(users);
+    res.status(200).json({success:true,data:users})
+  })
+        })
       } catch (e) {
         console.log(e.message);
       }

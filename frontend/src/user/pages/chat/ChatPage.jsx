@@ -10,7 +10,6 @@ export default function ChatPage ({ownerId}) {
     const socket = useRef()
     const user = useSelector(state => state.user)
     const [sender,setSender] = useState(ownerId)
-    // const { ownerId } = useParams()
     useEffect(()=> {
       console.log(user,'sgfh',ownerId);
       if(user.id){
@@ -20,7 +19,6 @@ export default function ChatPage ({ownerId}) {
     },[sender])
     return (
         <div className="row h-100">
-        {/* <ListChatUsers ownerId={ownerId} setSender={setSender} /> */}
         { sender &&
         <ChatSection sender={sender} socket={socket} /> }
         </div>

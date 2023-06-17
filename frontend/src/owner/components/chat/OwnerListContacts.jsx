@@ -1,22 +1,36 @@
-
+import { useEffect, useState } from "react"
+import { ownerApi } from "../../../utils/Apis"
+import '../ownerHome/sidebar.css'
+import img from '../../../images/default.png'
 
 
 export default function OwnerListContacts ({setSender}) {
+    const [contacts, setContacts] = useState([])
+    useEffect(()=> {
+        console.log('gone');
+        ownerApi.get('/get-all-contacts').then( ({data:{data}}) => {
+           console.log(data);
+           setContacts(data)
+        })
+    },[])
     return (
-        <div className="col-md-3">
-          
-            <div onClick={() => setSender('6486f9fd377f02ff89449a57')} className="bg-primary my-2   h-30px text-center text-white" >
-                dilp
-            </div>
-            <div onClick={() => setSender('6482c8629f8fe8fc9c695cfb')} className="bg-primary my-2   h-30px text-center text-white" >
-                siva
-            </div>
-            <div onClick={() => setSender('6486f9fd37vgh7f02ff89449a57')} className="bg-primary my-2   h-30px text-center text-white" >
-                ameen
-            </div>
-            <div className="bg-primary py-2  h-30px text-center text-white" >
-                ajmal
-            </div>
-        </div>
+        <div id="plist" class="people-list">
+               
+        <ul class="list-unstyled chat-list mt-2 mb-0">
+            { contacts.length > 0 && contacts.map((x) => {
+                return(
+            <li class="clearfix" onClick={() => { setSender(x._id) }} >
+                <img src={x.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ? 
+           x.image : x.image ? `${process.env.REACT_APP_URL}/public/images/${x.image}`
+            : img} alt="avatar"  />
+                <div class="about">
+                    <div class="name">{x.username}</div>
+                    <div class="status"> <i class="fa fa-circle offline"></i> left 7 mins ago </div>                                            
+                </div>
+            </li>
+             ) })
+           }
+        </ul>
+    </div>
     )
 }

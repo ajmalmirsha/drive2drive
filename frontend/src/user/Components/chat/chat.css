@@ -35,3 +35,13 @@
     height: 40px;
 
 }
+
+.chat-input {
+    border-radius: 5px;
+    height: 35px;
+    width: 99%;
+}
+
+.send-btn {
+    height: 35px;
+}

@@ -7,7 +7,7 @@ import OwnerListContacts from "../../components/chat/OwnerListContacts";
 import OwnerChatSection from "../../components/chat/OwnerChatSection";
 import { useSelector } from "react-redux";
 import {io} from 'socket.io-client'
-
+import '../../components/ownerHome/sidebar.css'
 export default function OwnerChatPage () {
     const socket = useRef()
     const owner = useSelector(state => state.owner)
@@ -21,15 +21,11 @@ export default function OwnerChatPage () {
   },[])
     return (
         <>
-        <OwnerNavBar/>
-        <div className="row my-4 mx-2 gap-2">
-        <SideBar/>
-        <div className="col-md-9 col-sm-7 bg-primary row" >
+          <div class="card chat-app">
         <OwnerListContacts setSender={setSender} />
         { sender &&
         <OwnerChatSection sender={sender} socket={socket} /> }
-        </div>
-        </div>
+       </div>
         </>
     )
 }
