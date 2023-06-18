@@ -140,10 +140,10 @@ module.exports = {
 
     async setMessage ( req, res) {
       try {
-         console.log(req.body);
+     
          const { msg, to} = req.body
          const from = req.headers?.userId ?? req.headers?.ownerId
-         console.log(from);
+ 
         const data = await chatModel.create ({
           message: { text: msg },
           users: [from, to],
@@ -158,10 +158,10 @@ module.exports = {
 
     async getMessages ( req, res) {
       try{
-        console.log('on get messages');
+ 
         const { to } = req.body
         const from = req.headers?.userId ?? req.headers?.ownerId
-        console.log(to,from);
+     
         const messages = await chatModel.find({
           users: {
             $all: [from, to],
@@ -174,7 +174,7 @@ module.exports = {
             message: msg.message.text,
           };
         });
-        console.log(projectedMessages);
+      
         res.status(200).json({messages:projectedMessages});
       } catch (e) {
         console.log(e.message);

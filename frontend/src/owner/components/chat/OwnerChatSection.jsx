@@ -4,6 +4,7 @@ import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler"
 import { useSelector } from "react-redux"
 import { v4 as uuidv4 } from 'uuid'
 import '../ownerHome/sidebar.css'
+import { ToastContainer, toast } from "react-toastify"
 export default function OwnerChatSection({ sender, socket }) {
     const owner = useSelector(state => state.owner)
     const [msg, setMsg] = useState('')
@@ -15,25 +16,38 @@ export default function OwnerChatSection({ sender, socket }) {
     useEffect(() => {
         if (sender) {
             ownerApi.post('/get-all-messages', { to: sender }).then(({ data: { messages } }) => {
-                console.log(messages);
                 setMessages(messages)
             })
         }
     }, [msgSent])
+    useEffect(() => {
+        if (socket.current) {
+            socket.current.on("msg-recieve", (msg) => {
+                setArrivalMsg({ fromSelf: false, message: msg })
+                toast.success('msg recived')
+            })
+        }
+    }, [])
+
+    useEffect(() => {
+        arrivalMsg && setMessages((prev) => [...prev, arrivalMsg])
+    }, [arrivalMsg])
+    useEffect(() => {
+        scrollRef.current?.scrollIntoView({ behaviour: 'smooth' })
+    }, [messages])
+
+
     const sendMessage = (e) => {
         e.preventDefault()
-        console.log(msg, sender);
         socket.current.emit("send-msg", {
             to: sender,
             from: owner.id,
             msg
         })
         msg.length > 0 && ownerApi.post('/sent-message', { msg, to: sender }).then(({ data }) => {
-            console.log('on then');
-            console.log(msg);
             setMsgSent(prevState => !prevState);
             setMsg('')
-
+           toast.success('msg sented')
             const msgs = [...messages]
             msgs.push({ fromSelf: true, message: msg })
             setMessages(msgs)
@@ -42,21 +56,10 @@ export default function OwnerChatSection({ sender, socket }) {
         })
     }
 
-    useEffect(() => {
-        if (socket.current) {
-            socket.current.on("msg-recieve", (msg) => {
-                console.log('msg arrival', msg);
-                setArrivalMsg({ fromSelf: false, message: msg })
-            })
-        }
-    }, [])
-    useEffect(() => {
-        arrivalMsg && setMessages((prev) => [...prev, arrivalMsg])
-    }, [arrivalMsg])
-    useEffect(() => {
-        scrollRef.current?.scrollIntoView({ behaviour: 'smooth' })
-    }, [messages])
+    
+  
     return (
+
         // <div className="col-md-9 bg-dark d-flex flex-column min-vh-80">
         //     <div className="head-sec text-white">
         //         {sender}
@@ -148,6 +151,7 @@ export default function OwnerChatSection({ sender, socket }) {
                 </form>
             </div>
         </div>
+        <ToastContainer/>
     </div>
     )
 }

@@ -8,6 +8,7 @@ import OwnerChatSection from "../../components/chat/OwnerChatSection";
 import { useSelector } from "react-redux";
 import {io} from 'socket.io-client'
 import '../../components/ownerHome/sidebar.css'
+import { ToastContainer, toast } from "react-toastify";
 export default function OwnerChatPage () {
     const socket = useRef()
     const owner = useSelector(state => state.owner)
@@ -17,6 +18,9 @@ export default function OwnerChatPage () {
     if(owner.id){
       socket.current = io(process.env.REACT_APP_URL)
       socket.current.emit("add-user",owner.id)
+      toast.success('owner connected to socket')
+    }else {
+      toast.error('owner not connected to socket')
     }
   },[])
     return (
@@ -25,6 +29,7 @@ export default function OwnerChatPage () {
         <OwnerListContacts setSender={setSender} />
         { sender &&
         <OwnerChatSection sender={sender} socket={socket} /> }
+        <ToastContainer />
        </div>
         </>
     )

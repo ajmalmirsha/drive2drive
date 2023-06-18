@@ -19,7 +19,7 @@
 .product-info {
   display: flex;
   flex-direction: column;
-  height: 100%; /* Make sure the container takes up the full height */
+  height: 100%; 
 }
 
 .product-name {
@@ -121,9 +121,7 @@
   height: 40px;
   border-radius: 50%;
 }
-/* .reviews-list::-webkit-scrollbar {
-  width: 15px;
-} */
+
 .review-item {
   margin-bottom: 10px;
 }
@@ -151,6 +149,8 @@
 
 .sub-images {
   cursor: pointer;
+
+  object-fit: cover;
 }
 
 .zoom-image {

@@ -42,16 +42,15 @@ const io = socket(server, {
  
     global.chatSocket = socket;
     socket.on("add-user", (userId) => {
-        console.log(socket.id,'hcvc',userId);
+      console.log('on add user',userId);
       onlineUsers.set(userId, socket.id)
     });
   
     socket.on("send-msg", (data) => {
-        console.log('on send msg',data);
+      console.log('on msg send', data);      
       const sendUserSocket = onlineUsers.get(data.to);
-      console.log(sendUserSocket);
+      console.log(sendUserSocket,90,onlineUsers);
       if (sendUserSocket) {
-        console.log(data,897);
         socket.to(sendUserSocket).emit("msg-recieve", data.msg);
       }
     });

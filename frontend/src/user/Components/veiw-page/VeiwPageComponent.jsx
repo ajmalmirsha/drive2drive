@@ -11,53 +11,49 @@ import {  useErrorHandler } from '../../ErrorHandlers/ErrorHandler';
 import ChatPage from '../../pages/chat/ChatPage';
 
 const ViewPageComponent = () => {
-         const {userAuthenticationHandler} =  useErrorHandler()
-  const user = useSelector(state => state.user)
-  const [vehicle, setVehicle] = useState({});
-  const [reviews,setReviews] = useState([])
-  const { id } = useParams();
-  const [avgRating,setAvgRating] = useState(0)
- const [mainImage,setMainImage] = useState(0)
- const [ownerId,setOwnerId] = useState('')
-  useEffect(() => {
-    ( function () {
-      userApi.get(`/vehicle/data/${id}`).then(({data:{data}}) => {
-      setVehicle(data);
-      setReviews(data.reviews.reverse())
-      }).catch((err) => {
-        userAuthenticationHandler(err)
+      const {userAuthenticationHandler} =  useErrorHandler()
+      const user = useSelector(state => state.user)
+      const [vehicle, setVehicle] = useState({});
+      const [reviews,setReviews] = useState([])
+      const { id } = useParams();
+      const [avgRating,setAvgRating] = useState(0)
+      const [mainImage,setMainImage] = useState(0)
+      const [ownerId,setOwnerId] = useState('')
 
-        
-      })
-    } )()
-    
+  useEffect(() => {
+    ( 
+    function () {
+      userApi.get(`/vehicle/data/${id}`).then(({data:{data}}) => {
+       setVehicle(data);
+        setReviews(data.reviews.reverse())
+         }).catch((err) => {
+          userAuthenticationHandler(err)
+         })
+    }
+    )()
   }, []);
   
-useEffect(()=>{
-  console.log(reviews);
-  const ratingsSum = reviews.reduce((sum, review) => sum + review.rating, 0);
-  const avgRating = ratingsSum / reviews.length;
-  const roundedAvgRating = avgRating.toFixed(); // Round to 1 decimal place
-  console.log(roundedAvgRating,87878);
-  setAvgRating(roundedAvgRating)
-},[reviews])
+  useEffect(()=>{
+    const ratingsSum = reviews.reduce((sum, review) => sum + review.rating, 0)
+    const avgRating = ratingsSum / reviews.length;
+    const roundedAvgRating = avgRating.toFixed()
+    setAvgRating(roundedAvgRating)
+  },[reviews])
  
 const navigate = useNavigate()
   
   // State for rating
-  const [rating, setRating] = React.useState(0);
+  const [rating, setRating] = useState(0);
 
   // State for review
-  const [review, setReview] = React.useState('');
+  const [review, setReview] = useState('');
 
   // State for selected images
-  const [ selectedImages, setSelectedImages] = React.useState({});
+  const [ selectedImages, setSelectedImages] = useState({});
 
   // Handle rating change
   const handleRatingChange = (value) => {
-    console.log(value,99);
     setRating(value);
-    console.log(rating);
   };
 
   // Handle review change
@@ -67,33 +63,25 @@ const navigate = useNavigate()
 
   // Handle image selection
   const handleImageSelect = (e) => {
-    // const images =  URL.createObjectURL( e.target.files[0])
-  
     setSelectedImages(e.target.files[0]);
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Perform actions with rating, review, and selected images data (e.g., save to database)
-    console.log('Rating:', rating);
-    console.log('Review:', review);
-    console.log('Selected Images:', selectedImages);
-    console.log('vehiovle:', vehicle);
-    // Reset rating, review, and selected images after submission
-  
+
     try {
       const reviewData = {
-        rating,
-        review,
-        vehicleId:vehicle._id,
-        userId:user.id,
-        userImage:user.image,
-        username:user.username
-      }
+                           rating,
+                           review,
+                           vehicleId:vehicle._id,
+                           userId:user.id,
+                           userImage:user.image,
+                           username:user.username
+                         }
       const formData = new FormData()
-      formData.append('image',selectedImages)
-      formData.append('reviewData',JSON.stringify(reviewData))
+            formData.append('image',selectedImages)
+            formData.append('reviewData',JSON.stringify(reviewData))
       const config = {
         headers: {
           "Content-Type": "multipart/form-data"
@@ -104,7 +92,6 @@ const navigate = useNavigate()
       userApi.post( '/vehicle/review/add',formData, config).then(({data:{data}})=>{
         setReviews(data.reviews.reverse())
       }).catch((err) => {
-        console.log('on chache',err);
         userAuthenticationHandler(err)
       })
       setRating(0);
@@ -112,7 +99,7 @@ const navigate = useNavigate()
       setSelectedImages('');
 
     } catch (error) {
-      
+      userAuthenticationHandler(error)
     }
    
   };
@@ -124,13 +111,13 @@ const navigate = useNavigate()
           <ReactImageMagnify className='zoom-image'
                         {...{
                             smallImage: {
-                                alt: 'Wristwatch by Ted Baker London',
+                                alt: 'loading',
                                 isFluidWidth: true,
                                 src: `${process.env.REACT_APP_URL}/public/images/${vehicle?.image?.length && vehicle?.image[mainImage]}`,
                             },
                             largeImage: {
                                 src: `${process.env.REACT_APP_URL}/public/images/${vehicle?.image?.length && vehicle?.image[mainImage]}`,
-                                width: 1200,
+                                width: 1250,
                                 height: 1200,
                             },
                             enlargedImageContainerDimensions: {
@@ -139,10 +126,10 @@ const navigate = useNavigate()
                             },
                         }}
                     />
-       <div className="gap-5">{
+       <div className="gap-5 row">{
       vehicle?.image?.length &&  vehicle?.image.map((x,i)=>{
       
-         return(   i !== mainImage  && <img key={i} src={`${process.env.REACT_APP_URL}/public/images/${x}`} alt="" onClick={()=>{ setMainImage(i) }} className="col-md-3 my-5 me-3  sub-images" /> )
+         return(   i !== mainImage  && <img key={i} src={`${process.env.REACT_APP_URL}/public/images/${x}`} alt="loading" onClick={()=>{ setMainImage(i) }} className="col-md-3 my-5 mx-1  sub-images" /> )
 
         })
        }</div>
@@ -186,7 +173,7 @@ chat with owner
     <div class="modal-content">
      
       
-      <div class="modal-body p-0"  style={{height:'80vh'}} >
+      <div class="modal-body m-0 p-0"  style={{height:'80vh'}} >
         { ownerId && <ChatPage ownerId={ownerId} />}
       </div>
       
