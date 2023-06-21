@@ -3,7 +3,7 @@ import { userApi } from "../../../utils/Apis"
 import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler"
 import Navbar from "../userHome/Navbar"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCreditCard } from "@fortawesome/free-solid-svg-icons"
+import { faCheckCircle, faCreditCard } from "@fortawesome/free-solid-svg-icons"
 import Payment from "../Stripe/Payment"
 
 
@@ -37,22 +37,37 @@ export default function UserBookings () {
               <h5 className="col-md-6" >{x.vehicle.vehicleName}</h5>
               <span className="col-md-6 ps-4">₹ {x.totalAmount}</span>
               </div>
+              <div className="mb-1">
+                {x.duration}
+              </div>
                 <div className="col-md-6 pickUp">
                     <span className="d-block fw-bold" >Pick information</span>
                     <span className="d-block" >
-                        Time : {x.address?.pickUp?.pickTime}
+                        Time : {new Date(x.address?.pickUp?.pickTime).toLocaleString(undefined, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })}
                     </span>
                     <span className="d-block">
-                        place : {x.address?.pickUp?.pickPlace}  <br /> {x.address?.pickUp?.pickCity}, {x.address?.pickUp?.pickDistrict}
+                        place : {x.address?.pickUp?.pickPlace}  <br /> {x.address?.pickUp?.pickCity}, {x.address?.pickUp?.pickState}
                     </span>
                 </div>
                 <div className="col-md-6 dropOff">
                 <span className="d-block fw-bold" >Drop information</span>
                     <span className="d-block" >
-                        Time : {x.address?.dropOff?.dropTime}
+                        Time : {new Date(x.address?.dropOff?.dropTime).toLocaleString(undefined, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })}
                     </span>
                     <span className="d-block">
-                    place : {x.address?.dropOff?.dropPlace}  <br /> {x.address?.dropOff?.dropCity}, {x.address?.dropOff?.dropDistrict}
+                    place : {x.address?.dropOff?.dropPlace}  <br /> {x.address?.dropOff?.dropCity}, {x.address?.dropOff?.dropState}
                     </span>
                 </div>
             </div>
@@ -79,17 +94,7 @@ export default function UserBookings () {
               x.approvel.approved && !x.approvel.declined && !x.paid  &&(
                 <button type="button" class="btn btn-dark px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                 <b>Pay</b> <FontAwesomeIcon icon={faCreditCard} />
-              </button>
-              
-              )}
-
-              {
-                x.paid && 
-                <div className="bg-dark text-white rounded-1 p-2">
-                    paid <FontAwesomeIcon icon={faCreditCard} />
-                </div>
-              }
-                 {/* <!-- Modal --> */}
+                                 {/* <!-- Modal --> */}
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -103,6 +108,17 @@ export default function UserBookings () {
     </div>
   </div>
 </div>
+              </button>
+              
+              )}
+
+              {
+                x.paid && 
+                <div className="bg-dark text-white rounded-1 p-2">
+                    paid <FontAwesomeIcon icon={faCheckCircle} color="green" />
+                </div>
+              }
+
             </div>
            </div>
            <hr />

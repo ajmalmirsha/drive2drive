@@ -4,29 +4,35 @@ import img from '../../../images/default.png'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setUserDetails } from '../../../redux/userSlice'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCar, faHouseChimney, faMotorcycle } from '@fortawesome/free-solid-svg-icons';
+
 export default function Navbar() {
   const user = useSelector((state) => state.user)
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [menuOpen, setMenu] = useState(false)
+ console.log('usrer',user);
   return (
     <div className="nav row">
-      <div className="categories col-md-10">
-        <span className='mx-2'
-          onClick={() => { navigate('/') }}
-        >Home</span>
-        <NavLink className="nav-item mx-3" to="/list-all/car">
-          Cars
-        </NavLink>
-        <NavLink className='nav-item mx-2' to="/list-all/bike">
-          Bikes
+      <div className="col-md-1">
+        Logo
+      </div>
+      <div data-bs-toggle="tooltip" data-bs-placement="top" title="" className="categories col-md-9">
+       <NavLink data-bs-toggle="tooltip" data-bs-placement="top" title="Home" className="nav-item pb-1 mx-3" to="/">
+       <FontAwesomeIcon size='lg' icon={faHouseChimney} />
+       </NavLink>
+       <NavLink  data-bs-toggle="tooltip" data-bs-placement="top" title="Cars" className="nav-item pb-1 mx-3" to="/list-all/car">
+       <FontAwesomeIcon size='lg' icon={faCar} />
+       </NavLink>
+
+        <NavLink data-bs-toggle="tooltip" data-bs-placement="top" title="Bikes" className='nav-item pb-1 mx-2' to="/list-all/bike">
+        <FontAwesomeIcon size='lg' icon={faMotorcycle} />
         </NavLink>
         <NavLink className='nav-item mx-2' to="/bookings">
           Bookings
         </NavLink>
-        <NavLink className='nav-item mx-2' to="/chat">
-          Chat
-        </NavLink>
+
       </div>
 
       <div onClick={() => navigate('/notifications/user')} className="col-md-1 d-flex justify-content-center align-items-center">
@@ -49,8 +55,18 @@ export default function Navbar() {
                 localStorage.removeItem('user')
                 navigate('/login')
                 dispatch(
-                  setUserDetails(
-                    {_id:''}
+                  setUserDetails({
+                    id: "",
+              username: "",
+              email: "",
+              phone: null,
+              image: "",
+              dob: null,
+              license: {
+                  front: '',
+                  back: '',
+              }
+                  }
                   )
                 )
               }} type="button" class="btn btn-primary logout-btn">LogOut</button>

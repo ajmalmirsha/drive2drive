@@ -106,13 +106,33 @@ function AddVehicle() {
               <label className="form-label" htmlFor="form7Example6">Category</label>
               <input name="category" onBlur={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
             </div> */}
+          <label className="form-label" htmlFor="category">Category</label>
             <select onChange={(e)=>{
    setProduct({ ...product, category: e.target.value })
-  }} class="form-select" aria-label="Default select example">
+  }} id="category" class="form-select" aria-label="Default select example">
   <option  selected>select a category</option>
   <option value="car">car</option>
   <option value="bike">bike</option>
 </select>
+          { product.category == 'car' && (
+            <div className=" my-3" >
+          <label className="form-label" htmlFor="type">Type</label>
+          <select id="type" onChange={(e)=>{
+   setProduct({ ...product, category: e.target.value })
+  }} class="form-select" aria-label="Default select example">
+  <option  selected>select car type</option>
+  <option value="Sedan">Sedan</option>
+  <option value="Hatchback">Hatchback</option>
+  <option value="SUV">SUV</option>
+  <option value="Crossover">Crossover</option>
+  <option value="Coupe">Coupe</option>
+  <option value="Convertible">Convertible</option>
+</select> 
+</div>
+)}
+
+<input name="carType" type="radio" />
+<input name="carType" type="radio" />
             <div className="row">
   <div className="col-md-4 form-outline mb-4">
     <label className="form-label" htmlFor="form7Example6">Model</label>

@@ -44,6 +44,7 @@ const io = socket(server, {
     socket.on("add-user", (userId) => {
       console.log('on add user',userId);
       onlineUsers.set(userId, socket.id)
+      socket.emit('new-user',userId)
     });
   
     socket.on("send-msg", (data) => {
@@ -51,7 +52,7 @@ const io = socket(server, {
       const sendUserSocket = onlineUsers.get(data.to);
       console.log(sendUserSocket,90,onlineUsers);
       if (sendUserSocket) {
-        socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+        socket.to(sendUserSocket).emit("msg-recieve", data);
       }
     });
   });

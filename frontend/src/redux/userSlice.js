@@ -11,6 +11,7 @@ const initialState = {
     license: {
         front: '',
         back: '',
+        verification:'',
     }
 }
 
@@ -27,6 +28,7 @@ const userSlice = createSlice({
             state.dob = action.payload.dob
             state.license.front = action.payload.license.front
             state.license.back = action.payload.license.back
+            state.license.verification = action.payload.license.verification
         }
     }
 })

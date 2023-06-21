@@ -27,9 +27,12 @@ function OwnerHome ({props}) {
         { props == 'add-vehicle' &&  <AddVehicle/>}
 
         { props == 'edit-vehicle' &&  <EditVehicle/>}
+
+        { props == 'notification' &&  <EditVehicle/>}
         <Graph/>
         <ReviewList/>
         </div>
+        
         </div>
     )
 }

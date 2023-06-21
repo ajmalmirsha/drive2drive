@@ -47,6 +47,10 @@ const vehicleSchema = new mongoose.Schema({
     image:{
         type:Array
     },
+    bookedUsers : {
+      type: Array,
+      default:[]
+    },
     ownerId:{
       type:mongoose.Schema.Types.ObjectId,
       ref:'owner'

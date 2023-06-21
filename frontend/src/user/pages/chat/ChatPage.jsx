@@ -12,11 +12,11 @@ export default function ChatPage ({ownerId}) {
     const user = useSelector(state => state.user)
     const [sender,setSender] = useState(ownerId)
     useEffect(()=> {
-      console.log(user,'sgfh',ownerId);
+      console.log('add-user useEffect');
       if(user.id){
+        console.log('userId is there',user.id);
         socket.current = io(process.env.REACT_APP_URL)
         socket.current.emit("add-user",user.id)
-        toast.success('user connected to socke')
       }
     },[])
     return (

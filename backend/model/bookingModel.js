@@ -45,6 +45,10 @@ totalAmount : {
     type: Number,
     default:0
 },
+duration : {
+    type: String,
+    default:''
+},
 payment : {
     method :{
         type: String,

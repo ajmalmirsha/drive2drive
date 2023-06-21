@@ -1,6 +1,7 @@
 .check-out-main-img {
-    width: 200px;
-    height: 100px;
+    width: 100%;
+    height: auto;
+    max-height: 200px;
     object-fit: cover;
 }
 
@@ -9,3 +10,20 @@
     height: 30px;
     object-fit: fill;
 }
+
+.hide-seconds::-webkit-datetime-edit-second-field {
+    display: none;
+  }
+  
+  .hide-seconds::-webkit-datetime-edit-ampm-field {
+    display: none;
+  }
+  
+  .hide-seconds::-moz-datetime-edit-second-field {
+    display: none;
+  }
+  
+  .hide-seconds::-moz-datetime-edit-ampm-field {
+    display: none;
+  }
+  

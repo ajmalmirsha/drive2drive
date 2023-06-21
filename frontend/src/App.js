@@ -54,6 +54,7 @@ function App() {
       <Route exact path='/owner/list-vehicle' element={<OwnerPrivateRoute> <VehiclePage props={'list-vehicle'}/></OwnerPrivateRoute> } />
       <Route exact path='/owner/add-vehicle' element={<OwnerPrivateRoute> <VehiclePage props={'add-vehicle'}/> </OwnerPrivateRoute> } />
       <Route exact path='/owner/edit-vehicle/:id' element={<OwnerPrivateRoute> <VehiclePage props={'edit-vehicle'} /> </OwnerPrivateRoute> } />
+      <Route exact path='/owner/notifications' element={<OwnerPrivateRoute> <VehiclePage props={'notifications'} /> </OwnerPrivateRoute> } />
       <Route exact path='/owner/bookings' element={<OwnerPrivateRoute> <BookingVerifications /> </OwnerPrivateRoute> } />
       <Route exact path='/owner/messages' element={<OwnerPrivateRoute> <OwnerChatPage /> </OwnerPrivateRoute> } />
       

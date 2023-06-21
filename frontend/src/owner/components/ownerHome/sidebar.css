@@ -48,7 +48,9 @@
     -moz-transition: .5s;
     -o-transition: .5s;
     -webkit-transition: .5s;
-    transition: .5s
+    transition: .5s;
+    /* border: solid 1px  black; */
+    min-height: 90vh;
 }
 
 .people-list .chat-list li {
@@ -72,7 +74,8 @@
 
 .people-list .chat-list img {
     width: 45px;
-    border-radius: 50%
+    height: 45px;
+    border-radius: 50%;
 }
 
 .people-list img {
@@ -97,8 +100,9 @@
 
 .chat .chat-header img {
     float: left;
-    border-radius: 40px;
-    width: 40px
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
 }
 
 .chat .chat-header .chat-about {
@@ -143,7 +147,7 @@
     padding: 18px 20px;
     line-height: 26px;
     font-size: 16px;
-    border-radius: 7px;
+    border-radius: 10px;
     display: inline-block;
     position: relative
 }
@@ -166,29 +170,14 @@
     background: #efefef
 }
 
-.chat .chat-history .my-message:after {
-    bottom: 100%;
-    left: 30px;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-bottom-color: #efefef;
-    border-width: 10px;
-    margin-left: -10px
-}
+
 
 .chat .chat-history .other-message {
     background: #e8f1f3;
     text-align: right
 }
 
-.chat .chat-history .other-message:after {
-    border-bottom-color: #e8f1f3;
-    left: 93%
-}
+
 
 .chat .chat-message {
     padding: 20px
@@ -226,7 +215,10 @@
     clear: both;
     height: 0
 }
-
+.list-unstyled .clearfix {
+    border: solid 1px #efefef;
+}
+/* 
 @media only screen and (max-width: 767px) {
     .chat-app .people-list {
         height: 465px;
@@ -249,26 +241,25 @@
         height: 300px;
         overflow-x: auto
     }
-}
+} */
 
-@media only screen and (min-width: 768px) and (max-width: 992px) {
-    .chat-app .chat-list {
-        /* height: 650px; */
-        overflow-x: auto
-    }
-    .chat-app .chat-history {
-        /* height: 600px; */
-        overflow-x: auto
-    }
-}
+/* */
 
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-    .chat-app .chat-list {
-        height: 480px;
-        overflow-x: auto
-    }
-    .chat-app .chat-history {
+
+    /* .chat-app .chat-history {
         height: calc(100vh - 350px);
         overflow-x: auto
-    }
+    } */
+
+
+
+/* .chat-owner-side {
+    max-height: 100vh;
+} */
+
+
+.chat-history {
+    min-height: 59vh;
+    max-height: 59vh;
+    overflow: auto;
 }

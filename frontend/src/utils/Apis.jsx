@@ -33,3 +33,11 @@ ownerApi.interceptors.request.use((req) => {
         return req; 
     
 })
+
+adminApi.interceptors.request.use((req) => {
+    if (localStorage.getItem('admin')){
+        req.headers.Authentication =  localStorage.getItem("admin");
+    }
+        return req; 
+    
+})

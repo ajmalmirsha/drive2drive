@@ -20,7 +20,7 @@ module.exports = {
     getAllNotifications (req, res ){
         try {
             console.log('sfsd');
-            notificationModel.find({}).then((response)=>{
+            notificationModel.find({}).sort({_id:-1}).then((response)=>{
                 res.status(200).json({succes:true,data:response})
             })
         } catch (e) {
@@ -32,7 +32,7 @@ module.exports = {
         try {
             console.log('sfsd');
             userModel.find({
-                'license.verified': false,
+                'license.verification': 'pending',
                 'license.front': { $ne: '' },
                 'license.rear': { $ne: '' }
               }).then((response)=>{
@@ -43,22 +43,44 @@ module.exports = {
         }
     },
 
+    getAllUserDetails ( req, res) {
+     try {
+        userModel.find({}).then((data) => {
+            res.status(200).json({ success: true, data})
+        })
+     } catch (e) {
+        console.log(e.message);
+     }
+    },
+
     verifyLisence ( req, res) {
         try {
             console.log(req.body);
-            const {id} = req.body
-            userModel.findByIdAndUpdate(id,{$set:{'license.verified':true}},{new:true}).then(()=>{
+            const { id, status } = req.body
+            console.log( status );
+            userModel.findByIdAndUpdate(id,{$set:{'license.verification':status}},{new:true}).then(()=>{
                  userModel.find({
-                'license.verified': false,
+                'license.verification': 'pending',
                 'license.front': { $ne: '' },
                 'license.rear': { $ne: '' }
               }).then((response)=>{
-                console.log(response,'updated');
                 res.status(200).json({succes:true,data:response})
               })
             })
            
         } catch (e) {
+            console.log(e.message);
+        }
+    },
+
+    blockUnblock ( req, res) {
+        try{
+           const { status , userId } = req.body
+           const block = status === 'block'
+           userModel.findOneAndUpdate({_id:userId},{$set:{block:block}},{new:true}).then( data => {
+            res.status(200).json({success:true,data})
+           })
+        } catch ( e ) {
             console.log(e.message);
         }
     }

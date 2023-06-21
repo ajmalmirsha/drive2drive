@@ -18,6 +18,7 @@ export default function AdminRoutes () {
         <Route exact path='/banner-list' element={<AdminPrivateRoute><AdminHome props={'banner-list'} /></AdminPrivateRoute> } />
         <Route exact path='/notifications' element={<AdminPrivateRoute><AdminHome props={'notifications'} /></AdminPrivateRoute> } />
         <Route exact path='/license/verify' element={<AdminPrivateRoute><AdminHome props={'license-verify'} /></AdminPrivateRoute> } />
+        <Route exact path='/list/users' element={<AdminPrivateRoute><AdminHome props={'list-users'} /></AdminPrivateRoute> } />
         </Routes>
         </>
     )

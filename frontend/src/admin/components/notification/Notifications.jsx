@@ -40,7 +40,7 @@ export default function Notifications () {
 
     axios.post(`${process.env.REACT_APP_URL}/admin/add-notification`,formData,config).then(({data:{data}}) => {
       console.log('fdf');
-      setallNotifications([...allNotifications,{...data}])
+      setallNotifications([{...data},...allNotifications])
       setNotification({
         title:'',
         message:'',

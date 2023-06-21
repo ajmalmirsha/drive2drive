@@ -28,6 +28,7 @@ function LoginComponent() {
     const verifyUser = async (users) => {
         const respo = await axios.post(process.env.REACT_APP_URL + '/login', { users })
         const { success, message, token ,user} = respo.data
+        console.log(user,998,user?.license?.verification );
         if (!success) {
             toast.error(message)
         } else {
@@ -43,6 +44,7 @@ function LoginComponent() {
                     license:{
                         front : user.license?.front,
                         back  : user.license?.rear,
+                        verification: user?.license?.verification 
                     }
                 })
             )
@@ -90,14 +92,14 @@ function LoginComponent() {
                     <button>Sign in</button>
                 </form>
                 <GoogleLogin onSuccess={googleSuccess} onError={googleError} />
-                <FacebookLogin
+                {/* <FacebookLogin
                  appId="597111955733507"
                   autoLoad={false}
                    fields="name,email,picture"
                     callback={responseFacebook}
                      cssClass="my-facebook-button-class"
                       icon="fa-facebook"
-                />
+                /> */}
                 <p>You do have an account? <span onClick={() => navigate('/signup')}>Signup</span></p>
                 {/* <button onClick={() => loginWithRedirect()}>Log In</button> */}
             </div>

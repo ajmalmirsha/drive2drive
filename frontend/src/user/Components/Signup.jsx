@@ -38,6 +38,7 @@ function Signup() {
                     license: {
                         front: data.user.license?.front,
                         back: data.user.license?.back,
+                        verification: data.user?.license?.verification
                     }
                 })
             )

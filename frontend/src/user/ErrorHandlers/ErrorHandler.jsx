@@ -12,7 +12,16 @@ export function useErrorHandler() {
       navigate("/login");
       dispatch(
         setUserDetails({
-          id:''
+          id: "",
+    username: "",
+    email: "",
+    phone: null,
+    image: "",
+    dob: null,
+    license: {
+        front: '',
+        back: '',
+    }
         })
       )
     }
@@ -28,8 +37,14 @@ export function useErrorHandler() {
       )
     }
   }
+  function adminAuthenticationHandler({ response: { status, data } }){
+    if (status === 401 && data.Auth === false) {
+      localStorage.removeItem("admin");
+      navigate("/admin/login");
+    }
+  }
 
-  return {userAuthenticationHandler, ownerAuthenticationHandler}
+  return {userAuthenticationHandler, ownerAuthenticationHandler, adminAuthenticationHandler}
 }
 
 

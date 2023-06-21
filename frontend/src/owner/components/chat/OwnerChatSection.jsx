@@ -5,6 +5,8 @@ import { useSelector } from "react-redux"
 import { v4 as uuidv4 } from 'uuid'
 import '../ownerHome/sidebar.css'
 import { ToastContainer, toast } from "react-toastify"
+import { io } from "socket.io-client"
+import img from '../../../images/default.png'
 export default function OwnerChatSection({ sender, socket }) {
     const owner = useSelector(state => state.owner)
     const [msg, setMsg] = useState('')
@@ -14,22 +16,32 @@ export default function OwnerChatSection({ sender, socket }) {
     const [arrivalMsg, setArrivalMsg] = useState(null)
     const scrollRef = useRef()
     useEffect(() => {
-        if (sender) {
-            ownerApi.post('/get-all-messages', { to: sender }).then(({ data: { messages } }) => {
+        if (sender.id) {
+            ownerApi.post('/get-all-messages', { to: sender.id }).then(({ data: { messages } }) => {
+                console.log(messages,77676);
                 setMessages(messages)
             })
         }
-    }, [msgSent])
+    }, [msgSent,sender.id])
+    // useEffect(() => {
+    //     socket.current = io(process.env.REACT_APP_URL)
+    //     socket.current.emit("add-user",sender)
+    // },[])
     useEffect(() => {
+        console.log('msg-recive useEffect ',socket);
         if (socket.current) {
-            socket.current.on("msg-recieve", (msg) => {
-                setArrivalMsg({ fromSelf: false, message: msg })
-                toast.success('msg recived')
+            setTimeout(()=>{
+            socket.current.on("msg-recieve", ({msg,from}) => {
+                console.log('on msg reciv e emit ',msg);
+              sender.id == from && setArrivalMsg({ fromSelf: false, message: msg,time:'just now' })
+                // toast.success('msg recived')
             })
+        },100)
         }
     }, [])
 
     useEffect(() => {
+        console.log('mesga',messages);
         arrivalMsg && setMessages((prev) => [...prev, arrivalMsg])
     }, [arrivalMsg])
     useEffect(() => {
@@ -39,15 +51,16 @@ export default function OwnerChatSection({ sender, socket }) {
 
     const sendMessage = (e) => {
         e.preventDefault()
+        console.log('sender',sender,socket);
         socket.current.emit("send-msg", {
-            to: sender,
+            to: sender.id,
             from: owner.id,
             msg
         })
-        msg.length > 0 && ownerApi.post('/sent-message', { msg, to: sender }).then(({ data }) => {
+        msg.length > 0 && ownerApi.post('/sent-message', { msg, to: sender.id }).then(({ data }) => {
             setMsgSent(prevState => !prevState);
             setMsg('')
-           toast.success('msg sented')
+        console.log('mesga',messages);
             const msgs = [...messages]
             msgs.push({ fromSelf: true, message: msg })
             setMessages(msgs)
@@ -97,11 +110,13 @@ export default function OwnerChatSection({ sender, socket }) {
             <div class="row">
                 <div class="col-lg-6">
                     <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar" />
+                    { sender?.image &&  <img src={sender?.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ? 
+           sender.image : sender.image ? `${process.env.REACT_APP_URL}/public/images/${sender.image}`
+            : img} alt="avatar" />}
                     </a>
                     <div class="chat-about">
-                        <h6 class="m-b-0">Aiden Chavez</h6>
-                        <small>Last seen: 2 hours ago</small>
+                        <h6 class="m-b-0">{sender?.username}</h6>
+                        {/* <small>Last seen: 2 hours ago</small> */}
                     </div>
                 </div>
                 
@@ -111,26 +126,35 @@ export default function OwnerChatSection({ sender, socket }) {
 
 
         <div class="chat-history">
-            <ul class="m-b-0">
+            <ul class="m-b-0" >
                  {
                    messages.length > 0 && messages.map((x) => {
                          return (
                             <>
                       {
                                     x.fromSelf ?
-                <li class="clearfix" ref={scrollRef} key={uuidv4()}>
-                    <div class="message-data text-right">
-                        <span class="message-data-time">10:10 AM, Today</span>
-                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar" />
+                <li class="clearfix d-flex justify-content-end" ref={scrollRef} key={uuidv4()}>
+                    <div class="message m-0 p-0 other-message " style={{ borderBottomRightRadius : "0"}}>
+                    <span className="ms-2 me-3 d-block" >{x.message}</span>
+                    <div className="msg-footer mx-2 text-end">
+                    {x.time}
                     </div>
-                    <div class="message other-message float-right">{x.message} </div>
+                    </div>
+                    {/* <div class="message-data ">
+                        <span class="message-data-time">{x.time}</span>
+                    </div> */}
                 </li> :
                                          
-                <li class="clearfix">
-                    <div class="message-data">
-                        <span class="message-data-time">10:15 AM, Today</span>
+                <li class="clearfix" ref={scrollRef} key={uuidv4()}>
+                    <div class="message m-0 p-0  my-message" style={{ borderBottomLeftRadius : "0"}}>
+                        <span className="ms-2 me-3 d-block" >{x.message}</span>
+                    <div className="msg-footer mx-2 text-end ">
+                    {x.time}
                     </div>
-                    <div class="message my-message">{x.message}</div>
+                    </div>
+                    <div class="message-data">
+                        <span class="message-data-time"></span>
+                    </div>
                 </li> }
                 </>
                          ) } ) }
@@ -141,12 +165,18 @@ export default function OwnerChatSection({ sender, socket }) {
 
 
         <div class="chat-message clearfix">
-            <div class="input-group mb-0">
-                <form onSubmit={sendMessage} >
+            <div class="input-group d-block mb-0">
+                <form className="row" onSubmit={sendMessage} >
+                    <div className="col-md-11">
                 <input value={msg} onChange={(e) => setMsg(e.target.value)}
-                 type="text" class="form-control" placeholder="Enter text here..." />                                    
-                <div class="input-group-prepend">
-                    <button type="submit" >send</button>
+                 type="text" class="form-control " placeholder="Type a message..." />        
+                 </div>                            
+                <div class="input-group-prepend col-md-1">
+                    <button type="submit" className="btn btn-success" >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+                    <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z" />
+                    </svg>
+                    </button>
                 </div>
                 </form>
             </div>

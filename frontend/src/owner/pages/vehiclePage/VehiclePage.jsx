@@ -3,6 +3,7 @@ import EditVehicle from "../../components/editVehicle/EditVehicle";
 import AddVehicle from "../../components/ownerHome/AddVehicle";
 import VehicleList from "../../components/vehicleList/VehicleList";
 import OwnerNavBar from "../../components/ownerHome/OwnerNavBar";
+import Notifications from "../../components/notifications/Notifications";
 
 
 
@@ -18,6 +19,8 @@ export default function VehiclePage ({props}) {
         { props == 'add-vehicle' &&  <AddVehicle/>}
 
         { props == 'edit-vehicle' &&  <EditVehicle/>}
+
+        { props == 'notifications' &&  <Notifications/>}
         </div>
         </div>
     )

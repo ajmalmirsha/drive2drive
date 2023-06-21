@@ -10,9 +10,9 @@
     resize: none;
 }
 
-.message {
+/* .message {
     height: 100px;
-}
+} */
 
 .notification-image {
     height: 100px;
@@ -21,4 +21,8 @@
 
 .for-who {
     border-radius: 10px;
+}
+
+.msg-footer {
+    font-size: 0.8rem;
 }

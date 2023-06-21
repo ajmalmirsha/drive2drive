@@ -6,6 +6,10 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ownerApi } from "../../../utils/Apis";
 import { useErrorHandler } from '../../../user/ErrorHandlers/ErrorHandler';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+
+
 function VehicleList () {
   
   const { id } = useSelector(state => state.owner)
@@ -24,7 +28,7 @@ function VehicleList () {
   },[])
 
   const [ currentPage, setCurrentPage] = useState(1)
-const recordsPerPage = 4
+const recordsPerPage = 8
 const lastIndex = currentPage * recordsPerPage
 const firstIndex = lastIndex - recordsPerPage
 const records = users.slice( firstIndex, lastIndex)
@@ -54,7 +58,7 @@ const numbers = [...Array( npage + 1 ).keys()].slice(1)
       <Td>{x.category}</Td>
       <Td>{x.description}</Td>
       <Td>{x.price}</Td>
-      <Td><button onClick={()=>{ navigate(`/owner/edit-vehicle/${x._id}`) }}>Edit</button></Td>
+      <Td onClick={()=>{ navigate(`/owner/edit-vehicle/${x._id}`) }} className='d-flex justify-content-center align-items-center' ><FontAwesomeIcon icon={faPenToSquare} /></Td>
     </Tr>
     ))
   }

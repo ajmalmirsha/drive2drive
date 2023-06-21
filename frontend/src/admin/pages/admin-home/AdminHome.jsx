@@ -6,6 +6,7 @@ import Coupon from "../../components/coupon/Coupon"
 import Banner from "../../components/banner/Banner"
 import Notifications from "../../components/notification/Notifications"
 import LicenseVerify from "../../components/licenseVerify/LicenseVerify"
+import ListUsers from "../../components/userList/ListUsers"
 
 
 export default function AdminHome({props}) {
@@ -34,6 +35,10 @@ export default function AdminHome({props}) {
       
         {
           props == 'license-verify' &&    <LicenseVerify/>
+        }
+        
+        {
+          props == 'list-users' &&    <ListUsers/>
         }
       
         {/* admin home page !!

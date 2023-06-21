@@ -101,8 +101,14 @@ module.exports = {
      try {
       console.log(req.body);
       const {paymentId,bookingId,paymentMethod} = req.body
-      bookingModel.findByIdAndUpdate({_id:bookingId},{$set:{paid:true,'payment.paymentId':paymentId,'payment.method':paymentMethod}},{new:true}).then((response) => {
-        const userId = req.headers?.userId
+      const { userId } = req.headers
+      bookingModel.findByIdAndUpdate({_id:bookingId}
+         ,{$set:{paid:true,'payment.paymentId':paymentId,'payment.method':paymentMethod}},
+      {new:true}).then((response) => {
+        console.log(response);
+        vehicleModel.updateOne({_id:response.vehicle._id},{$addToSet: { bookedUsers: userId }}).then(()=> {
+
+        })
         bookingModel.find({userId}).then((response) => {
           res.status(200).json({success:true,data:response})
         }) 
@@ -115,7 +121,7 @@ module.exports = {
         try {
           const userId = req.headers?.userId
           console.log('user Id',userId);
-            bookingModel.find({userId}).then((response) => {
+            bookingModel.find({userId}).sort({_id:-1}).then((response) => {
               console.log(response);
               res.status(200).json({success:true,data:response})
             })
@@ -167,15 +173,35 @@ module.exports = {
             $all: [from, to],
           },
         }).sort({ updatedAt: 1 });
-
-        const projectedMessages = messages.map((msg) => {
-          return {
-            fromSelf: msg.sender.toString() === from,
-            message: msg.message.text,
-          };
-        });
+  console.log('real messages',messages);
+  const formattedMessages = messages.map((msg) => {
+    const now = new Date();
+    const timeAgo = Math.floor((now - new Date(msg.updatedAt)) / 60000); // Calculate time difference in minutes
+  
+    let timeString;
+    if (timeAgo <= 0) {
+      timeString = 'just now';
+    } else if (timeAgo === 1) {
+      timeString = '1 minute ago';
+    } else if (timeAgo < 60) {
+      timeString = `${timeAgo} minutes ago`;
+    } else if (timeAgo < 1440) {
+      const updatedTime = new Date(msg.updatedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      timeString = updatedTime.includes(':') ? updatedTime.replace(' ', '') : updatedTime;
+    } else {
+      const updatedTime = new Date(msg.updatedAt).toLocaleString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+      timeString = updatedTime.includes(',') ? updatedTime.replace(',', '') : updatedTime;
+    }
+  
+    return {
+      fromSelf: msg.sender.toString() === from,
+      message: msg.message.text,
+      time: timeString,
+    };
+  });
+  console.log(formattedMessages);
       
-        res.status(200).json({messages:projectedMessages});
+        res.status(200).json({messages:formattedMessages});
       } catch (e) {
         console.log(e.message);
       }
@@ -192,6 +218,18 @@ module.exports = {
     console.log(users);
     res.status(200).json({success:true,data:users})
   })
+        })
+      } catch (e) {
+        console.log(e.message);
+      }
+    },
+
+    ownerNotifications ( req, res ) {
+      try {
+        console.log('reached owner notifications');
+        notificationModel.find({owner:true}).sort({_id:-1}).then( data => {
+          console.log(data,7878);
+          res.status(200).json({ success: true, data})
         })
       } catch (e) {
         console.log(e.message);

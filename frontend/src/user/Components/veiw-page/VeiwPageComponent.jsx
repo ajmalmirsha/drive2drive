@@ -9,6 +9,7 @@ import img from '../../../../src/images/default.png'
 import { userApi } from '../../../utils/Apis';
 import {  useErrorHandler } from '../../ErrorHandlers/ErrorHandler';
 import ChatPage from '../../pages/chat/ChatPage';
+import { ToastContainer, toast } from 'react-toastify';
 
 const ViewPageComponent = () => {
       const {userAuthenticationHandler} =  useErrorHandler()
@@ -38,6 +39,7 @@ const ViewPageComponent = () => {
     const avgRating = ratingsSum / reviews.length;
     const roundedAvgRating = avgRating.toFixed()
     setAvgRating(roundedAvgRating)
+    console.log(vehicle,987);
   },[reviews])
  
 const navigate = useNavigate()
@@ -156,30 +158,25 @@ const navigate = useNavigate()
             <div className="product-price">{vehicle?.price}</div>
             <div className="product-description">{vehicle?.description}</div>
 <div className="row">
-  <div className="col-md-6"><button onClick={()=> { navigate(`/checkout/${vehicle._id}`) }} className='btn btn-primary'>Book Now</button>
+  <div className="col-md-6"><button onClick={()=> {
+    console.log(user);
+    user?.license?.verification === 'verified' ?  navigate(`/checkout/${vehicle._id}`) :
+     toast.error(`your license verification ${user?.license?.verification}`)
+     }
+     } className='btn btn-primary'>Book Now</button>
 </div>
   <div className="col-md-6">
     <button type="button" onClick={()=> setOwnerId(vehicle?.ownerId) } class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
 chat with owner
 </button>
+
 </div>
             {/* <button onClick={()=> navigate(`/chat/${vehicle?.ownerId}`)} >chat with owner</button> */}
             {/* <!-- Button trigger modal --> */}
 
 </div>
-{/* <!-- Modal --> */}
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog ">
-    <div class="modal-content">
-     
-      
-      <div class="modal-body m-0 p-0"  style={{height:'80vh'}} >
-        { ownerId && <ChatPage ownerId={ownerId} />}
-      </div>
-      
-    </div>
-  </div>
-</div>
+{  vehicle?.bookedUsers?.length > 0 && vehicle?.bookedUsers?.includes(user.id) &&
+       (
             <form onSubmit={handleSubmit}>
               <div className="rating-container">
                 <span className="rating-label">Rate this product:</span>
@@ -231,7 +228,8 @@ chat with owner
               </div>
 
               <button className="submit-button btn btn-primary" type="submit">Submit {reviews?.userimage}</button>
-            </form>
+            </form> 
+           ) }
 
             <ul className="reviews-list h-25 my-4 ">
               { reviews.length ? reviews.map((review) => (
@@ -263,6 +261,21 @@ chat with owner
           </div>
         </div>
       </div>
+{/* <!-- Modal --> */}
+
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog ">
+    <div class="modal-content">
+     
+      
+      <div class="modal-body m-0 p-0"  style={{height:'80vh'}} >
+        { ownerId && <ChatPage ownerId={ownerId} />}
+      </div>
+      
+    </div>
+  </div>
+</div>
+<ToastContainer/>
     </div>
   );
 };

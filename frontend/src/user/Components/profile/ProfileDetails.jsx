@@ -94,10 +94,10 @@ export default function ProfileDetails() {
           <input type="file" hidden />
 
           <span className='profile-heading py-5'>Driving lisence</span>
-
+        { reduxUser.license?.front && reduxUser.license?.back &&  <span className='d-block'>license verification : {reduxUser.license?.verification }</span>}
           <div className="row mt-3">
             <div className='col-md-5 mx-3 my-3'>
-              <div className='col-md-5 p-0'>Front side {reduxUser.lisence?.front}</div>
+              <div className='col-md-5 p-0'>Front side</div>
                 <label htmlFor='front-side-image' className="front mt-3">
                  {license?.front ? <img src={reduxUser.license?.front ? `${process.env.REACT_APP_URL}/public/images/license/${reduxUser.license?.front}` : URL.createObjectURL(license?.front)} alt="" /> : 'Click here to upload the front side of your driving license.'}
                   <input type="file" onChange={(e) =>{

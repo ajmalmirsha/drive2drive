@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:''
     },
+    block : {
+        type:Boolean,
+        default:false
+    },
     license:{
         front:{
             type:String,
@@ -35,13 +39,16 @@ const userSchema = new mongoose.Schema({
             type:String,
             default:''
         },
-        verified: {
-            type : Boolean,
-            default: false
+        verification: {
+            type : String,
+            default: 'pending'
         }
+    }}
+    ,
+    {
+        timestamps:true
     }
-
-})
+    )
 
 userSchema.pre('save', async function (next) {
     const salt = await bcrypt.genSalt()

@@ -15,6 +15,21 @@ export default function ChatSection({ sender, socket }) {
   const [arrivalMsg, setArrivalMsg] = useState(null)
   const scrollRef = useRef()
   const [senderDetails, setSenterDetails] = useState({})
+ 
+  useEffect(() => {
+    console.log(socket.current,'sokect connected',socket.current?.connected);
+    if (socket.current) {
+      setTimeout(() => {
+        console.log('msg  received useEffect');
+        socket.current.on("msg-recieve", ({msg,from}) => {
+          console.log('msg received', msg);
+          sender == from &&  setArrivalMsg({ fromSelf: false, message: msg });
+        });
+      }, 100); }
+   
+  }, [])
+
+
   useEffect(() => {
     if (sender) {
       userApi.post('/get-all-messages', { to: sender }).then(({ data: { messages } }) => {
@@ -41,17 +56,7 @@ export default function ChatSection({ sender, socket }) {
     })
   }
 
-  useEffect(() => {
-    toast.warning('on recive msg')
-    if (socket.current) {
 
-      socket.current.on("msg-recieve", (msg) => {
-        setArrivalMsg({ fromSelf: false, message: msg })
-        toast.success('msg recieved')
-      })
-    }
-   
-  }, [])
   useEffect(()=> {
      userApi.get(`/get-owner-details/${sender}`).then(({ data: { data } }) => {
       setSenterDetails(data)
