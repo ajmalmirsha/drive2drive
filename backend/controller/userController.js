@@ -53,7 +53,8 @@ module.exports = {
     },
     async getVehicleData (req,res) {
       try {
-       const data = await vehicleModel.find({category:req.params.vehicle})
+       const data = await vehicleModel.find({category:req.params.vehicle}).populate('ownerId')
+       console.log(data);
        res.status(200).json({success:true,data})
       } catch (error) {
         console.log(error.message);

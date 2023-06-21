@@ -1,5 +1,6 @@
 
 const jwt = require('jsonwebtoken')
+const userModel = require('../../model/userModel')
 
 module.exports = {
 userAuthenticator ( req, res, next) {
@@ -9,8 +10,14 @@ userAuthenticator ( req, res, next) {
                   if (err) {
                      res.status(401).json({success:false,message:err.message,Auth:false})
                   }else {
-                     req.headers.userId = decode.userId              
-                     next()
+                     userModel.findById(decode.userId).then((data) => {
+                        if( !data.block ) {
+                          req.headers.userId = decode.userId  
+                          next()
+                        }else {
+                         res.status(401).json({success:false,message:'not authenticated !',Auth:false})
+                        }
+                     })
                   } 
                 })
             } else {
@@ -26,7 +33,6 @@ userAuthenticator ( req, res, next) {
          if ( req.headers.authentication ) {
             jwt.verify(req.headers.authentication,process.env.OWNER_JWT_SECRET,( err, decode) => {
              if (err) {
-               console.log(err);
                 res.status(401).json({success:false,message:err.message,Auth:false})
              }else {
                 req.headers.ownerId = decode.ownerId              

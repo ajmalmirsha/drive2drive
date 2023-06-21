@@ -15,8 +15,8 @@
 } */
 
 .notification-image {
-    height: 100px;
-    object-fit: cover;
+    height: 20vh;
+    object-fit: contain;
 }
 
 .for-who {

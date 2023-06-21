@@ -58,10 +58,26 @@ export default function ListUsers () {
     
   });
 
+  const updateField = (id, field, value) => {
+    setUsers(prevState => {
+      return prevState.map(obj => {
+        if (obj._id === id) {
+          return { ...obj, [field]: value }; // Update the specific field
+        }
+        return obj;
+      });
+    });
+  };
+  
+
   function  handleBlockUser (status,userId)  {
         try {
+            console.log('on handle block user');
             adminApi.put('/user/block/un-block',{status,userId}).then(({data:{data}}) => {
               console.log('data',data);
+              updateField(data._id, 'block', data.block);
+
+
             })
         } catch (e) {
             
@@ -133,8 +149,8 @@ export default function ListUsers () {
                         <div class="d-flex flex-column mt-4">
                             {
                                 x.block ?
-                                <button  onClick={(e) => handleBlockUser('block',x._id)} class="btn btn-outline-success btn-sm" type="button">un block</button> :
-                                <button  onClick={(e) => handleBlockUser('unblock',x._id)} class="btn btn-outline-danger btn-sm" type="button">block</button>
+                                <button  onClick={(e) => handleBlockUser('unblock',x._id)} class="btn btn-outline-success btn-sm" type="button">un block</button> :
+                                <button  onClick={(e) => handleBlockUser('block',x._id)} class="btn btn-outline-danger btn-sm" type="button">block</button>
                             }
                         </div>
                       </div>

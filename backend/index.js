@@ -55,5 +55,14 @@ const io = socket(server, {
         socket.to(sendUserSocket).emit("msg-recieve", data);
       }
     });
+    socket.on("send-notification", (data) => {
+      console.log(onlineUsers,'on notification send', data);      
+     if ( data.data.owner ) {
+       io.emit("notification-recieve-owner", data);
+     }
+     if ( data.data.user ) {
+       io.emit("notification-recieve-user", data);
+     }
+    });
   });
   

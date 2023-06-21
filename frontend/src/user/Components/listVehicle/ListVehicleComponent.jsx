@@ -4,6 +4,7 @@ import './listVehicle.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone, faSquare } from "@fortawesome/free-solid-svg-icons";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import img from '../../../images/default.png'
 
 
 export default function ListVehicleComponent({ props }) {
@@ -97,6 +98,7 @@ export default function ListVehicleComponent({ props }) {
                       </div>
                       <div class="col-md-6 col-lg-6 col-xl-6">
                         <h5>{x.product_name}</h5>
+
                         <div class="d-flex flex-row">
                           <div class="text-danger mb-1 me-2">
                             <i class="fa fa-star"></i>
@@ -105,13 +107,21 @@ export default function ListVehicleComponent({ props }) {
                             <i class="fa fa-star"></i>
                           </div>
                         </div>
+                        <div className="mb-1">
+                          <img  className="owner-img" src={x.ownerId.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ? 
+           x.ownerId.image : x.ownerId.image ? `${process.env.REACT_APP_URL}/public/images/${x.ownerId.image}`
+            : img} alt="" />
+                        <p class="text-truncate d-inline mx-2 mb-4 mb-md-0">
+                          {x.ownerId.username}
+                        </p>
+                        </div>
                         <p class="text-truncate mb-4 mb-md-0">
                           {x.description}
                         </p>
                       </div>
                       <div class="col-md-6 col-lg-3 col-xl-3 align-items-center border-sm-start-none border-start d-flex flex-column justify-content-center align-items-center">
                         <div class="d-flex flex-row justify-content-center align-items-center mb-1">
-                          <h4 class="mb-1">₹{x.price}</h4>
+                          <h4 class="mb-1">₹{x.price} <small className="text-secondary fs-6" >/perday</small></h4>
                         </div>
                         <div class="d-flex flex-column mt-4">
                           <button class="btn btn-primary btn-sm" type="button">Book now</button>

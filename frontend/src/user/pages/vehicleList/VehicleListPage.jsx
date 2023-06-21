@@ -11,7 +11,6 @@ export default function VehicleListPage(){
     const {vehicle} = useParams()
     const authenticationHandler = useErrorHandler()
     useEffect(()=>{
-        console.log('use Effect of vehicle list page' + vehicle);
         userApi.get(`/list-all/${vehicle}`).then(({data:{data}})=>{
             setState(data)
         }).catch( err => {

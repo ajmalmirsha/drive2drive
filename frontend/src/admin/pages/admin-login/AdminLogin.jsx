@@ -2,11 +2,14 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ToastContainer, toast } from "react-toastify"
+import { setAdminDetails } from "../../../redux/adminSlice"
+import { useDispatch } from "react-redux"
 
 
 export default function AdminLogin () {
     
         const navigate = useNavigate()
+        const dispatch = useDispatch()
         const [ admin, setAdmin] = useState({
             email:'',
             password:''
@@ -31,9 +34,16 @@ export default function AdminLogin () {
         const verifyAdmin = async (admin) => {
            try {
             const {data , status} = await axios.post(process.env.REACT_APP_URL + '/admin/login', { admin })
-           
+           console.log(data);
             if ( status == 200){
                 localStorage.setItem('admin',data.token)
+                dispatch(
+                    setAdminDetails({
+                        id:data.data._id,
+                        username:data.data.username,
+                        email:data.data.email
+                    })
+                )  
                 navigate('/admin/home')
             }
            } catch (err) {

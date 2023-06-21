@@ -171,8 +171,11 @@ chat with owner
 </button>
 
 </div>
-            {/* <button onClick={()=> navigate(`/chat/${vehicle?.ownerId}`)} >chat with owner</button> */}
-            {/* <!-- Button trigger modal --> */}
+           <div className="">
+            report a <span className='text-danger' >spam</span>
+           </div>
+
+           
 
 </div>
 {  vehicle?.bookedUsers?.length > 0 && vehicle?.bookedUsers?.includes(user.id) &&

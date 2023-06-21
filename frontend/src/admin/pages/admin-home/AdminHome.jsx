@@ -7,6 +7,7 @@ import Banner from "../../components/banner/Banner"
 import Notifications from "../../components/notification/Notifications"
 import LicenseVerify from "../../components/licenseVerify/LicenseVerify"
 import ListUsers from "../../components/userList/ListUsers"
+import ListOwners from "../../components/ownerList/ListOwners"
 
 
 export default function AdminHome({props}) {
@@ -39,6 +40,9 @@ export default function AdminHome({props}) {
         
         {
           props == 'list-users' &&    <ListUsers/>
+        }
+        {
+          props === 'list-owners' &&    <ListOwners/>
         }
       
         {/* admin home page !!

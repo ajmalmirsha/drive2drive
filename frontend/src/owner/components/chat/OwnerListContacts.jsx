@@ -2,16 +2,20 @@ import { useEffect, useState } from "react"
 import { ownerApi } from "../../../utils/Apis"
 import '../ownerHome/sidebar.css'
 import img from '../../../images/default.png'
+import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler"
 
 
 export default function OwnerListContacts ({setSender,socket}) {
     const [contacts, setContacts] = useState([])
     const [listUpdated, setListUpdated] = useState(null)
+    const { ownerAuthenticationHandler } = useErrorHandler()
     useEffect(()=> {
         console.log('gone');
         ownerApi.get('/get-all-contacts').then( ({data:{data}}) => {
            console.log(data,88);
            setContacts(data)
+        }).catch (err => {
+          ownerAuthenticationHandler(err)
         })
     },[listUpdated])
     useEffect(() => {

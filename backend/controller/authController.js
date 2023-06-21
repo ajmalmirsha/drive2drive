@@ -32,6 +32,9 @@ module.exports = {
     async login(req, res) {
         const { email, password } = req.body.users
         const user = await userModel.findOne({ email })
+        if ( user.block ) {
+          return  res.json( {success:false , message: 'you blocked by admin'} )
+        }
         if (user) {
             bcrypt.compare(password, user.password).then((response) => {
                 if (response) {
@@ -136,8 +139,10 @@ module.exports = {
            const admin = await adminModel.findOne({email:email})
            if( admin ) {
                 bcrypt.compare(password,admin.password).then((response) =>{
-                    if(response)  res.status(200).json({success:true,message:"login succesfully"})
-                    else res.status(401).json({success:false,message:"email and password not matched"})
+                    if(response){
+                      const token = jwt.sign( {adminId:admin._id} ,process.env.OWNER_JWT_SECRET, { expiresIn: '1day' })
+                      res.status(200).json({success:true,message:"login succesfully", token,data:admin})
+                    }else res.status(401).json({success:false,message:"email and password not matched"})
                 })
            } else {
             res.status(401).json({success:false,message:"email not found"})
