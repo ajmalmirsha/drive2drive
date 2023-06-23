@@ -7,16 +7,24 @@ const bookingModel = require("../model/bookingModel");
 module.exports = {
     addVehicle(req, res) {
         try {
-            const { product_name, category, price, description, brand, year, model, ownerId } = JSON.parse(req.body.product);
+            const { product_name, category, price, description, brand, year, model, ownerId, type, places, segment, mileage, seats } = JSON.parse(req.body.product);
             const proPrice = price - ''
+            console.log('req.owner idfiles:' , ownerId);
             const images = []
-            console.log('req.files:' , req.files);
 
-            for(const file of req.files){
+            for(const file of req.files.images){
                 images.push(file.filename)
             }
+            const rcFront = req.files['rc[front]'][0].filename; // Get the filename of the rcFront image
+            const rcBack = req.files['rc[back]'][0].filename; // Get the filename of the rcBack image
+            const rc = {
+                front :  req.files['rc[front]'][0].filename ,
+                back : req.files['rc[back]'][0].filename
+            }
             console.log('images:' , images);
-            vehicleModel.create({ product_name, category, price: proPrice, description, image:images ,brand, year, model, ownerId }).then((response) => {
+            console.log('rc front:' , rcFront);
+            console.log('rc back:' , rcBack);
+            vehicleModel.create({ product_name, category, price: proPrice, description, image:images ,brand, year, model,rc , ownerId , type, places, segment, mileage, seats}).then((response) => {
                 res.status(200).json({ success: true, message: 'vehicle added successfully' })
             }).catch((err) => {
                 console.log(err);
@@ -36,7 +44,12 @@ module.exports = {
     async getVehiclesDetails (req,res) {
         try {
             const {id} = req.params
-           const data = await vehicleModel.findById(id)
+           const data = await vehicleModel.findById(id).populate({
+            path: 'reviews',
+            populate: {
+              path: 'userId'
+            }
+          })
            res.status(200).json({success:true,data})
         } catch (error) {
             console.log('on erro');
@@ -57,7 +70,15 @@ module.exports = {
     async deleteVehicleImage (req,res) {
         try {
             const {id,vehicleId} = req.params 
-             vehicleModel.findByIdAndUpdate({_id:vehicleId},{$pull:{image:id}},{new:true}).then((response)=>{
+            vehicleModel
+            .findOneAndUpdate(
+            { _id: vehicleId, $expr: { $gt: [{ $size: '$image' }, 1] } },
+            { $pull: { image: id } },
+            { new: true }
+            ).then((response) => {
+            if (!response) {
+            return res.status(400).json({ success: false, message: 'Image array should have at least one element' });
+             }
                 console.log(response,656);
                 fs.unlink(path.join(__dirname,'../../backend/public/images/',id),(err)=>{})
                 res.status(200).json({success:true,data:response})

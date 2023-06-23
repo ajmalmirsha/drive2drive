@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { signup, login, updateUser, uploadProfileImage} =  require('../controller/authController')
 const { allVehicles, getVehiclesDetails } = require('../controller/ownerController')
-const { uploadLisence, addReview, getVehicleData, getAllVehicleDetails, editProductDetails, getAllNotifications, addBooking, getApprovedBookings, paymentUpdation, setMessage, getMessages, getSenderDetails } = require('../controller/userController')
+const { uploadLisence, addReview, getVehicleData, getAllVehicleDetails, editProductDetails, getAllNotifications, addBooking, getApprovedBookings, paymentUpdation, setMessage, getMessages, getSenderDetails, getAvailablePlaces, addReport } = require('../controller/userController')
 const { userAuthenticator } = require('../middlewares/Auth/auth')
 const { uploadOptions, uploadlicense, reviewImage } = require('../middlewares/multer/multer')
 require('dotenv').config();
@@ -86,11 +86,16 @@ router.post('/add-license', uploadlicense.fields([
 
 router.get('/get-owner-details/:userId',getSenderDetails)
 
+router.get('/available-places',getAvailablePlaces)
+
 
 //chat routes
 
 router.post('/sent-message',userAuthenticator,setMessage)
 
 router.post('/get-all-messages',userAuthenticator,getMessages)
+
+// report route
+router.post('/add-report',userAuthenticator,addReport)
 
 module.exports = router

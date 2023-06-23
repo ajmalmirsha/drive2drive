@@ -6,34 +6,48 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ownerApi } from "../../../utils/Apis"
 import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler"
+import Select from 'react-select/creatable';
+import makeAnimated from 'react-select/animated';
 export default function EditVehicle () {
     const {id} = useParams()
     const [product, setProduct] = useState({
         id:null,
         product_name: null,
         category: null,
+        type:null,
+        segment:null,
         price: null,
         description: null,
         model:null,
         brand:null,
         year:null,
-        images: []
+        seats:null,
+        mileage:null,
+        images: [],
+        places: [],
       })
       const [droppedImage,setDroppedImage] = useState([])
       const {ownerAuthenticationHandler} = useErrorHandler()
     useEffect(()=>{
         ownerApi.get(`/edit-product-details/${id}`).then(({data:{data}})=>{
-            setProduct({
-                id: data._id,
-                product_name: data.product_name,
-                category: data.category,
-                price: data.price,
-                description: data.description,
-                model:data.model,
-                brand:data.brand,
-                year:data.year,
-                images: data.image
-            })
+          console.log('on getting',data.places);
+          setProduct({
+            id: data._id,
+            product_name: data.product_name,
+            category: data.category,
+            type: data.type,
+            segment: data.segment,
+            price: data.price,
+            description: data.description,
+            model:data.model,
+            brand:data.brand,
+            year:data.year,
+            seats: data.seats,
+            mileage: data.mileage,
+            images:data.image,
+            places: data.places,
+          });
+          console.log('got');
         }).catch(err => {
           ownerAuthenticationHandler(err)
         })
@@ -74,8 +88,16 @@ export default function EditVehicle () {
         e.preventDefault()
         console.log(product,878);
         const nullProperties = Object.entries(product)
-          .filter(([key, value]) => value === null || value === '' || (key === 'image' && Object.keys(value)?.length === 0 && value.constructor === Object))
-          .map(([key]) => key);
+        .filter(([key, value]) =>
+          value === null ||
+          (key === 'description' && value.trim() === '') ||
+          (key === 'images' && value.length === 0) ||
+          (key === 'model' && value.trim() === '') ||
+          (key === 'year' && value.trim() === '') ||
+          (key === 'brand' && value.trim() === '') ||
+          (key === 'places' && value.length === 0) 
+        )
+        .map(([key]) => key);
         
         if (nullProperties?.length > 0) {
           toast.error(nullProperties[0] + ' feild required !', {
@@ -124,14 +146,20 @@ export default function EditVehicle () {
         id: data._id,
         product_name: data.product_name,
         category: data.category,
+        type: data.type,
+        segment: data.segment,
         price: data.price,
         description: data.description,
         model:data.model,
         brand:data.brand,
         year:data.year,
-        images:[...data.image]
+        seats: data.seats,
+        mileage: data.mileage,
+        images:[...data.image],
+        places: data.places,
       });
     }).catch( err =>{
+      err.response.status == 400 &&  toast.error(err.response.data.message)
       ownerAuthenticationHandler(err)
     })
 
@@ -168,12 +196,17 @@ export default function EditVehicle () {
           id: data._id,
           product_name: data.product_name,
           category: data.category,
+          type: data.type,
+          segment: data.segment,
           price: data.price,
           description: data.description,
           model:data.model,
           brand:data.brand,
           year:data.year,
-          images:[...data.image]
+          seats: data.seats,
+          mileage: data.mileage,
+          images:data.image,
+          places: data.places,
         });
         setDroppedImage([])
       }).catch(err => {
@@ -208,7 +241,32 @@ export default function EditVehicle () {
     event.preventDefault();
   };
   
+  const animatedComponents = makeAnimated();
 
+  const colourOptions = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' }
+  ]
+
+  // const placeOptions = product.places.map((place) => ({
+  //   value: place,
+  //   label: place
+  // }));
+
+  const handleSelectChange = (selected) => {
+    console.log(selected,'on chag=neg');
+    if(selected?.length > 0 ) {
+   setProduct({
+    ...product,
+    places: [...selected],
+  }) } else {
+    setProduct({
+      ...product,
+      places: [],
+    }) 
+  }
+  };
       return (
     
         <div className="col-md-9 my-3">
@@ -240,14 +298,56 @@ export default function EditVehicle () {
                   <label className="form-label" htmlFor="form7Example5">Product name</label>
                   <input name="product_name" value={product.product_name} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example5" className="form-control" />
                 </div>
-                <select onChange={(e)=>{
+                {/* <select onChange={(e)=>{
    setProduct({ ...product, category: e.target.value })
   }} class="form-select" aria-label="Default select example">
   <option  selected>{product.category}</option>
   <option value="car">car</option>
   <option value="bike">bike</option>
 </select>
-    
+     */}
+
+<div className="row">
+ <label className="form-label mt-3" htmlFor="type">Type</label>
+
+            <div className="col-md-4 mb-3 mt-1" >
+          <select id="type" onChange={(e)=>{
+   setProduct({ ...product, type: e.target.value })
+  }} class="form-select" aria-label="Default select example">
+  <option  selected>select type</option>
+  <option value="Sedan">Sedan</option>
+  <option value="Hatchback">Hatchback</option>
+  <option value="SUV">SUV</option>
+  <option value="Crossover">Crossover</option>
+  <option value="Coupe">Coupe</option>
+  <option value="Convertible">Convertible</option>
+</select> 
+</div>
+            <div className="col-md-4 mb-3 mt-1" >
+          <select id="type" onChange={(e)=>{
+   setProduct({ ...product, segment: e.target.value })
+  }} class="form-select" aria-label="Default select example">
+  <option  selected>select segment</option>
+  <option value="vintage">vinatge</option>
+  <option value="premium">premium</option>
+  <option value="normal">normal</option>
+</select> 
+</div>
+<div className="col-md-4 row">
+<div className="col-md-6 d-flex justify-content-center align-items-center">
+  <button onClick={(e) => {
+    e.preventDefault()
+    setProduct({...product,category:'manual'})
+  }} className={ product.category !== 'manual' ? `btn btn-outline-secondary` : 'btn btn-secondary'} >manual</button>
+</div>
+<div className="col-md-6 d-flex justify-content-center align-items-center">
+  <button onClick={(e) => {
+    e.preventDefault()
+    setProduct({...product,category:'automatic'})
+  }} className={ product.category !== 'automatic' ? `btn btn-outline-secondary` : 'btn btn-secondary'} >automatic</button>
+</div>
+</div> 
+</div>
                
                 <div className="row">
       <div className="col-md-4 form-outline mb-4">
@@ -268,12 +368,50 @@ export default function EditVehicle () {
     </div>
     
              
-    
-                <div className="form-outline mb-4">
-                  <label className="form-label" htmlFor="form7Example7">Price</label>
-                  <input name="price" value={product.price} onChange={(e) => !isNaN(e.target.value) && setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example7" className="form-control" />
-                </div>
-    
+    <div className="row">
+            <div className="form-outline col-md-4 mb-4">
+              <label className="form-label" htmlFor="form7Example7">Price / perday</label>
+              <input value={product.price} name="price" onChange={(e) =>{ 
+
+                !isNaN(e.target.value) &&  setProduct({ ...product, [e.target.name]: e.target.value })
+
+                }} type="text" id="form7Example7" className="form-control" />
+            </div>
+            <div className="form-outline col-md-4 mb-4">
+              <label className="form-label" htmlFor="form7Example7">no.of seats</label>
+              <input value={product.seats} name="seats" onChange={(e) =>{ 
+
+                !isNaN(e.target.value) &&  setProduct({ ...product, [e.target.name]: e.target.value })
+
+                }} type="number" id="form7Example7" className="form-control" />
+            </div>
+            <div className="form-outline col-md-4 mb-4">
+              <label className="form-label" htmlFor="form7Example7">mileage</label>
+              <input value={product.mileage} name="mileage" onChange={(e) =>{ 
+
+                !isNaN(e.target.value) &&  setProduct({ ...product, [e.target.name]: e.target.value })
+
+                }} type="text" id="form7Example7" className="form-control" />
+            </div>
+
+            </div>
+            <div className="form-outline mb-4">
+              <label htmlFor="places">add Places</label>
+                <Select
+                id='places'
+                closeMenuOnSelect={false}
+                components={animatedComponents}
+                // defaultValue={placeOptions}
+                isMulti
+                isCreatable={true}
+                options={colourOptions}
+                isLoading={false}
+                value={product.places}
+                onChange={handleSelectChange}        
+                />
+            </div>
+             
+
     
                 <div className="form-outline mb-4">
                   <label className="form-label" htmlFor="form7Example7">Description</label>

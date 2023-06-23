@@ -1,7 +1,7 @@
 
 const { ownerRegister, ownerLogin } = require('../controller/authController')
 const { addVehicle, allVehicles, getReviews, deleteVehicleImage, EditVehicleDetials, addVehicleImages, bookingVerifications, verifyBooking, editProductDetails } = require('../controller/ownerController')
-const { uploadOptions } = require('../middlewares/multer/multer')
+const { uploadOptions, uploadlicense } = require('../middlewares/multer/multer')
 const { ownerAuthenticator, userAuthenticator } = require('../middlewares/Auth/auth')
 const  { setMessage, getMessages, getContacts, ownerNotifications } = require('../controller/userController')
 const router = require('express').Router()
@@ -10,7 +10,11 @@ router.post('/owner-register', ownerRegister)
 
 router.post('/login', ownerLogin)
 
-router.post('/add-vehicle',ownerAuthenticator,uploadOptions.array('images',4), addVehicle)
+router.post('/add-vehicle',ownerAuthenticator, uploadOptions.fields([
+    { name: 'rc[front]', maxCount: 1 },
+    { name: 'rc[back]', maxCount: 1 },
+    { name: 'images', maxCount: 4}
+  ]), addVehicle)
 
 router.get('/get-all-vehicles/:id',ownerAuthenticator, allVehicles)
 

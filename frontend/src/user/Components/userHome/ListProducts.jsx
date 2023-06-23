@@ -4,8 +4,7 @@ import './listproduct.css'
 import { useNavigate } from 'react-router-dom'
 import { userApi } from '../../../utils/Apis'
 
-function ListProducts() {
-    const [vehicle, setVehicles] = useState([])
+function ListProducts({vehicle,title}) {
     const inputRef = useRef()
     const navigate = useNavigate()
 
@@ -20,18 +19,16 @@ function ListProducts() {
     const numbers = [...Array(npage + 1).keys()].slice(1)
 
 
-    useEffect(() => {
-       (  function () {
-             userApi.get('/list-all-vehicle').then(({data:{allVehicle}}) =>{
-              setVehicles(allVehicle)
-             })
-        })()
 
-    }, [])
  
     return (
         <>
-            <div className='row justify-content-center mx-0 py-5 gap-2' >
+          <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caprasimo&display=swap');
+        </style>
+
+            <div className='row justify-content-start  px-5 py-3 gap-2' >
+       <span style={{fontFamily: 'fantasy'}} className="d-block font-weight-bold h4 ms-3">{title}</span>
 
                 {records.map((x) => (
                     <div onClick={() => {
@@ -53,7 +50,9 @@ function ListProducts() {
                 ))}
             </div>
 
-            <nav className='d-flex  justify-content-center'>
+          { 
+          records?.length > recordsPerPage && (
+          <nav className='d-flex  justify-content-center'>
                 <ul className="pagination">
                     <li className="page-item">
                         <a className="page-link" onClick={prevPage} >Prev</a>
@@ -70,6 +69,7 @@ function ListProducts() {
                     </li>
                 </ul>
             </nav>
+            )}
 
         </>
     )

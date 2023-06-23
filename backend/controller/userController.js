@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const bookingModel = require('../model/bookingModel');
 const chatModel = require('../model/chatModel');
 const ownerModel = require('../model/ownerModel');
+const reportModel = require('../model/reportModel');
 module.exports = {
     uploadLisence (req,res) {
         try {
@@ -27,8 +28,11 @@ module.exports = {
     },
     async addReview ( req, res) {
         try {
-            const {vehicleId,rating,review,userImage,username} = JSON.parse(req.body.reviewData)
+            const {vehicleId,rating,review} = JSON.parse(req.body.reviewData)
+          
             
+            const userId = new mongoose.Types.ObjectId(req.headers.userId)
+            console.log('userId', typeof userId);
             vehicleModel.findOneAndUpdate(
                 { _id: vehicleId }, 
                 {
@@ -36,16 +40,20 @@ module.exports = {
                     reviews: {
                       rating,
                       review,
-                      userimage:userImage,
-                      username,
+                      userId,
                       image:req?.file?.filename
                     }
                   }
                 },
                 { new: true }
-              ).then((response)=>{
-                console.log(response);
-                res.status(200).json({success:true,message:'review added succesfully',data:response})
+              ).populate({
+                path: 'reviews',
+                populate: {
+                  path: 'userId'
+                }
+              }).then((response)=>{
+                console.log('populated',response);
+                res.status(200).json({success:true,message:'review added succesfully',data:response.reviews})
               })
                     } catch (error) {
             console.log(error.message);
@@ -231,6 +239,31 @@ module.exports = {
         notificationModel.find({owner:true}).sort({_id:-1}).then( data => {
           console.log(data,7878);
           res.status(200).json({ success: true, data})
+        })
+      } catch (e) {
+        console.log(e.message);
+      }
+    },
+
+    //getting available places for user
+
+    async getAvailablePlaces ( req, res) {
+        try {
+          const data = await vehicleModel.distinct('places');
+          res.status(200).json({ success:true, data })
+        } catch (err) {
+          console.error(err);
+        }
+    },
+
+    // add report function
+
+    addReport ( req, res ) {
+      try{
+        const { report, proId,  } = req.body
+        const { userId } = req.headers
+        reportModel.create( {report, productId: proId, reportedBy: userId} ).then( () => {
+          res.status(200).json( {success:true, message:'report sent successfully'})
         })
       } catch (e) {
         console.log(e.message);

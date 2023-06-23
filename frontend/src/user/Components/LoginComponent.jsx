@@ -54,7 +54,6 @@ function LoginComponent() {
     async function googleSuccess(response) { 
 
         const decoded = jwt_decode(response.credential)
-
         const user = {
             username: decoded.name,
             email: decoded.email,

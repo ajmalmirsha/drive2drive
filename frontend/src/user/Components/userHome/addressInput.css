@@ -1,0 +1,30 @@
+
+
+.address-input-secssion {
+    height: 86vh;
+    background-color: #ffdf00;
+    /* background-image: url('../../../images/address-input/banner.jpg'); */
+    /* background-repeat: no-repeat;  */
+    object-fit: fill;
+}
+
+.main-input-wrapper{
+    border-radius: 5px;
+}
+
+.custom-datepicker {
+    z-index: 9999 !important;
+}
+
+.half-background {
+    width: 50%;
+    background-color: #f2f2f2;
+  }
+
+.search-btn {
+    background-color: #4A306D;
+    height: 48px;
+    border: none;
+    border-radius: 5px;
+
+}

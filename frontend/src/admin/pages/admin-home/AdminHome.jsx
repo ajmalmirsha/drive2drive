@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import AdminSideBar from "../../components/AdminSideBar"
-import Dashboard from "../../components/Dashbord"
+import Dashboard from "../../components/dashboard/Dashbord"
 import Coupon from "../../components/coupon/Coupon"
 import Banner from "../../components/banner/Banner"
 import Notifications from "../../components/notification/Notifications"
@@ -37,12 +37,17 @@ export default function AdminHome({props}) {
         {
           props == 'license-verify' &&    <LicenseVerify/>
         }
-        
+
         {
           props == 'list-users' &&    <ListUsers/>
         }
+
         {
           props === 'list-owners' &&    <ListOwners/>
+        }
+        
+        {
+          props === 'bookings' &&    <ListOwners/>
         }
       
         {/* admin home page !!

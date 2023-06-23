@@ -20,7 +20,7 @@ const ViewPageComponent = () => {
       const [avgRating,setAvgRating] = useState(0)
       const [mainImage,setMainImage] = useState(0)
       const [ownerId,setOwnerId] = useState('')
-
+      const [ report , setReport ]  = useState('')
   useEffect(() => {
     ( 
     function () {
@@ -78,8 +78,6 @@ const navigate = useNavigate()
                            review,
                            vehicleId:vehicle._id,
                            userId:user.id,
-                           userImage:user.image,
-                           username:user.username
                          }
       const formData = new FormData()
             formData.append('image',selectedImages)
@@ -92,7 +90,7 @@ const navigate = useNavigate()
       };
      
       userApi.post( '/vehicle/review/add',formData, config).then(({data:{data}})=>{
-        setReviews(data.reviews.reverse())
+        setReviews(data.reverse())
       }).catch((err) => {
         userAuthenticationHandler(err)
       })
@@ -105,6 +103,16 @@ const navigate = useNavigate()
     }
    
   };
+
+  const handleReportSubmit = () => {
+     console.log(report);
+     userApi.post('/add-report',{report,proId:vehicle._id}).then( ({data:{message}}) => {
+       toast.success(message)
+       setReport('')
+     }).catch( err => {
+      userAuthenticationHandler(err)
+     })
+  }
 
   return (
     <div className="product-details-container">
@@ -135,6 +143,22 @@ const navigate = useNavigate()
 
         })
        }</div>
+     <div class="btn-group dropup">
+  <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+    Report spam
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="#">
+    <form onSubmit={handleReportSubmit} >
+      <h4 className='text-danger'>Report spam</h4>
+        <textarea value={report} onChange={(e) => setReport(e.target.value)} className='d-block' name="" id="" cols="30" rows="10"></textarea>
+        <div className="d-flex pt-2 justify-content-center">
+        <button className='d-block btn btn-danger' type='submit'>Report</button>
+        </div>
+      </form>
+      </a></li>
+  </ul>
+</div>
         </div>
         <div className="col-lg-6 ">
           <div className="product-info">
@@ -171,10 +195,6 @@ chat with owner
 </button>
 
 </div>
-           <div className="">
-            report a <span className='text-danger' >spam</span>
-           </div>
-
            
 
 </div>
@@ -239,8 +259,8 @@ chat with owner
                 <li className="review-item row">
                 <div className="col-md-9">
                   <div className="review-rating">
-                  <img className='me-2'  src={ review?.userimage?.slice(0,33) == 'https://lh3.googleusercontent.com'  ?   review.userimage  : review.userimage ? `${process.env.REACT_APP_URL}/public/images/${review.userimage}` : img} alt="" />
-                    <span className="review-rating-label">{review.username}</span>
+                  <img className='me-2'  src={ review?.userId?.image?.slice(0,33) == 'https://lh3.googleusercontent.com'  ?   review?.userId?.image  : review?.userId?.image ? `${process.env.REACT_APP_URL}/public/images/${review?.userId?.image}` : img} alt="" />
+                    <span className="review-rating-label">{review?.userId?.username}</span>
                     <div className="review-stars">
                       {[1, 2, 3, 4, 5].map((value) => (
                         <span

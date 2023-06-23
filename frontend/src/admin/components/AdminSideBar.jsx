@@ -3,6 +3,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import './adminSideBar.css'
 import { useDispatch } from "react-redux";
 import { setAdminDetails } from "../../redux/adminSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBook } from "@fortawesome/free-solid-svg-icons";
 
 export default function AdminSideBar () {
    const disaptch = useDispatch()
@@ -80,6 +82,9 @@ export default function AdminSideBar () {
   <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
 </svg>
        <span className="ms-2">license verify</span> </NavLink>
+     <NavLink to={'/admin/list/bookings'} className="my-2 rounded-1 p-1 d-block style-none custom-link">
+     <FontAwesomeIcon icon={faBook} />
+       <span className="ms-2">Bookings</span> </NavLink>
 
        <button className="btn btn-danger" onClick={handleLogOut} >Logout</button>
     </div>

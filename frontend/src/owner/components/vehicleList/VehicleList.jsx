@@ -37,7 +37,10 @@ const numbers = [...Array( npage + 1 ).keys()].slice(1)
 
     return (
         <div className="col-md-9 mt-3">
-        <Table className="custom-table" >
+ { records.length < 1 ?
+ ( <div>add your first vehicle</div>) :
+ (
+  <Table className="custom-table" >
   <Thead>
     <Tr>
       <Th>#</Th>
@@ -64,6 +67,8 @@ const numbers = [...Array( npage + 1 ).keys()].slice(1)
   }
   </Tbody>
 </Table>
+  )}
+{ records?.length > recordsPerPage && (
 <nav className='d-flex  justify-content-center'>
                 <ul className="pagination">
                     <li className="page-item">
@@ -80,7 +85,8 @@ const numbers = [...Array( npage + 1 ).keys()].slice(1)
                         <a  className="page-link" onClick={nextPage} >Next</a>
                     </li>
                 </ul>
-            </nav>
+            </nav> )
+}
 </div>
     )
 

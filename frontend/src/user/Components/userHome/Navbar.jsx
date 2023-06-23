@@ -12,7 +12,7 @@ export default function Navbar() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [menuOpen, setMenu] = useState(false)
- console.log('usrer',user);
+//  console.log('usrer',user);
   return (
     <div className="nav row">
       <div className="col-md-1">

@@ -5,7 +5,8 @@ const {   addNotifications,
           verifyLisence,  
           getAllUserDetails,
           blockUnblock,
-          getAllOwners} = require('../controller/adminController')
+          getAllOwners,
+          getAllSpams} = require('../controller/adminController')
 
 const { adminLogin } = require('../controller/authController')
 
@@ -25,6 +26,10 @@ router.put('/verify/license',verifyLisence)
 router.put('/user/block/un-block',blockUnblock)
 
 router.get('/get/all/owners',getAllOwners)
+
+// getting all spam reports
+
+router.get('/get/all/spam-reports',getAllSpams)
 
 
 module.exports = router

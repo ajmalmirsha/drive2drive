@@ -5,37 +5,54 @@ import { ToastContainer, toast } from "react-toastify";
 import { useSelector } from "react-redux"
 import { ownerApi } from "../../../utils/Apis";
 import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler";
-
+import Select from 'react-select/creatable';
+import makeAnimated from 'react-select/animated';
 
 function AddVehicle() {
   const owner = useSelector(state => state.owner)
   const [product, setProduct] = useState({
     product_name: null,
     category: null,
+    type:null,
+    segment:null,
     price: null,
     description: null,
     model:null,
     brand:null,
     year:null,
+    seats:null,
+    mileage:null,
     ownerId:owner.id,
-    images: []
+    images: [],
+    places: [],
+    rc:{
+      front:{},
+      back:{}
+    }
   })
+
+
+  
  
   const navigate = useNavigate()
   const { ownerAuthenticationHandler } = useErrorHandler()
   
   const handleSubmit = async (e) => {
     e.preventDefault()
+    console.log(product);
     const nullProperties = Object.entries(product)
-    .filter(([key, value]) => 
+    .filter(([key, value]) =>
       value === null ||
       (key === 'description' && value.trim() === '') ||
       (key === 'images' && value.length === 0) ||
       (key === 'model' && value.trim() === '') ||
       (key === 'year' && value.trim() === '') ||
-      (key === 'brand' && value.trim() === '')
+      (key === 'brand' && value.trim() === '') ||
+      (key === 'places' && value.length === 0) ||
+      (key === 'rc' && ( !value.front?.name || !value.back?.name))
     )
     .map(([key]) => key);
+  
 
     if (nullProperties.length > 0) {
       toast.error(nullProperties[0] + ' feild required !', {
@@ -54,6 +71,9 @@ function AddVehicle() {
       for (let i = 0; i < product.images.length; i++) {
         formData.append('images', product.images[i]);
       }
+
+      formData.append('rc[front]', product.rc.front);
+      formData.append('rc[back]', product.rc.back);
       
       formData.append('product', JSON.stringify(product));
       const config = {
@@ -85,7 +105,31 @@ function AddVehicle() {
 
     }
   }
+  const animatedComponents = makeAnimated();
 
+  const colourOptions = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' }
+  ]
+
+  useEffect(()=> {
+    console.log(product);
+  },[product.rc.front,product.rc.back])
+
+  const handleSelectChange = (selected) => {
+    console.log(selected);
+    if(selected?.length > 0 ) {
+   setProduct({
+    ...product,
+    places: [...selected],
+  }) } else {
+    setProduct({
+      ...product,
+      places: [],
+    }) 
+  }
+  };
   return (
 
     <div className="col-md-9 my-3">
@@ -106,21 +150,22 @@ function AddVehicle() {
               <label className="form-label" htmlFor="form7Example6">Category</label>
               <input name="category" onBlur={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
             </div> */}
-          <label className="form-label" htmlFor="category">Category</label>
+          {/* <label className="form-label" htmlFor="category">Category</label>
             <select onChange={(e)=>{
    setProduct({ ...product, category: e.target.value })
   }} id="category" class="form-select" aria-label="Default select example">
   <option  selected>select a category</option>
   <option value="car">car</option>
   <option value="bike">bike</option>
-</select>
-          { product.category == 'car' && (
-            <div className=" my-3" >
-          <label className="form-label" htmlFor="type">Type</label>
+</select> */}
+ <div className="row">
+ <label className="form-label mt-3" htmlFor="type">Type</label>
+
+            <div className="col-md-4 mb-3 mt-1" >
           <select id="type" onChange={(e)=>{
-   setProduct({ ...product, category: e.target.value })
+   setProduct({ ...product, type: e.target.value })
   }} class="form-select" aria-label="Default select example">
-  <option  selected>select car type</option>
+  <option  selected>select type</option>
   <option value="Sedan">Sedan</option>
   <option value="Hatchback">Hatchback</option>
   <option value="SUV">SUV</option>
@@ -129,10 +174,32 @@ function AddVehicle() {
   <option value="Convertible">Convertible</option>
 </select> 
 </div>
-)}
+            <div className="col-md-4 mb-3 mt-1" >
+          <select id="type" onChange={(e)=>{
+   setProduct({ ...product, segment: e.target.value })
+  }} class="form-select" aria-label="Default select example">
+  <option  selected>select segment</option>
+  <option value="vintage">vinatge</option>
+  <option value="premium">premium</option>
+  <option value="normal">normal</option>
+</select> 
+</div>
+<div className="col-md-4 row">
+<div className="col-md-6 d-flex justify-content-center align-items-center">
+  <button onClick={(e) => {
+    e.preventDefault()
+    setProduct({...product,category:'manual'})
+  }} className={ product.category !== 'manual' ? `btn btn-outline-secondary` : 'btn btn-secondary'} >manual</button>
+</div>
+<div className="col-md-6 d-flex justify-content-center align-items-center">
+  <button onClick={(e) => {
+    e.preventDefault()
+    setProduct({...product,category:'automatic'})
+  }} className={ product.category !== 'automatic' ? `btn btn-outline-secondary` : 'btn btn-secondary'} >automatic</button>
+</div>
+</div> 
+</div>
 
-<input name="carType" type="radio" />
-<input name="carType" type="radio" />
             <div className="row">
   <div className="col-md-4 form-outline mb-4">
     <label className="form-label" htmlFor="form7Example6">Model</label>
@@ -150,15 +217,49 @@ function AddVehicle() {
   </div>
 
 </div>
-            <div className="form-outline mb-4">
-              <label className="form-label" htmlFor="form7Example7">Price</label>
+<div className="row">
+            <div className="form-outline col-md-4 mb-4">
+              <label className="form-label" htmlFor="form7Example7">Price / perday</label>
               <input value={product.price} name="price" onChange={(e) =>{ 
 
                 !isNaN(e.target.value) &&  setProduct({ ...product, [e.target.name]: e.target.value })
 
                 }} type="text" id="form7Example7" className="form-control" />
             </div>
+            <div className="form-outline col-md-4 mb-4">
+              <label className="form-label" htmlFor="form7Example7">no.of seats</label>
+              <input value={product.seats} name="seats" onChange={(e) =>{ 
 
+                !isNaN(e.target.value) &&  setProduct({ ...product, [e.target.name]: e.target.value })
+
+                }} type="text" id="form7Example7" className="form-control" />
+            </div>
+            <div className="form-outline col-md-4 mb-4">
+              <label className="form-label" htmlFor="form7Example7">mileage</label>
+              <input value={product.mileage} name="mileage" onChange={(e) =>{ 
+
+                !isNaN(e.target.value) &&  setProduct({ ...product, [e.target.name]: e.target.value })
+
+                }} type="text" id="form7Example7" className="form-control" />
+            </div>
+
+            </div>
+            <div className="form-outline mb-4">
+              <label htmlFor="places">add Places</label>
+                <Select
+                id='places'
+                closeMenuOnSelect={false}
+                components={animatedComponents}
+                // defaultValue={[colourOptions[], colourOptions[5]]}
+                isMulti
+                isCreatable={true}
+                options={colourOptions}
+                isLoading={false}
+                value={product.places}
+                onChange={handleSelectChange}        
+                />
+            </div>
+             
 
             <div className="form-outline mb-4">
               <label className="form-label" htmlFor="form7Example7">Description</label>
@@ -167,7 +268,25 @@ function AddVehicle() {
 
             <div className="form-outline mb-4">
               <label className="form-label" htmlFor="form7Example7">image</label>
-              <input multiple name="images" onBlur={(e) => setProduct({ ...product, [e.target.name]: Array.from(e.target.files) })} type="file" id="form7Example7" className="form-control" />
+              <input multiple name="images" onChange={(e) => setProduct({ ...product, [e.target.name]: Array.from(e.target.files) })} type="file" id="form7Example7" className="form-control" />
+            </div>
+            <div className="form-outline mb-4 row">
+            <label className="form-label" htmlFor="form7Example7">Upload your Rc</label>
+              <label htmlFor="rcFront" className="col-md-6 border d-flex justify-content-center align-items-center p-2" style={{height:'200px'}} >
+              { product.rc.front?.name ?  (<img className="w-100 h-100" src={ URL.createObjectURL(product.rc.front) } alt="" /> ):
+              (  <p>Upload front side of your rc book</p>) }
+              <input name="images" hidden     onChange={(e) =>
+      setProduct({
+        ...product,
+        rc: { ...product.rc, front: e.target.files[0] }
+      })
+    } type="file" id="rcFront" className="form-control" />
+              </label>
+              <label htmlFor="rcBack" className="col-md-6 border d-flex justify-content-center align-items-center p-2" style={{height:'200px'}} >
+             { product.rc.back?.name ? <img className="w-100 h-100" src={ URL.createObjectURL(product.rc.back) } alt="" /> :
+              <p>Upload back side of your rc book</p>}
+              <input  name="images" hidden onChange={(e) => setProduct({ ...product, rc: { ...product.rc, back: e.target.files[0] }})} type="file" id="rcBack" className="form-control" />
+              </label>
             </div>
 
 

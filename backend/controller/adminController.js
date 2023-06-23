@@ -2,7 +2,7 @@ const notificationModel = require("../model/notificationModel");
 const ownerModel = require("../model/ownerModel");
 const userModel = require("../model/userModel");
 const vehicleModel = require('../model/vehicleModel')
-
+const reportModel = require('../model/reportModel');
 
 module.exports = {
       
@@ -121,5 +121,17 @@ module.exports = {
         } catch (e) {
             console.log(e.message);
         }
+    },
+
+   // getting all spams 
+
+   getAllSpams ( req, res ) {
+    try{
+     reportModel.find({}).sort({createdAt:-1}).populate('reportedBy').populate('productId').then((data) => {
+        res.status(200).json( {success:true, data})
+     })
+    }catch (e) {
+     console.log(e.message);
     }
+   }
 }
