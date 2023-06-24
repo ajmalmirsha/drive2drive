@@ -6,7 +6,9 @@ const {   addNotifications,
           getAllUserDetails,
           blockUnblock,
           getAllOwners,
-          getAllSpams} = require('../controller/adminController')
+          getAllSpams,
+          getAllbookings,
+          getAllSales} = require('../controller/adminController')
 
 const { adminLogin } = require('../controller/authController')
 
@@ -30,6 +32,12 @@ router.get('/get/all/owners',getAllOwners)
 // getting all spam reports
 
 router.get('/get/all/spam-reports',getAllSpams)
+
+// getting all bookings
+router.get('/get/all-bookings',getAllbookings)
+
+// getting all sales report
+router.get('/get/sales-report',getAllSales)
 
 
 module.exports = router

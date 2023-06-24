@@ -26,7 +26,8 @@ import UserBookings from './user/Components/bookings/UserBookings';
 import ChatPage from './user/pages/chat/ChatPage';
 import OwnerChatPage from './owner/pages/owner-chat/OwnerChatPage';
 
-
+import "primereact/resources/themes/lara-light-indigo/theme.css";     
+import "primereact/resources/primereact.min.css";  
 function App() {
  
   return (

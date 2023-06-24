@@ -85,6 +85,9 @@ export default function AdminSideBar () {
      <NavLink to={'/admin/list/bookings'} className="my-2 rounded-1 p-1 d-block style-none custom-link">
      <FontAwesomeIcon icon={faBook} />
        <span className="ms-2">Bookings</span> </NavLink>
+     <NavLink to={'/admin/sales-report'} className="my-2 rounded-1 p-1 d-block style-none custom-link">
+     <FontAwesomeIcon icon={faBook} />
+       <span className="ms-2">Sales Report</span> </NavLink>
 
        <button className="btn btn-danger" onClick={handleLogOut} >Logout</button>
     </div>

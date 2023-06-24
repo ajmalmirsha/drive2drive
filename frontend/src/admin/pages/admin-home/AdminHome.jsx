@@ -8,6 +8,8 @@ import Notifications from "../../components/notification/Notifications"
 import LicenseVerify from "../../components/licenseVerify/LicenseVerify"
 import ListUsers from "../../components/userList/ListUsers"
 import ListOwners from "../../components/ownerList/ListOwners"
+import ListBookings from "../../components/bookings/ListBookings"
+import SalesReport from "../../components/Sales-Report/SalesReport"
 
 
 export default function AdminHome({props}) {
@@ -45,9 +47,12 @@ export default function AdminHome({props}) {
         {
           props === 'list-owners' &&    <ListOwners/>
         }
-        
+
         {
-          props === 'bookings' &&    <ListOwners/>
+          props === 'bookings' &&    <ListBookings/>
+        }
+        {
+          props === 'salesReport' &&    <SalesReport/>
         }
       
         {/* admin home page !!

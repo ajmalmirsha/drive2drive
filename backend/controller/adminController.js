@@ -3,6 +3,7 @@ const ownerModel = require("../model/ownerModel");
 const userModel = require("../model/userModel");
 const vehicleModel = require('../model/vehicleModel')
 const reportModel = require('../model/reportModel');
+const bookingModel = require('../model/bookingModel');
 
 module.exports = {
       
@@ -132,6 +133,31 @@ module.exports = {
      })
     }catch (e) {
      console.log(e.message);
+    }
+   },
+
+   // get all bookings 
+
+   getAllbookings ( req, res ) {
+    try{
+        bookingModel.find({}).populate('userId').populate('vehicle.ownerId').then((data) => {
+            res.status(200).json({succes:true,data})
+        })
+    } catch (e) {
+        console.log(e)
+    }
+   },
+
+
+   // get all sales report
+
+   getAllSales ( req, res ) {
+    try{
+        bookingModel.find({status:'completed'}).populate('userId').populate('vehicle.ownerId').then((data) => {
+            res.status(200).json({succes:true,data})
+        })
+    } catch (e) {
+        console.log(e)
     }
    }
 }

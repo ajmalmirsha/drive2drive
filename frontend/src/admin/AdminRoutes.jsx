@@ -21,6 +21,7 @@ export default function AdminRoutes () {
         <Route exact path='/list/users' element={<AdminPrivateRoute><AdminHome props={'list-users'} /></AdminPrivateRoute> } />
         <Route exact path='/list/owners' element={<AdminPrivateRoute><AdminHome props={'list-owners'} /></AdminPrivateRoute> } />
         <Route exact path='/list/bookings' element={<AdminPrivateRoute><AdminHome props={'bookings'} /></AdminPrivateRoute> } />
+        <Route exact path='/sales-report' element={<AdminPrivateRoute><AdminHome props={'salesReport'} /></AdminPrivateRoute> } />
         </Routes>
         </>
     )

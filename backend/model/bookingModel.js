@@ -14,13 +14,10 @@ vehicle:{
     category:{
         type:String
     },
-    model:{
+    segment:{
         type:String
     },
-    year:{
-        type:String
-    },
-    brand:{
+    type:{
         type:String
     },
     price:{
@@ -39,7 +36,8 @@ deposite:{
     default:0
 },
 userId : {
-    type:String
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Users'
 },
 totalAmount : {
     type: Number,

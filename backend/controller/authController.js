@@ -32,10 +32,10 @@ module.exports = {
     async login(req, res) {
         const { email, password } = req.body.users
         const user = await userModel.findOne({ email })
-        if ( user.block ) {
-          return  res.json( {success:false , message: 'you blocked by admin'} )
-        }
         if (user) {
+            if ( user.block ) {
+              return  res.json( {success:false , message: 'you blocked by admin'} )
+            }
             bcrypt.compare(password, user.password).then((response) => {
                 if (response) {
                     const token = jwt.sign({ userId: user._id }, process.env.USER_JWT_SECRET, { expiresIn: '1day' })

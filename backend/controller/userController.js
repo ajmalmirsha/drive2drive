@@ -112,11 +112,10 @@ module.exports = {
       const {paymentId,bookingId,paymentMethod} = req.body
       const { userId } = req.headers
       bookingModel.findByIdAndUpdate({_id:bookingId}
-         ,{$set:{paid:true,'payment.paymentId':paymentId,'payment.method':paymentMethod}},
+         ,{$set:{paid:true,'payment.paymentId':paymentId,'payment.method':paymentMethod,status:'completed'}},
       {new:true}).then((response) => {
         console.log(response);
         vehicleModel.updateOne({_id:response.vehicle._id},{$addToSet: { bookedUsers: userId }}).then(()=> {
-
         })
         bookingModel.find({userId}).then((response) => {
           res.status(200).json({success:true,data:response})

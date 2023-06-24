@@ -106,9 +106,8 @@ export default function CheckOut() {
           vehicleName: vehicle.product_name,
           image: vehicle.image,
           category: vehicle.category,
-          model: vehicle.model,
-          year: vehicle.year,
-          brand: vehicle.brand,
+          segment: vehicle.segment,
+          type: vehicle.type,
           price: vehicle.price,
           description: vehicle.description,
           ownerId: vehicle.ownerId
