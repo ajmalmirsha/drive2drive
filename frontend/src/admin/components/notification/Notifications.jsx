@@ -6,7 +6,12 @@ import './notifications.css'
 import { ToastContainer, toast } from "react-toastify";
 import { io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
+import { adminApi } from '../../../utils/Apis';
+import {  useErrorHandler } from '../../../user/ErrorHandlers/ErrorHandler'
+
+
 export default function Notifications () {
+  const { adminAuthenticationHandler } = useErrorHandler()
   const socket = useRef()
   const admin = useSelector(state => state.admin)
   const [notification , setNotification] = useState({
@@ -17,14 +22,13 @@ export default function Notifications () {
     image:null
   })
   const [allNotifications, setallNotifications] = useState([])
-
   useEffect(()=>{
-    console.log('admin id',admin.id);
     socket.current = io(process.env.REACT_APP_URL)
     socket.current.emit("add-user",admin.id)
-    axios.get(`${process.env.REACT_APP_URL}/admin/get-all-notifications`).then(({data:{data}})=>{
-      console.log(data);
+    adminApi.get(`/get-all-notifications`).then(({data:{data}})=>{
       setallNotifications([...data])
+    }).catch( err => {
+       adminAuthenticationHandler(err)
     })
   },[])
 
@@ -34,7 +38,6 @@ export default function Notifications () {
       return toast.error('add a title !')
     }
     const formData = new FormData()
-    // console.log('notification',notification);
     formData.append('notification',JSON.stringify(notification))
    
     formData.append('image',notification.image) 
@@ -44,8 +47,9 @@ export default function Notifications () {
       }
   }
 
-    axios.post(`${process.env.REACT_APP_URL}/admin/add-notification`,formData,config).then(({data:{data}}) => {
-      console.log('fdf',data);
+  console.log('adding new notifications');
+
+    adminApi.post(`/add-notification`,formData,config).then(({data:{data}}) => {
       setallNotifications([{...data},...allNotifications])
       
       setNotification({
@@ -57,8 +61,9 @@ export default function Notifications () {
       })
       socket.current.emit("send-notification",{data})
       
+    }).catch(err => {
+      adminAuthenticationHandler(err)
     })
-    // console.log(notification,878); 
   }
     return (
         <div className="col-md-10 col-sm-9 vh-100 overflow-auto mt-0">

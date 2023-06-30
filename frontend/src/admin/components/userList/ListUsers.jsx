@@ -6,14 +6,18 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import { adminApi } from "../../../utils/Apis";
 import img from '../../../images/default.png'
 import './listUsers.css'
+import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler";
 export default function ListUsers () {
-   
+  
+  const { adminAuthenticationHandler } = useErrorHandler()
   const navigate = useNavigate()
   const [users, setUsers] = useState([])
   const [searchInput, setSearchInput] = useState("");
   useEffect(() => {
      adminApi.get('/get-all-user-details').then(({data:{data}}) => {
         setUsers(data)
+     }).catch( err => {
+      adminAuthenticationHandler(err)
      })
   } , [])
   
@@ -62,7 +66,7 @@ export default function ListUsers () {
     setUsers(prevState => {
       return prevState.map(obj => {
         if (obj._id === id) {
-          return { ...obj, [field]: value }; // Update the specific field
+          return { ...obj, [field]: value };
         }
         return obj;
       });
@@ -71,17 +75,11 @@ export default function ListUsers () {
   
 
   function  handleBlockUser (status,userId)  {
-        try {
-            console.log('on handle block user');
             adminApi.put('/user/block/un-block',{status,userId}).then(({data:{data}}) => {
-              console.log('data',data);
               updateField(data._id, 'block', data.block);
-
-
+            }).catch( err => {
+              adminAuthenticationHandler(err)
             })
-        } catch (e) {
-            
-        }
   }
 
 
@@ -104,9 +102,7 @@ export default function ListUsers () {
             <div class="row justify-content-center  p-0 m-0" >
               <div class="col-md-12 col-xl-11 ">
                 <div class="card shadow-0 border rounded-3">
-                  <div class="card-body"  onClick={() => {
-            //   navigate(`/veiw-detail/${x._id}`)
-            }}>
+                  <div class="card-body" >
                     <div class="row">
                       <div class="col-md-12 col-lg-2  d-flex justify-content-center align-items-center col-xl-3 mb-4 mb-lg-0">
                         <div class="bg-image hover-zoom ripple rounded ripple-surface">

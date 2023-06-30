@@ -37,4 +37,17 @@
     height: 30px;
     object-fit: cover;
     border-radius: 50%;
+    cursor: pointer;
 }
+
+/* .owner-full-img {
+    width: 30%;
+    height: 30%;
+} */
+
+
+  
+  #root > section > div > div.col-md-12.col-xl-10 > div.card > div > ul > li.p-menuitem.p-menuitem-active > ul > li.p-menuitem.p-menuitem-active > ul{
+    max-height: 200px; /* Set the desired maximum height */
+    overflow-y: auto;
+  }

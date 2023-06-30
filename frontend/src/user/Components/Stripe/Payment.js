@@ -4,7 +4,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import { loadStripe } from "@stripe/stripe-js";
 
-function Payment({props,bookingId,setBookings}) {
+function Payment({props,bookingId,setBookings,couponId}) {
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState("");
 
@@ -35,7 +35,7 @@ function Payment({props,bookingId,setBookings}) {
     <>
       {clientSecret && stripePromise && (
         <Elements stripe={stripePromise} options={{ clientSecret }}>
-          <CheckoutForm bookingId={bookingId} setBookings={setBookings}  />
+          <CheckoutForm bookingId={bookingId} setBookings={setBookings} couponId={couponId}  />
         </Elements>
       )}
     </>

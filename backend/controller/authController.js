@@ -14,6 +14,7 @@ const adminModel = require('../model/adminModel')
  }
 module.exports = {
     
+    // signup for user
     signup(req, res) {
        try {
         const { username, email, password } = req.body.user
@@ -140,7 +141,7 @@ module.exports = {
            if( admin ) {
                 bcrypt.compare(password,admin.password).then((response) =>{
                     if(response){
-                      const token = jwt.sign( {adminId:admin._id} ,process.env.OWNER_JWT_SECRET, { expiresIn: '1day' })
+                      const token = jwt.sign( {adminId:admin._id} ,process.env.ADMIN_JWT_SECRET, { expiresIn: '1day' })
                       res.status(200).json({success:true,message:"login succesfully", token,data:admin})
                     }else res.status(401).json({success:false,message:"email and password not matched"})
                 })

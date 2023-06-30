@@ -70,8 +70,8 @@ export default function ProfileDetails() {
 
             <label className='profile-tag' htmlFor="email">Email {!emailVerified && <span className='text-danger'>* it should be email</span>}</label>
             <input name='email' onBlur={() => verifyEmial(user?.email,setEmailVerification)} value={user?.email} onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })} className={emailVerified ? 'profile-input' : 'profile-input-error'} type="email" id='email' />
-            <label className='profile-tag' htmlFor="phone">Phone number  {!phoneValid && <span className='text-danger'>* it should be 10 numbers</span>}</label>
-            <input name='phone' onBlur={() => validPhone(user?.phone,setPhoneValidation)} value={user?.phone} onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })} className={phoneValid ? 'profile-input' : 'profile-input-error'} type="number" id='phone' />
+            {/* <label className='profile-tag' htmlFor="phone">Phone number  {!phoneValid && <span className='text-danger'>* it should be 10 numbers</span>}</label>
+            <input name='phone' onBlur={() => validPhone(user?.phone,setPhoneValidation)} value={user?.phone} onChange={(e) => setUser({ ...user, [e.target.name]: e.target.value })} className={phoneValid ? 'profile-input' : 'profile-input-error'} type="number" id='phone' /> */}
 
             <label className='profile-tag' htmlFor="dob">Date of birth</label>
             <input
@@ -94,7 +94,7 @@ export default function ProfileDetails() {
           <input type="file" hidden />
 
           <span className='profile-heading py-5'>Driving lisence</span>
-        { reduxUser.license?.front && reduxUser.license?.back &&  <span className='d-block'>license verification : {reduxUser.license?.verification }</span>}
+        {/* { reduxUser.license?.front && reduxUser.license?.back &&  <span className='d-block'>license verification : {reduxUser.license?.verification }</span>} */}
           <div className="row mt-3">
             <div className='col-md-5 mx-3 my-3'>
               <div className='col-md-5 p-0'>Front side</div>

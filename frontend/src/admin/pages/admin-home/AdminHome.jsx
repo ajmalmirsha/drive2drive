@@ -1,5 +1,3 @@
-import { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
 import AdminSideBar from "../../components/AdminSideBar"
 import Dashboard from "../../components/dashboard/Dashbord"
 import Coupon from "../../components/coupon/Coupon"
@@ -9,17 +7,11 @@ import LicenseVerify from "../../components/licenseVerify/LicenseVerify"
 import ListUsers from "../../components/userList/ListUsers"
 import ListOwners from "../../components/ownerList/ListOwners"
 import ListBookings from "../../components/bookings/ListBookings"
-import SalesReport from "../../components/Sales-Report/SalesReport"
+import SalesReportPage from "../sales-report/SalesReportPage"
+import ListVehicle from "../../components/vehicles/ListVehicle"
 
 
 export default function AdminHome({props}) {
-    const navigate = useNavigate()
-    useEffect(() => {
-        const token = localStorage.getItem('admin')
-        if (!token) {
-            navigate('/admin/login')
-        }
-    }, [])
     return (
         <div className="row m-0 p-0">
         <AdminSideBar/>
@@ -52,7 +44,10 @@ export default function AdminHome({props}) {
           props === 'bookings' &&    <ListBookings/>
         }
         {
-          props === 'salesReport' &&    <SalesReport/>
+          props === 'salesReport' &&    <SalesReportPage/>
+        }
+        {
+          props === 'vehicles-list' &&    <ListVehicle/>
         }
       
         {/* admin home page !!

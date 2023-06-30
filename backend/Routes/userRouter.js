@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { signup, login, updateUser, uploadProfileImage} =  require('../controller/authController')
 const { allVehicles, getVehiclesDetails } = require('../controller/ownerController')
-const { uploadLisence, addReview, getVehicleData, getAllVehicleDetails, editProductDetails, getAllNotifications, addBooking, getApprovedBookings, paymentUpdation, setMessage, getMessages, getSenderDetails, getAvailablePlaces, addReport } = require('../controller/userController')
+const { uploadLisence, addReview, getVehicleData, getAllVehicleDetails, editProductDetails, getAllNotifications, addBooking, getApprovedBookings, paymentUpdation, setMessage, getMessages, getSenderDetails, getAvailablePlaces, addReport, applyCoupon } = require('../controller/userController')
 const { userAuthenticator } = require('../middlewares/Auth/auth')
 const { uploadOptions, uploadlicense, reviewImage } = require('../middlewares/multer/multer')
 require('dotenv').config();
@@ -21,8 +21,6 @@ router.post('/login',login)
 router.get('/list-all-vehicle',getAllVehicleDetails)
 
 
-
-router.get('/list-all/:vehicle',getVehicleData)
 
 
 
@@ -53,7 +51,7 @@ router.post("/create-payment-intent", async (req, res) => {
       clientSecret: paymentIntent.client_secret,
     });
   } catch (e) {
-    console.log('on chache');
+    console.log('on chache',e);
     return res.status(400).send({
       error: {
         message: e.message,
@@ -97,5 +95,8 @@ router.post('/get-all-messages',userAuthenticator,getMessages)
 
 // report route
 router.post('/add-report',userAuthenticator,addReport)
+
+// apply coupon
+router.post('/apply/coupon',userAuthenticator,applyCoupon)
 
 module.exports = router

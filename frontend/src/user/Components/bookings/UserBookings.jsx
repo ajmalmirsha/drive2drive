@@ -5,11 +5,13 @@ import Navbar from "../userHome/Navbar"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheckCircle, faCreditCard } from "@fortawesome/free-solid-svg-icons"
 import Payment from "../Stripe/Payment"
-
+import { TreeSelect } from 'primereact/treeselect';
+import { Button } from 'primereact/button';
 
 export default function UserBookings () {
     const [bookings,setBookings] = useState([])
     const {userAuthenticationHandler} = useErrorHandler()
+    const [sortOrder, setSortOrder] = useState("asc");
     useEffect(()=>{
       userApi.get('/get-all-approved-bookings').then( ({data:{data}}) => {
         console.log(data);   
@@ -18,12 +20,133 @@ export default function UserBookings () {
           userAuthenticationHandler(err)
       })
     },[])
-   
+
+ // Sort by vehicle name (ascending order)
+const sort = (value) => {
+  console.log(value);
+  if( value === 'rent asc' ){
+    const sortedBookings = [...bookings].sort((a, b) => a.vehicle.vehicleName.localeCompare(b.vehicle.vehicleName));
+    setBookings(sortedBookings);
+  } else if ( value === 'rent desc' ) {
+    const sortedBookings = [...bookings].sort((b, a) => a.vehicle.vehicleName.localeCompare(b.vehicle.vehicleName));
+    setBookings(sortedBookings);
+  } else if ( value === 'Date-Pick-Time-asc' ) {
+    const sortedBookings = [...bookings].sort((b, a) => a.address?.pickUp?.pickTime.localeCompare(b.vehicle.vehicleName));
+    setBookings(sortedBookings);
+  } else if ( value === 'Date-Pick-Time-desc' ) {
+    const sortedBookings = [...bookings].sort((a, b) => a.address?.pickUp?.pickTime.localeCompare(b.vehicle.vehicleName));
+    setBookings(sortedBookings);
+  } else if ( value === 'Date-Drop-Time-asc' ) {
+    const sortedBookings = [...bookings].sort((b, a) => a.address?.dropOff?.dropTime.localeCompare(b.vehicle.vehicleName));
+    setBookings(sortedBookings);
+  } else if ( value === 'Date-Drop-Time-desc' ) {
+    const sortedBookings = [...bookings].sort((a, b) => a.address?.dropOff?.dropTime.localeCompare(b.vehicle.vehicleName));
+    setBookings(sortedBookings);
+  }
+};
+
+
+const [nodes, setNodes] = useState([{
+  key:'0-0',
+  label: 'Rent',
+  children: [
+      {
+          key: 'rent asc',
+          label: 'Ascending order',
+      },
+      {
+          key: 'rent desc',
+          label: 'Descending order',
+      }
+  ]
+},{
+  key:'0-1',
+  label: 'Date',
+  children: [
+      {
+          key:'1-0',
+          label: 'Pick Time',
+          children: [
+            {
+              key: 'Date-Pick-Time-asc',
+              label: 'Ascending order',
+            },
+            {
+              key: 'Date-Pick-Time-desc',
+              label: 'Descending order',
+            }
+
+          ]
+      },
+      {   key:'1-1',
+          label: 'Drop Time',
+          children: [
+            {
+              key: 'Date-Drop-Time-asc',
+              label: 'Ascending order',
+            },
+            {
+              key: 'Date-Drop-Time-desc',
+              label: 'Descending order',
+            }
+
+          ]
+      },
+      // {
+      //     key: '1-2',
+      //     label: 'Booking Time',
+      //     data: 'Home Folder',
+      //     icon: 'pi pi-fw pi-home',
+      // }
+  ]
+},]);
+const [selectedNodeKey, setSelectedNodeKey] = useState(null);
+const [expandedKeys, setExpandedKeys] = useState({});
+
+
+
+const expandAll = () => {
+    let _expandedKeys = {};
+
+    for (let node of nodes) {
+        expandNode(node, _expandedKeys);
+    }
+
+    setExpandedKeys(_expandedKeys);
+};
+
+const collapseAll = () => {
+    setExpandedKeys({});
+};
+
+const expandNode = (node, _expandedKeys) => {
+    if (node.children && node.children.length) {
+        _expandedKeys[node.key] = true;
+
+        for (let child of node.children) {
+            expandNode(child, _expandedKeys);
+        }
+    }
+};
+
+const headerTemplate = (
+    <div className="p-3 pb-0">
+        {/* <Button type="button" icon="pi pi-plus" onClick={expandAll} className="w-2rem h-2rem mr-2 p-button-outlined" />
+        <Button type="button" icon="pi pi-minus" onClick={collapseAll} className="w-2rem h-2rem p-button-outlined" /> */}
+    </div>
+);
     return (
          <div>
        <Navbar/>
     <div className="row my-4 mx-2 gap-2">
-  
+     <div className="row d-flex justify-content-end">
+            <TreeSelect  value={selectedNodeKey} onChange={(e) =>{
+              sort(e.value)
+               setSelectedNodeKey(e.value)
+              }} options={nodes} 
+                className="md:w-20rem w-full col-md-3" placeholder="Sort"
+                expandedKeys={expandedKeys} onToggle={(e) => setExpandedKeys(e.value)} panelHeaderTemplate={headerTemplate}></TreeSelect>
+        </div>
         <div className="col-md-12 booking-verification" >
 {       bookings.length > 0 && bookings.map((x)=>{
          return(
@@ -102,7 +225,7 @@ export default function UserBookings () {
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-       <Payment props={x.totalAmount} setBookings={setBookings} bookingId={x._id} />
+       <Payment props={x.totalAmount} setBookings={setBookings} couponId={x?.coupon} bookingId={x._id} />
       </div>
      
     </div>

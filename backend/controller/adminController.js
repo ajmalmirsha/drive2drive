@@ -4,14 +4,20 @@ const userModel = require("../model/userModel");
 const vehicleModel = require('../model/vehicleModel')
 const reportModel = require('../model/reportModel');
 const bookingModel = require('../model/bookingModel');
+const couponModel = require("../model/couponModel");
+const bannerModel = require("../model/bannerModel");
+const fs = require('fs');
+const path = require("path");
 
 module.exports = {
       
+    // for add notifications
+
     addNotifications (req, res) {
         try {
+            console.log('on add');
          const {title,message,user,owner} = JSON.parse(req.body.notification)
        notificationModel.create({title, message, user, owner, image:req?.file?.filename}).then((response) => {
-        console.log('notification added',response);
         res.status(200).json({success:true,data:response})
        })    
         } catch (e) {
@@ -20,9 +26,10 @@ module.exports = {
       
     },
 
+    // for get all notifications
+
     getAllNotifications (req, res ){
         try {
-            console.log('sfsd');
             notificationModel.find({}).sort({_id:-1}).then((response)=>{
                 res.status(200).json({succes:true,data:response})
             })
@@ -31,9 +38,11 @@ module.exports = {
         }
     },
 
+
+    // for get all license verifications
+
     getAllVerifications (req, res ){
         try {
-            console.log('sfsd');
             userModel.find({
                 'license.verification': 'pending',
                 'license.front': { $ne: '' },
@@ -46,6 +55,9 @@ module.exports = {
         }
     },
 
+
+    // for get all user details
+
     getAllUserDetails ( req, res) {
      try {
         userModel.find({}).then((data) => {
@@ -56,11 +68,12 @@ module.exports = {
      }
     },
 
+
+    // for verify license
+
     verifyLisence ( req, res) {
         try {
-            console.log(req.body);
             const { id, status } = req.body
-            console.log( status );
             userModel.findByIdAndUpdate(id,{$set:{'license.verification':status}},{new:true}).then(()=>{
                  userModel.find({
                 'license.verification': 'pending',
@@ -76,12 +89,12 @@ module.exports = {
         }
     },
 
+    // for block and unblock user
+
     blockUnblock ( req, res) {
         try{
-            console.log('on block un block');
            const { status , userId } = req.body
            const block = status === 'block'
-           console.log('block',block,status);
            userModel.findOneAndUpdate({_id:userId},{$set:{block:block}},{new:true}).then( data => {
             res.status(200).json({success:true,data: {_id:data._id, block:data.block}})
            })
@@ -90,6 +103,7 @@ module.exports = {
         }
     },
 
+    // for get all owner details
 
     async getAllOwners ( req, res) {
         try{
@@ -116,7 +130,6 @@ module.exports = {
               vehicle: owner.vehicles
             };
           });
-          console.log(data );
 
           res.status(200).json( {succes:true , data})
         } catch (e) {
@@ -158,6 +171,107 @@ module.exports = {
         })
     } catch (e) {
         console.log(e)
+    }
+   },
+
+   // add coupon
+
+   addCoupon ( req, res ) {
+    try{
+        couponModel.create(req.body).then((response) => {
+            res.status(200).json({success:true,message:'coupon added'})
+        }).catch(e => {
+        if( e._message === 'coupon validation failed' ){
+        return res.status(409).json({success:false,message:'discout percentage should be lessthan 100'})
+       } 
+        if( e.code === 11000 ){
+        return res.status(409).json({success:false,message:'coupon code exist'})
+       } 
+        })
+    } catch (e) {
+       
+        console.log(e)
+    }
+   },
+   // get coupon
+
+   getCoupon ( req, res ) {
+    try{
+        couponModel.find({}).then((data) => {
+            res.status(200).json({success:true,data})
+        })
+    } catch (e) {
+        console.log(e.message)
+    }
+   },
+   // get all vehicles
+
+   getVehicles ( req, res ) {
+    try{
+        vehicleModel.find({}).then((data) => {
+            res.status(200).json({success:true,data})
+        })
+    } catch (e) {
+        console.log(e.message)
+    }
+   }
+   ,
+   // getting all sales data for graph
+
+   getAllSalesData ( req, res ) {
+    try{
+        bookingModel.find({status:'completed'}).then((data) => {
+         const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+          const revenue = [0, 0, 0, 0, 0, 0, 0];
+           data.forEach((item) => {
+            const updatedAt = new Date(item.updatedAt);
+             const dayIndex = updatedAt.getDay();
+              const totalAmount = item.totalAmount;
+               revenue[dayIndex] += totalAmount;
+            });
+          res.status(200).json({succes:true,days,revenue})
+        })
+    } catch (e) {
+        console.log(e.message)
+    }
+   },
+   // add banner
+
+   addBanner ( req, res ) {
+    try{
+       bannerModel.create({image:req.file.filename}).then(() => {
+        bannerModel.find({}).then(data => {
+            res.status(200).json({succes:true,data,message:'banner added successfully'})
+        })
+       }) 
+    } catch (e) {
+        console.log(e.message)
+    }
+   },
+   // get all banners
+
+   getBanners ( req, res ) {
+    try{
+       bannerModel.find({}).then((data) => {
+       res.status(200).json({succes:true,data})
+       }) 
+    } catch (e) {
+        console.log(e.message)
+    }
+   },
+   // delete banner
+
+   DeleteBanner ( req, res ) {
+    try{
+      const { bannerId } = req.params
+      bannerModel.findOneAndDelete({_id:bannerId}).then((response) => {
+        fs.unlink(path.join(__dirname,'../../backend/public/images/banner/',response?.image),(err)=>{})
+        bannerModel.find({}).then((data) => {
+            res.status(200).json({success:true,message:'banner deleted successfully',data})
+        })
+      })
+    } catch (e) {
+        console.log(e.message)
     }
    }
 }

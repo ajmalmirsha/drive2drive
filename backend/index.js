@@ -10,7 +10,7 @@ const mongoose = require('mongoose')
 const app = express()
 app.use(cors({
     origin:[process.env.BASE_URL],
-    method: ['GET','POST','DELETE'],
+    method: ['GET','POST','DELETE','PUT','PATCH'],
     credentials:true
 }))
 app.use('/public/images',express.static('public/images'))

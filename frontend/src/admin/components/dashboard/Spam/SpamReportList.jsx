@@ -3,13 +3,15 @@ import { useEffect, useState } from 'react'
 import img from '../../../../images/default.png'
 import './spam.css'
 import { adminApi } from '../../../../utils/Apis'
-
+import {  useErrorHandler } from '../../../../user/ErrorHandlers/ErrorHandler'
 export default function SpamReportList () {
+    const { adminAuthenticationHandler } = useErrorHandler()
     const [ spam, setSpam ] = useState([])
      useEffect( () => {
         adminApi.get('/get/all/spam-reports').then(({data:{data}}) => {
             setSpam(data)
-            console.log(data);
+        }).catch(err => {
+            adminAuthenticationHandler(err)
         })
      },[])
     return (

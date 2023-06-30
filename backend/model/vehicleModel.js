@@ -85,6 +85,16 @@ const vehicleSchema = new mongoose.Schema({
           default: false
         }
     },
+    bookings: [
+      {
+        from: {
+          type: Date
+        },
+        to: {
+          type: Date
+        }
+      }
+    ],
     bookedUsers : {
       type: Array,
       default:[]

@@ -4,7 +4,7 @@ import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { userApi } from "../../../utils/Apis";
 import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler";
 
-export default function CheckoutForm({bookingId,setBookings}) {
+export default function CheckoutForm({bookingId,setBookings,couponId}) {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -35,7 +35,7 @@ export default function CheckoutForm({bookingId,setBookings}) {
       setMessage(response.error.message);
     } else if (!response.error) {
       setMessage(`Payment Succeeded`);
-      userApi.patch('/payment-success',{paymentId:response.paymentIntent.id,bookingId,paymentMethod:response.paymentIntent.payment_method_types[0]}).then(({data:{data}}) => {
+      userApi.patch('/payment-success',{paymentId:response.paymentIntent.id,bookingId,paymentMethod:response.paymentIntent.payment_method_types[0],couponId}).then(({data:{data}}) => {
         setBookings(data)
       }).catch( err => {
          userAuthenticationHandler(err)

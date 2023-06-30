@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { adminApi } from '../../../utils/Apis';
-
+import {  useErrorHandler } from '../../../user/ErrorHandlers/ErrorHandler'
 export default function ListOwners() {
+  const { adminAuthenticationHandler } = useErrorHandler()
     const [ owner, setOwner ] = useState([])
   useEffect( () => {
      adminApi.get('/get/all/owners').then(({data:{data}}) => {
         console.log(data);
          setOwner(data)
+     }).catch( err => {
+      adminAuthenticationHandler(err)
      })
 
   }, [])

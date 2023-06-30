@@ -35,6 +35,32 @@ const storage = multer.diskStorage({
 const uploadOptions = multer({ storage: storage });
 
 
+//banner images
+
+const bannerImagesDirectory = path.join(__dirname, '../../public/images/banner');
+
+if (!fs.existsSync(bannerImagesDirectory)) {
+  fs.mkdirSync(bannerImagesDirectory, { recursive: true });
+}
+
+const bannerstorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const isValid = FILE_TYPE_MAP[file.mimetype];
+    let uploadError = new Error("invalid image type");
+    console.log('here');
+    if (isValid) {
+      uploadError = null;
+    }
+    cb(uploadError, bannerImagesDirectory);
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const bannerUploadOptions = multer({ storage: bannerstorage });
+
+
 
 
 // lisense images 
@@ -112,4 +138,4 @@ const notificationstorages = multer.diskStorage({
 
 const notificationImage = multer({ storage: notificationstorages });
 
-module.exports = { uploadOptions, uploadlicense, reviewImage, notificationImage };
+module.exports = { uploadOptions, uploadlicense, reviewImage, notificationImage, bannerUploadOptions };

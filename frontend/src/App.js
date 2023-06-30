@@ -28,6 +28,8 @@ import OwnerChatPage from './owner/pages/owner-chat/OwnerChatPage';
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";     
 import "primereact/resources/primereact.min.css";  
+import OwnerSalesReport from './owner/pages/sales-report/OwnerSalesReport';
+import UserErrorPage from './Error/error-pages/UserErrorPage';
 function App() {
  
   return (
@@ -40,12 +42,13 @@ function App() {
       <Route exact  path='/profile' element={<UserPrivateRoute><ProfilePage/></UserPrivateRoute> } />
       <Route exact path='/' element={<UserPrivateRoute><UserHome/></UserPrivateRoute> } />
       <Route exact path='/veiw-detail/:id' element={<VehicleView/>} />
-      <Route exact path='/list-all/:vehicle' element={<VehicleListPage/>} />
+      <Route exact path='/list-all/vehicles' element={<VehicleListPage/>} />
       <Route exact path='/checkout/:vehicleId' element={<CheckOut/>} />
       <Route exact path='/completion' element={<Completion/>} />
       <Route exact path='/notifications/:role' element={<UserNotificationPage/>} />
       <Route exact path='/bookings' element={<UserBookings/>} />
       <Route exact path='/chat/:ownerId' element={<ChatPage/>} />
+      {/* <Route exact path='/*' element={<UserErrorPage link={'/'} />} /> */}
 
     {/* owner routes */}
 
@@ -58,6 +61,8 @@ function App() {
       <Route exact path='/owner/notifications' element={<OwnerPrivateRoute> <VehiclePage props={'notifications'} /> </OwnerPrivateRoute> } />
       <Route exact path='/owner/bookings' element={<OwnerPrivateRoute> <BookingVerifications /> </OwnerPrivateRoute> } />
       <Route exact path='/owner/messages' element={<OwnerPrivateRoute> <OwnerChatPage /> </OwnerPrivateRoute> } />
+      <Route exact path='/owner/sales-report' element={<OwnerPrivateRoute> <OwnerSalesReport /> </OwnerPrivateRoute> } />
+      {/* <Route exact path='/owner/*' element={<UserErrorPage link={'/owner-Home'} />} /> */}
       
     {/* admin routes */}
 

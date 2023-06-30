@@ -26,4 +26,14 @@
   .hide-seconds::-moz-datetime-edit-ampm-field {
     display: none;
   }
+
+.coupon {
+  border-radius: 5px;
+  background: rgba(255, 217, 0, 0.616);
+}
   
+.booked-timmings {
+  max-height: 130px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}

@@ -4,23 +4,20 @@ import { classNames } from 'primereact/utils';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { MultiSelect } from 'primereact/multiselect';
-import { Tag } from 'primereact/tag';
-import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import { adminApi } from '../../../utils/Apis';
  
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAnchorCircleCheck, faAngleLeft, faCheckCircle, faCircleXmark, faCross, faCrosshairs } from '@fortawesome/free-solid-svg-icons';
-
+import { faCheckCircle, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { useErrorHandler } from '../../../user/ErrorHandlers/ErrorHandler'
 export default function BasicFilterDemo() {
 
     const [ booking, setBooking ] = useState([])
+    const { adminAuthenticationHandler } = useErrorHandler()
     useEffect(()=> {
         adminApi.get('/get/all-bookings').then(({data:{data}}) => {
            setBooking(data)
-           console.log(data);
+        }).catch(err => {
+            adminAuthenticationHandler(err)
         })
     },[])
  
@@ -34,7 +31,7 @@ export default function BasicFilterDemo() {
     return (
         <div className="col-md-10">
         <div className="card">
-            <DataTable value={booking} removableSort tableStyle={{ minWidth: '50rem' }}>
+            <DataTable paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} value={booking} removableSort tableStyle={{ minWidth: '50rem' }}>
                 <Column field="vehicle.vehicleName"  header="vehicle" sortable style={{ width: '25%' }}></Column>
                 <Column field="userId.username" header="User" sortable style={{ width: '25%' }}></Column>
                 <Column field="vehicle.ownerId.username" header="Owner" sortable style={{ width: '25%' }}></Column>

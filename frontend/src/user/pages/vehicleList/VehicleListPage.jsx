@@ -9,14 +9,16 @@ import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler"
 export default function VehicleListPage(){
     const [state,setState] = useState([])
     const {vehicle} = useParams()
-    const authenticationHandler = useErrorHandler()
+    const {userAuthenticationHandler} = useErrorHandler()
     useEffect(()=>{
-        userApi.get(`/list-all/${vehicle}`).then(({data:{data}})=>{
-            setState(data)
+        userApi.get(`/list-all-vehicle`).then(({data:{allVehicle}})=>{
+            console.log('allVehicle,876');
+            console.log(allVehicle,876);
+            setState(allVehicle)
         }).catch( err => {
-           authenticationHandler(err)
+            userAuthenticationHandler(err)
         })
-    },[vehicle])
+    },[])
     return(
         <>
         <Navbar/>

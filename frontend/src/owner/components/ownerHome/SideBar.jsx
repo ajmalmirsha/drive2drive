@@ -12,7 +12,7 @@ function SideBar({ props }) {
             <div onClick={() => { navigate('/owner-Home') }} className="menu-items pt-1 text-center text-white">
                 Home
             </div>
-            <div className="menu-items pt-1 text-center text-white">
+            <div onClick={() => { navigate('/owner/sales-report')}} className="menu-items pt-1 text-center text-white">
                 Sales Report
             </div>
             {props != 'list-vehicle' || props == 'add-vehicle' ? <div onClick={() => navigate('/owner/list-vehicle')} className="menu-items pt-1 text-center text-white">

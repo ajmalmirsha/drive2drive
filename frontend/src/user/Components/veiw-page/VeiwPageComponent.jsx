@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './viewPage.css'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
@@ -10,8 +10,12 @@ import { userApi } from '../../../utils/Apis';
 import {  useErrorHandler } from '../../ErrorHandlers/ErrorHandler';
 import ChatPage from '../../pages/chat/ChatPage';
 import { ToastContainer, toast } from 'react-toastify';
+import { Skeleton } from 'primereact/skeleton';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
 
 const ViewPageComponent = () => {
+  const [ loading, setLoading ] = useState(true)
       const {userAuthenticationHandler} =  useErrorHandler()
       const user = useSelector(state => state.user)
       const [vehicle, setVehicle] = useState({});
@@ -21,17 +25,21 @@ const ViewPageComponent = () => {
       const [mainImage,setMainImage] = useState(0)
       const [ownerId,setOwnerId] = useState('')
       const [ report , setReport ]  = useState('')
+      const [visible, setVisible] = useState(false);
   useEffect(() => {
     ( 
     function () {
       userApi.get(`/vehicle/data/${id}`).then(({data:{data}}) => {
        setVehicle(data);
+       setLoading(false)
         setReviews(data.reviews.reverse())
+
          }).catch((err) => {
           userAuthenticationHandler(err)
          })
     }
     )()
+
   }, []);
   
   useEffect(()=>{
@@ -71,7 +79,7 @@ const navigate = useNavigate()
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const reviewData = {
                            rating,
@@ -104,7 +112,8 @@ const navigate = useNavigate()
    
   };
 
-  const handleReportSubmit = () => {
+  const handleReportSubmit = (e) => {
+    e.preventDefault()
      console.log(report);
      userApi.post('/add-report',{report,proId:vehicle._id}).then( ({data:{message}}) => {
        toast.success(message)
@@ -118,6 +127,7 @@ const navigate = useNavigate()
     <div className="product-details-container">
       <div className="row w-100">
         <div className="col-lg-6 " >
+          {  !loading ?
           <ReactImageMagnify className='zoom-image'
                         {...{
                             smallImage: {
@@ -135,19 +145,29 @@ const navigate = useNavigate()
                                 height: '100%',
                             },
                         }}
-                    />
+                    />  :
+                    <Skeleton width="100%" height="100%"></Skeleton>
+                    }
        <div className="gap-5 row">{
       vehicle?.image?.length &&  vehicle?.image.map((x,i)=>{
       
-         return(   i !== mainImage  && <img key={i} src={`${process.env.REACT_APP_URL}/public/images/${x}`} alt="loading" onClick={()=>{ setMainImage(i) }} className="col-md-3 my-5 mx-1  sub-images" /> )
+         return(   i !== mainImage  && ( loading ? <Skeleton width="100%" height="100%"></Skeleton> : <img key={i} src={`${process.env.REACT_APP_URL}/public/images/${x}`} alt="loading" onClick={()=>{ setMainImage(i) }} className="col-md-3 my-5 mx-1  sub-images" /> ) )
 
         })
        }</div>
-     <div class="btn-group dropup">
-  <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+     <div class="">
+  <button type="button" class="btn btn-danger" onClick={() => setVisible(true)}  >
     Report spam
   </button>
-  <ul class="dropdown-menu">
+  <Dialog  header='Report spam' visible={visible} modal={false} style={{ width: '50vw' }} onHide={() => setVisible(false)}>
+  <form  onSubmit={handleReportSubmit} >
+        <textarea value={report} onChange={(e) => setReport(e.target.value)} className='d-block w-100' name="" id="" cols="30" rows="10"></textarea>
+        <div className="d-flex pt-2 justify-content-center">
+        <button className='d-block btn btn-danger' type='submit'>Report</button>
+        </div>
+      </form>
+            </Dialog>
+  {/* <ul class="dropdown-menu">
     <li><a class="dropdown-item" href="#">
     <form onSubmit={handleReportSubmit} >
       <h4 className='text-danger'>Report spam</h4>
@@ -157,7 +177,7 @@ const navigate = useNavigate()
         </div>
       </form>
       </a></li>
-  </ul>
+  </ul> */}
 </div>
         </div>
         <div className="col-lg-6 ">
@@ -286,7 +306,7 @@ chat with owner
       </div>
 {/* <!-- Modal --> */}
 
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div  class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog ">
     <div class="modal-content">
      

@@ -1,4 +1,5 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const vehicleModel = require('./vehicleModel');
 const bookingSchema = new mongoose.Schema({
     
 vehicle:{
@@ -57,6 +58,10 @@ payment : {
         default:''
     }
 },
+coupon : {
+   type:String,
+   default:''
+},
 address : {
     pickUp : {
         type: Object
@@ -88,7 +93,28 @@ status:{
     default:'pending'
 }
     
-})
+},{timestamps:true})
+
+
+bookingSchema.pre('save', async function(next) {
+    // Check if 'dropTime' is greater than or equal to today's date
+    if (this.address && this.address.dropOff && this.address.dropOff.dropTime) {
+      const dropTime = new Date(this.address.dropOff.dropTime);
+      const today = new Date();
+  
+      if (dropTime.getTime() >= today.getTime()) {
+        // 'dropTime' is greater than or equal to today's date
+  
+        // Update the 'free' field in the 'vehicle' collection
+        await vehicleModel.updateOne(
+          { _id: this.vehicle._id },
+          { $set: { free: true } }
+        );
+      }
+    }
+  
+    next();
+  });
 
 
 module.exports = mongoose.model('bookings',bookingSchema)

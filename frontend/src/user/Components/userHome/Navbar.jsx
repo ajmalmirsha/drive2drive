@@ -22,13 +22,13 @@ export default function Navbar() {
        <NavLink data-bs-toggle="tooltip" data-bs-placement="top" title="Home" className="nav-item pb-1 mx-3" to="/">
        <FontAwesomeIcon size='lg' icon={faHouseChimney} />
        </NavLink>
-       <NavLink  data-bs-toggle="tooltip" data-bs-placement="top" title="Cars" className="nav-item pb-1 mx-3" to="/list-all/car">
+       <NavLink  data-bs-toggle="tooltip" data-bs-placement="top" title="Cars" className="nav-item pb-1 mx-3" to="/list-all/vehicles">
        <FontAwesomeIcon size='lg' icon={faCar} />
        </NavLink>
-
+{/* 
         <NavLink data-bs-toggle="tooltip" data-bs-placement="top" title="Bikes" className='nav-item pb-1 mx-2' to="/list-all/bike">
         <FontAwesomeIcon size='lg' icon={faMotorcycle} />
-        </NavLink>
+        </NavLink> */}
         <NavLink className='nav-item mx-2' to="/bookings">
           Bookings
         </NavLink>

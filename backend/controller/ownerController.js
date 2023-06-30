@@ -141,10 +141,49 @@ module.exports = {
         try {
             const {id,verify} = req.body
             const query = `approvel.${verify}`
-            bookingModel.updateOne({_id:id},{$set:{[query]:true}}).then(()=>{
+            bookingModel.findByIdAndUpdate({_id:id},{$set:{[query]:true},status:verify}).then((response)=>{
+                
                 bookingModel.find({$and: [{'approvel.approved': false}, {'approvel.declined': false}]}).then((response) => {
                     res.status(200).json({success:true,data:response})
                 })
+            })
+        } catch (e) {
+            console.log(e.message);
+        }
+    },
+
+
+    // get owner sales report
+
+    ownerSalesReport ( req, res ) {
+        try{
+            console.log('ownerId',req.headers.ownerId)
+           bookingModel.find({'vehicle.ownerId':req?.headers?.ownerId,status:'completed'})
+           .populate('userId').populate('vehicle.ownerId').then((data) => {
+              res.status(200).json({success:true,data})
+           })
+        } catch (e) {
+            console.log(e.message);
+        }
+    },
+
+    // get all sales of owner  
+
+    getOwnerSales ( req, res ) {
+        try{
+            const { ownerId } = req.headers
+            bookingModel.find({status:'completed','vehicle.ownerId':ownerId}).then((data) => {
+                console.log(data);
+                
+                const revenue = [0, 0, 0, 0, 0, 0, 0];
+                 data.forEach((item) => {
+                  const updatedAt = new Date(item.updatedAt);
+                   const dayIndex = updatedAt.getDay();
+                    const totalAmount = item.totalAmount;
+                     revenue[dayIndex] += totalAmount;
+                  });
+                  console.log(revenue,'jkjh');
+                  res.status(200).json({success:true,revenue})
             })
         } catch (e) {
             console.log(e.message);

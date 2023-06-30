@@ -1,6 +1,6 @@
 
 const { ownerRegister, ownerLogin } = require('../controller/authController')
-const { addVehicle, allVehicles, getReviews, deleteVehicleImage, EditVehicleDetials, addVehicleImages, bookingVerifications, verifyBooking, editProductDetails } = require('../controller/ownerController')
+const { addVehicle, allVehicles, getReviews, deleteVehicleImage, EditVehicleDetials, addVehicleImages, bookingVerifications, verifyBooking, editProductDetails, ownerSalesReport, getOwnerSales } = require('../controller/ownerController')
 const { uploadOptions, uploadlicense } = require('../middlewares/multer/multer')
 const { ownerAuthenticator, userAuthenticator } = require('../middlewares/Auth/auth')
 const  { setMessage, getMessages, getContacts, ownerNotifications } = require('../controller/userController')
@@ -39,5 +39,11 @@ router.post('/get-all-messages',ownerAuthenticator,getMessages)
 router.get('/get-all-contacts',ownerAuthenticator,getContacts)
 
 router.get('/get-owner-notifications',ownerAuthenticator,ownerNotifications)
+
+// getting  owner sales
+router.get('/get/sales-report',ownerAuthenticator,ownerSalesReport)
+
+// getting  owner sales for chart
+router.get('/get/owner/sales',ownerAuthenticator,getOwnerSales)
 
 module.exports = router
