@@ -13,6 +13,13 @@ app.use(cors({
     method: ['GET','POST','DELETE','PUT','PATCH'],
     credentials:true
 }))
+// res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+// res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+// res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
+
 app.use('/public/images',express.static('public/images'))
 mongoose.connect(process.env.MONGO_URL).then(()=>{
     console.log('connected to database');

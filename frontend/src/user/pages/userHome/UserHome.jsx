@@ -16,6 +16,7 @@ export default function UserHome (){
     useEffect(() => {
         (  function () {
               userApi.get('/list-all-vehicle').then(({data:{allVehicle}}) =>{
+                console.log('all vehicles ',allVehicle);
                setVehicles(allVehicle)
               })
          })()

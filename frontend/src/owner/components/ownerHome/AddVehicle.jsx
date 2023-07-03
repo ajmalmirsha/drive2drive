@@ -31,7 +31,7 @@ function AddVehicle() {
     }
   })
 
-
+const [ hub, setHub ] = useState(false)
   
  
   const navigate = useNavigate()
@@ -100,6 +100,7 @@ function AddVehicle() {
         })
       }
       }) .catch ( err => {
+        console.log('add pro error',err);
         ownerAuthenticationHandler(err)
       })
 
@@ -107,11 +108,11 @@ function AddVehicle() {
   }
   const animatedComponents = makeAnimated();
 
-  const colourOptions = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-  ]
+  // const colourOptions = [
+  //   { value: 'chocolate', label: 'Chocolate' },
+  //   { value: 'strawberry', label: 'Strawberry' },
+  //   { value: 'vanilla', label: 'Vanilla' }
+  // ]
 
   useEffect(()=> {
     console.log(product);
@@ -245,6 +246,14 @@ function AddVehicle() {
 
             </div>
             <div className="form-outline mb-4">
+              <div className="my-1">
+              <input type="checkbox" onChange={(e)=> setHub(e.target.checked) } /> i have a hub to collect car
+              </div>
+              { 
+              hub ? 
+              <input type="text" onChange={(e) => handleSelectChange([])} placeholder="enter your hub location" />
+              :
+              <>
               <label htmlFor="places">add Places</label>
                 <Select
                 id='places'
@@ -253,11 +262,13 @@ function AddVehicle() {
                 // defaultValue={[colourOptions[], colourOptions[5]]}
                 isMulti
                 isCreatable={true}
-                options={colourOptions}
+                // options={colourOptions}
                 isLoading={false}
                 value={product.places}
                 onChange={handleSelectChange}        
                 />
+                </>
+                }
             </div>
              
 

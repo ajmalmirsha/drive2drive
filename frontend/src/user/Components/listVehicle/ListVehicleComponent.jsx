@@ -7,7 +7,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import img from '../../../images/default.png'
 import { Chip } from 'primereact/chip';
 import { Menubar } from 'primereact/menubar';
-import { InputText } from 'primereact/inputtext';  
+import { InputText } from 'primereact/inputtext';
 
 
 export default function ListVehicleComponent({ props }) {
@@ -15,9 +15,9 @@ export default function ListVehicleComponent({ props }) {
   const navigate = useNavigate()
   const [vehicles, setVehicles] = useState([])
   const [searchInput, setSearchInput] = useState("");
-  const [ uniquePlaces, setUniquePlaces ] = useState([])
+  const [uniquePlaces, setUniquePlaces] = useState([])
   const [sortOption, setSortOption] = useState("");
-
+  // const [ filteredVehicles , setFilteredVehicle ] = useState([])
 
 
 
@@ -25,13 +25,13 @@ export default function ListVehicleComponent({ props }) {
   useEffect(() => {
     setVehicles(props);
     const data = [...new Set(props.flatMap(item => item.places.map(place => place.value)))]
-  .map(value => ({ label: value }));
-console.log(data,7575);
+      .map(value => ({ label: value }));
+    console.log(data, 7575);
     setUniquePlaces(data)
   }, [props]);
-  
 
-   
+
+
   // Handle search input change
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
@@ -39,12 +39,16 @@ console.log(data,7575);
 
   // Filter vehicles based on search input
   const filteredVehicles = vehicles.filter((vehicle) =>
-  vehicle.places.some((place) =>
-    place.value.toLowerCase().includes(searchInput.toLowerCase())
-  ) || vehicle.price.toString().toLowerCase().includes(searchInput.toLowerCase())
-);
+    vehicle.places.some((place) =>
+      place.value.toLowerCase().includes(searchInput.toLowerCase())
+    ) || vehicle.price.toString().toLowerCase().includes(searchInput.toLowerCase())
+  );
 
- // Function to sort vehicles in ascending order based on price
+  // useEffect(()=>{
+  //   setFilteredVehicle(result)
+  // },[result])
+
+  // Function to sort vehicles in ascending order based on price
   const sortByLowToHigh = () => {
     let sortedVehicles = [...filteredVehicles];
     sortedVehicles.sort((a, b) => a.price - b.price);
@@ -77,91 +81,166 @@ console.log(data,7575);
 
   useEffect(() => {
     setSearchInput(searchInput + transcript)
-  },[transcript])
-  
+  }, [transcript])
+
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
   }
 
   navigator.mediaDevices.getUserMedia({ audio: true })
-  .catch(function(error) {
-    
-  });
-  const handleDropdownChange = (event) => {
-    console.log(event.target.value,444)
-    setSearchInput(event.target.value)
-//    const result = vehicles.filter((vehicle) =>
-//   vehicle.places.some((place) =>
-//     place.value.toLowerCase().includes(event.target.value.toLowerCase())
-//   )
-// );
+    .catch(function (error) {
+
+    });
+  const handleDropdownChange = ({target}) => {
+    console.log(target, 444)
+    if( target?.key ){
+      setVehicles(props.filter((vehicle) => {
+        return vehicle[target?.key] === target?.value
+      }));
+    } 
+    // setSearchInput(target.value)
+    //    const result = vehicles.filter((vehicle) =>
+    //   vehicle.places.some((place) =>
+    //     place.value.toLowerCase().includes(event.target.value.toLowerCase())
+    //   )
+    // );
 
   };
 
 
-   const items = [
+  const items = [
     {
-        label: 'Sort',
-        icon: 'pi pi-fw pi-pencil',
-        items: [
-            {
-                label: 'Low To High',
-                icon: 'pi pi-fw pi-align-left',
-                command: () => sortByLowToHigh()
-              },
-              {
-                label: 'High To Low',
-                icon: 'pi pi-fw pi-align-right',
-                command: () => sortByHighToLow()
-            }
+      label: 'Sort',
+      icon: 'pi pi-fw pi-pencil',
+      items: [
+        {
+          label: 'Low To High',
+          icon: 'pi pi-fw pi-align-left',
+          command: () => sortByLowToHigh()
+        },
+        {
+          label: 'High To Low',
+          icon: 'pi pi-fw pi-align-right',
+          command: () => sortByHighToLow()
+        }
 
-        ]
+      ]
     },
     {
-        label: 'Filter',
-        icon: 'pi pi-fw pi-calendar',
-        items: [
+      label: 'Filter',
+      icon: 'pi pi-fw pi-calendar',
+      items: [
+        {
+          label: 'Places',
+          icon: 'pi pi-fw pi-pencil',
+          items: uniquePlaces.map(place => ({
+            label: place.label,
+            icon: 'pi pi-fw pi-home',
+            command: () => handleDropdownChange({ target: { value: place.label } })
+          })),
+
+        },
+        {
+          label: 'Category',
+          icon: 'pi pi-fw pi-pencil',
+          items: [{
+            label: 'Manual',
+            icon: 'pi pi-fw pi-home',
+            command: () => handleDropdownChange({ target: { value: 'manual' , key:'category'} })
+           },
+           {
+            label: 'Automatic',
+            icon: 'pi pi-fw pi-home',
+            command: () => handleDropdownChange({ target: { value: 'automatic' , key:'category'} })
+           }
+          ]
+
+        },
+        {
+          label: 'Segment',
+          icon: 'pi pi-fw pi-pencil',
+          items: [{
+            label: 'Vintage',
+            icon: 'pi pi-fw pi-home',
+            command: () => handleDropdownChange({ target: { value: 'vintage' , key:'segment'} })
+           },
+           {
+            label: 'Premium',
+            icon: 'pi pi-fw pi-home',
+            command: () => handleDropdownChange({ target: { value: 'premium' , key:'segment'} })
+           },
+           {
+            label: 'Normal',
+            icon: 'pi pi-fw pi-home',
+            command: () => handleDropdownChange({ target: { value: 'normal' , key:'segment'} })
+           }
+          ]
+
+        },
+        {
+          label: 'Type',
+          icon: 'pi pi-fw pi-pencil',
+          items: [
             {
-              label: 'Places',
-              icon: 'pi pi-fw pi-pencil',
-              items: uniquePlaces.map(place => ({
-                label: place.label,
-                icon: 'pi pi-fw pi-home',
-                command: () => handleDropdownChange({ target: { value: place.label } })
-              })),
+            label: 'Sedan',
+            icon: 'pi pi-fw pi-home',
+            command: () => handleDropdownChange({ target: { value: 'Sedan' , key:'type'} })
+           },
+           {
+            label: 'Hatchback',
+            icon: 'pi pi-fw pi-home',
+            command: () => handleDropdownChange({ target: { value: 'Hatchback' , key:'type'} })
+           },
+           {
+            label: 'SUV',
+            icon: 'pi pi-fw pi-home',
+            command: () => handleDropdownChange({ target: { value: 'SUV' , key:'type'} })
+           },
+            {
+            label: 'Crossover',
+            icon: 'pi pi-fw pi-home',
+            command: () => handleDropdownChange({ target: { value: 'Crossover' , key:'type'} })
+           },
+           {
+            label: 'Coupe',
+            icon: 'pi pi-fw pi-home',
+            command: () => handleDropdownChange({ target: { value: 'Coupe' , key:'type'} })
+           },
+           {
+            label: 'Convertible',
+            icon: 'pi pi-fw pi-home',
+            command: () => handleDropdownChange({ target: { value: 'Convertible' , key:'type'} })
+           }
+          ]
 
-            },
-        ]
+        },
+      ]
     }
-];
+  ];
 
-const end = <div className="">
-           
-<InputText value={searchInput}  onChange={handleSearchInputChange} placeholder="Search" type="text" className="w-full" />
-        {/* <input value={searchInput} 
-        onChange={handleSearchInputChange}
-        type="text" class="form-control form-input w-25" placeholder="Search..." /> */}
-        <span class="px-2">{ listening ? <FontAwesomeIcon onClick={SpeechRecognition.stopListening} icon={faSquare} style={{color: "#b00c0c",}} /> : <FontAwesomeIcon  onClick={SpeechRecognition.startListening} icon={faMicrophone} />}</span>
-</div>
+  const end = <div className="">
+               <InputText value={searchInput} onChange={handleSearchInputChange} placeholder="Search" type="text" className="w-full" />
+               <span class="px-2">{listening ? <FontAwesomeIcon onClick={SpeechRecognition.stopListening} icon={faSquare} style={{ color: "#b00c0c", }} /> : <FontAwesomeIcon onClick={SpeechRecognition.startListening} icon={faMicrophone} />}</span>
+              </div>
 
   return (
 
     <section style={{ backgroundColor: "#ffff" }}>
       <div class="row justify-content-center mb-3">
         <div class="col-md-12 col-xl-10">
-        <div className="card">
-            <Menubar model={items}  end={end} />
-        </div>
-          
+          <div className="card">
+            <Menubar model={items} end={end} />
+          </div>
+
         </div>
         {records.length > 0 ? records.map((x) => {
           return (
             <div class="row justify-content-center mb-3" >
               <div class="col-md-12 col-xl-10">
                 <div class="card shadow-0 border rounded-3">
-                  <div class="card-body"  onClick={() => {
-              navigate(`/veiw-detail/${x._id}`)
-            }}>
+                  <div class="card-body" onClick={() => {
+                    navigate(`/veiw-detail/${x._id}`)
+                  }}>
                     <div class="row">
                       <div class="col-md-12 col-lg-3 col-xl-3 mb-4 mb-lg-0">
                         <div class="bg-image hover-zoom ripple rounded ripple-surface">
@@ -176,7 +255,7 @@ const end = <div className="">
                       </div>
                       <div class="col-md-6 col-lg-6 col-xl-6">
                         <h5>{x.product_name}</h5>
-   
+
                         <div class="d-flex flex-row">
                           <div class="text-danger mb-1 me-2">
                             <i class="fa fa-star"></i>
@@ -186,46 +265,49 @@ const end = <div className="">
                           </div>
                         </div>
                         <div className="mb-1">
-                          <img data-bs-toggle="modal" id="owner-img" data-bs-target="#exampleModal" onClick={(e) =>  e.stopPropagation()}  className="owner-img" src={x.ownerId.image?.slice(0, 33) == 'https://lh3.googleusercontent.com' ? 
-           x.ownerId.image : x.ownerId.image ? `${process.env.REACT_APP_URL}/public/images/${x.ownerId.image}`
-            : img} alt="" />
-            {/* <!-- Modal --> */}
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" >
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={(e) => e.stopPropagation()}></button>
-      </div>
-      <div class="modal-body m-0 row">
-        <div className="col-md-5">
-        <img data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e) =>  e.stopPropagation()}  className="owner-full-img w-100" src={x.ownerId.image?.slice(0, 33) == 'https://lh3.googleusercontent.com' ? 
-           x.ownerId.image : x.ownerId.image ? `${process.env.REACT_APP_URL}/public/images/${x.ownerId.image}`
-            : img} alt="" />
-            </div>
-            <div className="col-md-7">
-              <h5>{x.ownerId.username}</h5>
-              <p>{x.ownerId.email}</p>
+                          <img data-bs-toggle="modal" id="owner-img" data-bs-target="#exampleModal" onClick={(e) => e.stopPropagation()} className="owner-img" src={x.ownerId.image?.slice(0, 33) == 'https://lh3.googleusercontent.com' ?
+                            x.ownerId.image : x.ownerId.image ? `${process.env.REACT_APP_URL}/public/images/${x.ownerId.image}`
+                              : img} alt="" />
+                          {/* <!-- Modal --> */}
+                          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" >
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={(e) => e.stopPropagation()}></button>
+                                </div>
+                                <div class="modal-body m-0 row">
+                                  <div className="col-md-5">
+                                    <img data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e) => e.stopPropagation()} className="owner-full-img w-100" src={x.ownerId.image?.slice(0, 33) == 'https://lh3.googleusercontent.com' ?
+                                      x.ownerId.image : x.ownerId.image ? `${process.env.REACT_APP_URL}/public/images/${x.ownerId.image}`
+                                        : img} alt="" />
+                                  </div>
+                                  <div className="col-md-7">
+                                    <h5>{x.ownerId.username}</h5>
+                                    <p>{x.ownerId.email}</p>
 
-            </div>
-      </div>
-    </div>
-  </div>
-</div>
-                        <p class="text-truncate d-inline mx-2 mb-4 mb-md-0">
-                         <label htmlFor="owner-img">{x.ownerId.username}</label> 
-                        </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <p class="text-truncate d-inline mx-2 mb-4 mb-md-0">
+                            <label htmlFor="owner-img">{x.ownerId.username}</label>
+                          </p>
                         </div>
                         <div className="">
-                          { x.places.length > 0 && x.places.map((y) => {
-                            return(
-                        <Chip className="mx-1" label={y.label}  style={{
-                              fontSize: '12px',
-                              height: '20px',
-                              padding: '8px',
-                        }} />
-                        )
+                          {x.category}  , {x.segment} , {x.type}
+                        </div>
+                        <div className="">
+                          {x.places.length > 0 && x.places.map((y) => {
+                            return (
+                              <Chip className="mx-1" label={y.label} style={{
+                                fontSize: '12px',
+                                height: '20px',
+                                padding: '8px',
+                              }} />
+                            )
                           })
-                      }
+                          }
                         </div>
                         <p class="text-truncate mb-4 mb-md-0">
                           {x.description}

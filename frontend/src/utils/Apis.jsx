@@ -4,14 +4,17 @@ import axios from "axios";
 
 export const userApi = axios.create({
     baseURL:`http://localhost:4000`
+    // baseURL:`https://drive2drive.site`
 })
 
 export const ownerApi=axios.create({
     baseURL:`http://localhost:4000/owner`
+    // baseURL:`https://drive2drive.site/owner`
 })
 
 export const adminApi=axios.create({
     baseURL:`http://localhost:4000/admin`
+    // baseURL:`https://drive2drive.site/admin`
 })
 
 

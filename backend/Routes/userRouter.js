@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { signup, login, updateUser, uploadProfileImage} =  require('../controller/authController')
 const { allVehicles, getVehiclesDetails } = require('../controller/ownerController')
-const { uploadLisence, addReview, getVehicleData, getAllVehicleDetails, editProductDetails, getAllNotifications, addBooking, getApprovedBookings, paymentUpdation, setMessage, getMessages, getSenderDetails, getAvailablePlaces, addReport, applyCoupon } = require('../controller/userController')
+const { uploadLisence, addReview, getVehicleData, getAllVehicleDetails, editProductDetails, getAllNotifications, addBooking, getApprovedBookings, paymentUpdation, setMessage, getMessages, getSenderDetails, getAvailablePlaces, addReport, applyCoupon, getBanners } = require('../controller/userController')
 const { userAuthenticator } = require('../middlewares/Auth/auth')
 const { uploadOptions, uploadlicense, reviewImage } = require('../middlewares/multer/multer')
 require('dotenv').config();
@@ -98,5 +98,8 @@ router.post('/add-report',userAuthenticator,addReport)
 
 // apply coupon
 router.post('/apply/coupon',userAuthenticator,applyCoupon)
+
+// get banners
+router.get('/get/all/banners',userAuthenticator,getBanners)
 
 module.exports = router

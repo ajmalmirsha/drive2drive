@@ -33,8 +33,8 @@ export default function SpamReportList () {
                 {x.report}
             </div>
             <div className="col-md-4">
-                <img style={{maxHeight:'100%',minHeight:'100px',height:'60%',objectFit:'cover'}} className='w-100 ' src={`${process.env.REACT_APP_URL}/public/images/${x?.productId.image[0]}`} alt="" />
-                <p>{x.productId.product_name}</p>
+                <img style={{maxHeight:'100%',minHeight:'100px',height:'60%',objectFit:'cover'}} className='w-100 ' src={`${process.env.REACT_APP_URL}/public/images/${x?.productId?.image[0]}`} alt="" />
+                <p>{x.productId?.product_name}</p>
             </div>
             <hr />
             </div>

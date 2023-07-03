@@ -8,6 +8,7 @@ const chatModel = require('../model/chatModel');
 const ownerModel = require('../model/ownerModel');
 const reportModel = require('../model/reportModel');
 const couponModel = require('../model/couponModel');
+const bannerModel = require('../model/bannerModel');
 
 module.exports = {
   uploadLisence(req, res) {
@@ -373,6 +374,18 @@ module.exports = {
         } else {
           res.status(200).json({ success: true, data })
         }
+      })
+    } catch (e) {
+      console.log(e.message);
+    }
+  },
+  // get all banners
+
+  getBanners(req, res) {
+    try {
+      console.log('on get alll banners');
+      bannerModel.find({}).then((data) => {
+        res.status(200).json({success:true,data})
       })
     } catch (e) {
       console.log(e.message);

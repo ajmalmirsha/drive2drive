@@ -48,7 +48,7 @@ function App() {
       <Route exact path='/notifications/:role' element={<UserNotificationPage/>} />
       <Route exact path='/bookings' element={<UserBookings/>} />
       <Route exact path='/chat/:ownerId' element={<ChatPage/>} />
-      {/* <Route exact path='/*' element={<UserErrorPage link={'/'} />} /> */}
+      <Route exact path='/*' element={<UserErrorPage link={'/'} />} />
 
     {/* owner routes */}
 
