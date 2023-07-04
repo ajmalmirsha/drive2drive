@@ -235,7 +235,7 @@ export default function ListVehicleComponent({ props }) {
         </div>
         {records.length > 0 ? records.map((x) => {
           return (
-            <div class="row justify-content-center mb-3" >
+            <div class="row justify-content-center m-0 mb-3" >
               <div class="col-md-12 col-xl-10">
                 <div class="card shadow-0 border rounded-3">
                   <div class="card-body" onClick={() => {

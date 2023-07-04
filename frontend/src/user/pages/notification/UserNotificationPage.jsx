@@ -6,47 +6,46 @@ import { userApi } from "../../../utils/Apis"
 import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler"
 import { io } from "socket.io-client"
 import { useSelector } from "react-redux"
+import Spinner from "../../../common/spinners/Spinner"
 
 
-function UserNotificationPage () {
-   const [ notifications, setNotifications] = useState([])
+function UserNotificationPage() {
+   const [notifications, setNotifications] = useState([])
    const socket = useRef()
    const { role } = useParams()
    const authenticationHandler = useErrorHandler()
    const user = useSelector(state => state.user)
-   useEffect(()=>{
+   const [loading, setLoading] = useState(false)
+   useEffect(() => {
       socket.current = io(process.env.REACT_APP_URL)
-      socket.current.emit("add-user",user.id)
-      console.log('user added to socket');
-      userApi.get(`/get-all-notifications/${role}`).then(({data:{notifications}}) => {
+      socket.current.emit("add-user", user.id)
+      setLoading(true)
+      userApi.get(`/get-all-notifications/${role}`).then(({ data: { notifications } }) => {
+         setLoading(false)
          setNotifications(notifications)
-      }).catch( err =>{
-         console.log(err);
+      }).catch(err => {
          authenticationHandler(err)
       })
-   },[])
+   }, [])
    const handleNotificationReceive = useCallback((data) => {
-      console.log(notifications, 'got new notification', data.data);
       setNotifications(prevNotifications => [data.data, ...prevNotifications]);
-    }, [notifications]);
-    
-    useEffect(() => {
-      console.log(notifications, 'first notification');
-    
+   }, [notifications]);
+
+   useEffect(() => {
       socket.current.on("notification-recieve-user", handleNotificationReceive);
-    
       return () => {
-        // Clean up the event listener when the component unmounts
-        socket.current.off("notification-recieve-user", handleNotificationReceive);
+         socket.current.off("notification-recieve-user", handleNotificationReceive);
       };
-    }, [handleNotificationReceive]);
+   }, [handleNotificationReceive]);
    return (
       <>
-      <Navbar/>
-      <UserNotifications props={notifications} />
+         <Navbar />
+         {loading ? <Spinner /> :
+            <UserNotifications props={notifications} />
+         }
       </>
    )
 }
 
-  
-  export default UserNotificationPage
+
+export default UserNotificationPage

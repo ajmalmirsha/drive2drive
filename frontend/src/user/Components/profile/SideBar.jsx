@@ -7,15 +7,15 @@ export default function SideBar() {
     const user = useSelector(state => state.user)
     const navigate = useNavigate()
     return (
-        <div className="col-md-3 sidebar">
-            <div className="side-bar-top">
+        <div className="col-md-3 m-0  sidebar">
+            <div className="side-bar-top w-100">
                 <div className="wrapper">
 
                     <img src={user.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ? user.image : user.image ? `${process.env.REACT_APP_URL}/public/images/${user.image}` : img} alt="" />
                     <span>7907883318</span>
                 </div>
             </div>
-            <div className="side-bar-items">
+            <div className="side-bar-items w-100">
                 <div className='menuItemsactive'><p>My Profile</p></div>
                 <div className='menuItems' onClick={() => navigate('/bookings')} ><p>Bookings</p></div>
                 <div className='menuItems'><p>Terms & Conditions</p></div>

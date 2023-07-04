@@ -27,8 +27,8 @@ function ListProducts({vehicle,title}) {
         @import url('https://fonts.googleapis.com/css2?family=Caprasimo&display=swap');
         </style>
 
-            <div className='row justify-content-start  px-5 py-3 gap-2' >
-       <span style={{fontFamily: 'fantasy'}} className="d-block font-weight-bold h4 ms-3">{title}</span>
+            <div className='row justify-content-center m-0  px-5 py-3 gap-2' >
+       <span style={{fontFamily: 'fantasy'}} className="d-block font-weight-bold h4">{title}</span>
 
                 {records.map((x) => (
                     <div onClick={() => {

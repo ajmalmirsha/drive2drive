@@ -7,28 +7,27 @@ import jwt_decode from 'jwt-decode'
 
 import {useDispatch} from 'react-redux'
 import { setUserDetails } from '../../redux/userSlice'
-import FacebookLogin from 'react-facebook-login';
+import Spinner from '../../common/spinners/Spinner'
 function LoginComponent() {
 
     const navigate = useNavigate()
     const [user, setUser] = useState({ email: '', password: '' })
+    const [ loading, setLoading ] = useState(false)
     const dispatch = useDispatch()
     useEffect(() => { 
         const token = localStorage.getItem('user')
         if (token) {
-            console.log('redirecting');
             navigate('/')
-        } else {
-            console.log('elsseee');
         }
     }, [])
 
    
 
     const verifyUser = async (users) => {
+        setLoading(true)
         const respo = await axios.post(process.env.REACT_APP_URL + '/login', { users })
         const { success, message, token ,user} = respo.data
-        console.log(user,998,user?.license?.verification );
+        setLoading(false)
         if (!success) {
             toast.error(message)
         } else {
@@ -64,7 +63,7 @@ function LoginComponent() {
 
     }
     function googleError(response) {
-        console.log('error', response);
+        toast.error(response)
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -75,14 +74,12 @@ function LoginComponent() {
             toast.error('enter your password')
         } else {
             verifyUser(user)
-
         }
     }
-    const responseFacebook = (response) => {
-        console.log('facebook response : ',response);
-      }
     return (
-        <div className="formContainer">
+      
+          <div className="formContainer">
+            { loading ? <Spinner/>  : (
             <div className="formWrapper">
                 <span className="title">Login</span>
                 <form onSubmit={handleSubmit}>
@@ -91,19 +88,11 @@ function LoginComponent() {
                     <button>Sign in</button>
                 </form>
                 <GoogleLogin onSuccess={googleSuccess} onError={googleError} />
-                {/* <FacebookLogin
-                 appId="597111955733507"
-                  autoLoad={false}
-                   fields="name,email,picture"
-                    callback={responseFacebook}
-                     cssClass="my-facebook-button-class"
-                      icon="fa-facebook"
-                /> */}
                 <p>You do have an account? <span onClick={() => navigate('/signup')}>Signup</span></p>
-                {/* <button onClick={() => loginWithRedirect()}>Log In</button> */}
             </div>
+    ) }
             <ToastContainer />
-        </div>
+            </div>
     )
 }
 

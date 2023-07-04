@@ -48,9 +48,9 @@ export default function AddressInputs ({ handleSubmit }) {
         setDropDate(dateStr);
     }
     const CustomPlaceholder = (props) => (
-        <div className='text-secondary'>
-         <FontAwesomeIcon className='me-2' icon={faLocationDot} /> 
-          <span  >Choose a location</span> 
+        <div className='text-secondary container m-0 p-0 choose-location text-ellipsis'>
+         {/* <FontAwesomeIcon className='me-2' icon={faLocationDot} />  */}
+          <span className=''>Choose a location</span> 
         </div>
       );
     // handle place change
@@ -61,13 +61,12 @@ export default function AddressInputs ({ handleSubmit }) {
     // handle user vehicle search 
   
     return (
-      <div className="address-input-secssion gap-0 row">
-         <div className="col-md-9 d-flex px-5   align-items-center">
-            <div className="bg-light main-input-wrapper w-100 h-25 shadow row d-flex align-items-center">
-             <div className="col-md-4">  
+      <div className="address-input-secssion m-0 gap-0 row">
+         <div className="col-md-9 d-flex px-5 py-3  align-items-center">
+            <div className="bg-light main-input-wrapper w-100 py-1 shadow row d-flex align-items-center">
+             <div className="col-md-4 col-lg-4 col-12 py-2">  
               <Select
-                className="basic-single "
-                classNamePrefix="select"
+                className="basic-single w-100"
                 isClearable={true}
                 isSearchable={true}
                 onChange={handlePlaceChange}
@@ -84,41 +83,44 @@ export default function AddressInputs ({ handleSubmit }) {
                   }}
               />
              </div>
-             <div className="col-md-3">  
+             <div className="col-md-3 col-6 py-2">  
              <DatePicker
                  onChange={handleStartDateChange}
                  showTimeSelect
+                 shouldCloseOnSelect
                  minDate={new Date()}
                  maxDate={ dropDate && dropDate }
                  minTime={new Date().setHours(0, 0, 0, 0)}
                  maxTime={ dropDate ? new Date(dropDate).setHours(18, 0) : new Date().setHours(18, 0)}
                  placeholderText={  pickDatePlaceHolder ? pickDatePlaceHolder : 'Pick-up date'}
                  calendarClassName="bg-white shadow-lg rounded-lg py-4 px-2 "
-                 className="form-control  text-xl bg-slate-200 h-100 d-block"
+                 className="form-control  text-xl bg-slate-200 h-100 d-block text-ellipsis"
                  popperClassName="custom-datepicker"
              />
              </div>
-             <div className="col-md-3">  
+             <div className="col-md-3 col-6 py-2">  
              <DatePicker
                  onChange={handleDropDateChange}
                  showTimeSelect
+                 shouldCloseOnSelect
                  minDate={ pickDate ? pickDate : new Date()}
                  minTime={ pickDate ? new Date(pickDate).setHours(18, 0) : new Date().setHours(18, 0)}
                  maxTime={new Date().setHours(23, 59, 59, 999)}
                  placeholderText={  dropDatePlaceHolder ? dropDatePlaceHolder : 'Drop-off date'}
                  calendarClassName="bg-white shadow-lg rounded-lg py-4 px-2 "
-                 className="form-control  text-xl bg-slate-200 h-100 d-block"
+                 className="form-control w-100  text-xl bg-slate-200 h-100 d-block text-ellipsis"
                  popperClassName="custom-datepicker"
              />
              </div>
-             <div className="col-md-2">
+             <div className="col-md-2 py-2">
                 <button onClick={()=> {handleSubmit(place.value,pickDate,dropDate)}} className='search-btn w-100 text-white' >Search</button>
              </div>
             </div>
          </div>
-         <div className="col-md-3 d-flex justify-content-start p-0 m-0 align-items-center">
-            <img className='w-100' src={img} alt="" />
-         </div>
+         <div className="col-md-3 d-flex justify-content-center p-0 m-0 align-items-center">
+  <img className="col-md-12 col-10" src={img} alt="" style={{ maxWidth: '100%' }} />
+</div>
+
       </div>
     )
 }

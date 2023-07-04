@@ -15,7 +15,8 @@ const adminModel = require('../model/adminModel')
 module.exports = {
     
     // signup for user
-    signup(req, res) {
+
+    signup( req, res, next ) {
        try {
         const { username, email, password } = req.body.user
         const image = req.body.user?.image
@@ -27,10 +28,14 @@ module.exports = {
             res.status(401).json({ success: false, message: error })
         })
        } catch (error) {
-        console.log(error.message);
+        next()
        }
     },
-    async login(req, res) {
+
+    // login for user
+
+    async login( req, res, next ) {
+        try{
         const { email, password } = req.body.users
         const user = await userModel.findOne({ email })
         if (user) {
@@ -48,8 +53,14 @@ module.exports = {
         } else {
             res.json({ success: false, message: 'invalid email' })
         }
+      } catch (e) {
+        next()
+      }
     },
-     async updateUser (req,res) {
+
+    // update  user
+
+    async updateUser ( req, res, next ) {
         try {
             const {id,username,email,phone,dob} = req.body.user
              userModel.findOneAndUpdate(
@@ -72,15 +83,17 @@ module.exports = {
                 })   
 
         } catch (error) {
-            res.status(501).json({ success: false, message:error.message,userData:null})
+            next()
         }
     },
-     async uploadProfileImage (req,res) {
+
+    // update profile image 
+
+     async uploadProfileImage ( req, res, next) {
         try {
             const user = await userModel.findOne({_id:req.headers.userid})
             if(user.image){
-                fs.unlink(path.join(__dirname,'../../backend/public/images/',user.image),(err)=>{})
-                
+                fs.unlink(path.join(__dirname,'../../backend/public/images/',user.image),(err)=>{}) 
             }
             userModel.findOneAndUpdate({_id:req.headers.userid},{
                 $set:{
@@ -91,13 +104,13 @@ module.exports = {
             }
             )
         } catch (error) {
-            res.status(501).json({ success: false, message:error.message})
+            next()
         }
     },
 
-    // owner authentications
+    // owner register
 
-    ownerRegister ( req, res ) {
+    ownerRegister ( req, res, next ) {
         try {
             const image = req.body.user?.image
             const { username, email, password} = req.body.owner
@@ -110,10 +123,17 @@ module.exports = {
             })
         } catch (error) {
             const err = handleError(error)
+            if( err ) {
             res.status(401).json({ success: false, message: err })
+            } else {
+                next()
+            }
         }
     },
-    async ownerLogin  ( req, res) {
+
+    // owner login 
+
+    async ownerLogin  ( req, res, next ) {
         try {
             const { email, password } = req.body.ownerData
             const owner = await ownerModel.findOne({ email })
@@ -131,10 +151,13 @@ module.exports = {
             }
         } catch (error) {
            const err = handleError(error)
-           res.status(200).json({ success: false, message: err })
+           err ? res.status(200).json({ success: false, message: err }) : next()
         }
     },
-    async adminLogin ( req, res ) {
+
+    // admin login
+
+    async adminLogin ( req, res, next ) {
         try {
             const {email,password} = req.body.admin
            const admin = await adminModel.findOne({email:email})
@@ -149,7 +172,7 @@ module.exports = {
             res.status(401).json({success:false,message:"email not found"})
            }
         } catch (error) {
-            console.log(error.message);
+            next()
         }
     }
 

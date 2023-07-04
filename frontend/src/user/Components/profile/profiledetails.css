@@ -4,6 +4,13 @@
    margin-right: 0px;
 }
 
+/* @media (max-width: 1200px) {
+   .main-wrapper{
+      display: block;
+   }
+ } */
+ 
+
 .main-wrapper h1 {
     font-size: medium;
 }

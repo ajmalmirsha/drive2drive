@@ -30,6 +30,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";  
 import OwnerSalesReport from './owner/pages/sales-report/OwnerSalesReport';
 import UserErrorPage from './Error/error-pages/UserErrorPage';
+import ErrorPage500 from './Error/500/ErrorPage500';
 function App() {
  
   return (
@@ -48,13 +49,14 @@ function App() {
       <Route exact path='/notifications/:role' element={<UserNotificationPage/>} />
       <Route exact path='/bookings' element={<UserBookings/>} />
       <Route exact path='/chat/:ownerId' element={<ChatPage/>} />
+      <Route exact path='/SERVER-ERROR-500' element={<ErrorPage500/>} />
       <Route exact path='/*' element={<UserErrorPage link={'/'} />} />
 
     {/* owner routes */}
 
       <Route exact path='/owner-register' element={<OwnerPublicRoute><OwnerRegister/></OwnerPublicRoute> } />
       <Route exact path='/owner-login' element={<OwnerPublicRoute><OwnerLogin/></OwnerPublicRoute> }/>
-      <Route exact path='/owner-Home' element={<OwnerPrivateRoute><OwnerHome props={'home'}/> </OwnerPrivateRoute> } />
+      <Route exact path='/owner/home' element={<OwnerPrivateRoute><OwnerHome props={'home'}/> </OwnerPrivateRoute> } />
       <Route exact path='/owner/list-vehicle' element={<OwnerPrivateRoute> <VehiclePage props={'list-vehicle'}/></OwnerPrivateRoute> } />
       <Route exact path='/owner/add-vehicle' element={<OwnerPrivateRoute> <VehiclePage props={'add-vehicle'}/> </OwnerPrivateRoute> } />
       <Route exact path='/owner/edit-vehicle/:id' element={<OwnerPrivateRoute> <VehiclePage props={'edit-vehicle'} /> </OwnerPrivateRoute> } />
@@ -62,7 +64,7 @@ function App() {
       <Route exact path='/owner/bookings' element={<OwnerPrivateRoute> <BookingVerifications /> </OwnerPrivateRoute> } />
       <Route exact path='/owner/messages' element={<OwnerPrivateRoute> <OwnerChatPage /> </OwnerPrivateRoute> } />
       <Route exact path='/owner/sales-report' element={<OwnerPrivateRoute> <OwnerSalesReport /> </OwnerPrivateRoute> } />
-      {/* <Route exact path='/owner/*' element={<UserErrorPage link={'/owner-Home'} />} /> */}
+      <Route exact path='/owner/*' element={<UserErrorPage link={'/owner/home'} />} />
       
     {/* admin routes */}
 

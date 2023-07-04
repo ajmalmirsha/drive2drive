@@ -4,20 +4,24 @@ import { useEffect, useState } from 'react'
 import {userApi} from '../../../utils/Apis'
 import { useErrorHandler } from '../../ErrorHandlers/ErrorHandler'
 import './banner.css'
+import { Skeleton } from 'primereact/skeleton'
 function Banner () {
     const [ banner, setBanners ] = useState([])
+    const [ loading, setLoading ]  = useState(false)
     const { userAuthenticationHandler } = useErrorHandler()
   useEffect(()=>{
+    setLoading(true)
     userApi.get('/get/all/banners').then(({data:{data}}) => {
-      console.log(data,89);
+      setLoading(false)
        setBanners(data)
     }).catch( err => {
        userAuthenticationHandler(err)
     })
   },[])
     return (
-      
-      <div id="carouselExampleFade" className="carousel slide carousel-fade mx-3" data-bs-ride="carousel">
+      <>
+      {/* { loading ? <Skeleton width='100%' /> : */}
+      <div id="carouselExampleFade" className="carousel slide carousel-fade" data-bs-ride="carousel">
   <div className="carousel-inner">
     <div className="carousel-item active">
       <img src={`${process.env.REACT_APP_URL}/public/images/banner/${banner[0]?.image}`} className="d-block banner-img" alt="..." />
@@ -43,7 +47,8 @@ function Banner () {
     <span className="visually-hidden">Next</span>
   </button>
 </div>
-
+{/* } */}
+</>
     )
 }
 

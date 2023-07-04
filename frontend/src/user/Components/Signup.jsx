@@ -7,12 +7,14 @@ import { GoogleLogin } from '@react-oauth/google'
 import jwt_decode from 'jwt-decode'
 import { useDispatch } from 'react-redux'
 import { setUserDetails } from '../../redux/userSlice'
+import Spinner from '../../common/spinners/Spinner'
 
 
 function Signup() {
     const [user, setUser] = useState({ username: '', email: '', password: '' , confirmPassword: ''})
     const [passwordMatch , setPasswordMatch] = useState(true)
     const [passwordStrong , setPasswordStrong] = useState(true)
+    const [ loading, setLoading ] = useState(false)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const passwordPattern = /^.{8,16}$/
@@ -99,6 +101,7 @@ function Signup() {
     return (
 
         <div className="formContainer">
+            { loading ? <Spinner/> : (
             <div className="formWrapper">
                 <span className="title">Register</span>
                 <form onSubmit={handleSubmit} >
@@ -127,6 +130,7 @@ function Signup() {
 
                 <p>You do have an account? <span onClick={() => navigate('/login')}>Login</span></p>
             </div>
+             )}
             <ToastContainer />
         </div>
 

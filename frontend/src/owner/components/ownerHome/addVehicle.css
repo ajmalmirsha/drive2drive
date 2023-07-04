@@ -1,0 +1,17 @@
+   .custom-scrollbar-white {
+    height: 70vh;
+    overflow: auto;
+  }
+
+  .custom-scrollbar-white::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .custom-scrollbar-white::-webkit-scrollbar-thumb {
+    background-color: rgba(184, 184, 184);
+  }
+
+  .custom-scrollbar-white::-webkit-scrollbar-track {
+    background-color: rgb(198, 198, 198, 0.945);
+  }
+ 

@@ -1,0 +1,11 @@
+.spinner {
+    width:100vw;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+/* 
+.spinner{
+    background-color:#1b1b1b;
+   } */

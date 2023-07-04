@@ -38,6 +38,7 @@
 
 .chat-input {
     border-radius: 5px;
+    border: solid grey 1px;
     height: 35px;
     width: 99%;
 }

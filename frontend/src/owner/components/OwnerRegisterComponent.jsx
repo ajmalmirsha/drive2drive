@@ -10,7 +10,7 @@ function OwnerRegisterComponent() {
     useEffect(() => {
         const token = localStorage.getItem('owner')
         if (token) {
-            navigate('/owner-Home')
+            navigate('/owner/home')
         }
     }, [])
     function googleSuccess(response) {
@@ -35,7 +35,7 @@ function OwnerRegisterComponent() {
                 const { data, status, message } = await axios.post(process.env.REACT_APP_URL + '/owner/owner-register', { owner })
                 if (status == 200) {
                     localStorage.setItem('owner', data.token)
-                    navigate('/owner-Home')
+                    navigate('/owner/home')
                 }
             } catch (error) {
                 const { status, data } = error.response

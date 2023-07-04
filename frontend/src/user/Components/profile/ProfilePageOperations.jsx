@@ -82,8 +82,8 @@ import { userApi } from "../../../utils/Apis";
           }
   }
 
-  export function uploadLicense(license,reduxUser,dispatch,setLicenseUploaded,authenticationHandler) {
-    console.log(license);
+  export function uploadLicense(license,reduxUser,dispatch,setLicenseUploaded,authenticationHandler,setLoading) {
+    setLoading(true)
     const formData = new FormData()
     formData.append('license[front]', license.front);
     formData.append('license[back]', license.back);
@@ -96,6 +96,7 @@ import { userApi } from "../../../utils/Apis";
       withCredentials: true,
     };
     userApi.post('/add-license', formData, config).then(({ data }) => {
+      setLoading(false)
       dispatch(
         setUserDetails(
           {

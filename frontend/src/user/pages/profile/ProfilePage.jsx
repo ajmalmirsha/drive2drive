@@ -13,14 +13,14 @@ export default function ProfilePage(){
             }) 
     })
     return(
-        <>
+        < div>
         <Navbar/>
-        <div className="container-fluid">
-            <div className="row mr-0">
+        <div className=" m-0 p-0">
+            <div className="row p-0 m-0 ">
                     <SideBar />
                     <ProfileDetails />
             </div>
         </div>
-        </>
+        </div>
     )
 }

@@ -14,6 +14,7 @@
 
 .custom-datepicker {
     z-index: 9999 !important;
+    width: 100%;
 }
 
 .half-background {
@@ -27,4 +28,28 @@
     border: none;
     border-radius: 5px;
 
+}
+
+/* .css-b8ldur-Input {
+    visibility: hidden;
+} */
+
+.css-b8ldur-Input {
+    margin: 0 !important ;
+    width: 0;
+}
+
+.choose-location {
+     white-space: nowrap;
+     overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+
+.text-ellipsis {
+    text-overflow: ellipsis;
+}
+
+.react-datepicker-wrapper {
+    display: block !important;
 }

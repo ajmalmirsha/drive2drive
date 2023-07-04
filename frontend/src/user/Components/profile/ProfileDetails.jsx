@@ -8,6 +8,7 @@ import { ToastContainer } from 'react-toastify'
 import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler";
 
 import { handleSubmit, uploadLicense, uploadProfileImage, validPhone, verifyEmial  } from './ProfilePageOperations';
+import Spinner from '../../../common/spinners/Spinner';
 
 export default function ProfileDetails() {
   const reduxUser = useSelector(state => state.user)
@@ -16,7 +17,7 @@ export default function ProfileDetails() {
   const [inputType, setInputType] = useState('text');
   let [emailVerified, setEmailVerification] = useState(true)
   let [phoneValid, setPhoneValidation] = useState(true)
- 
+  const [ loading, setLoading ] = useState(false)
   const [license, setLicense] = useState({
     front: reduxUser?.license?.front,
     back: reduxUser?.license?.back
@@ -33,7 +34,8 @@ export default function ProfileDetails() {
 
   return (
     <>
-      <div className='container-fluid col-md-9  main-wrapper'>
+   { loading ? <Spinner/> :
+      <div className='col-md-12 col-lg-9 pt-1  main-wrapper '>
        <h1>My Profile</h1>
         <h3 className='my-3'>Account Information</h3>
          <input type="file" name='image' hidden 
@@ -52,12 +54,12 @@ export default function ProfileDetails() {
             </label>}
 
           {/* profile image */}
-          <img className='img col-md-2'
+          <img className='img col-md-2 col-sm-3 col-12'
            src={reduxUser.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ? 
            reduxUser.image : reduxUser.image ? `${process.env.REACT_APP_URL}/public/images/${reduxUser.image}`
             : img} alt="" />
 
-          <div className="col-md-9">
+          <div className="col-md-9 col-sm-8">
 
             {/* updation saving button */}
             { emailVerified && user.username && (
@@ -96,7 +98,7 @@ export default function ProfileDetails() {
           <span className='profile-heading py-5'>Driving lisence</span>
         {/* { reduxUser.license?.front && reduxUser.license?.back &&  <span className='d-block'>license verification : {reduxUser.license?.verification }</span>} */}
           <div className="row mt-3">
-            <div className='col-md-5 mx-3 my-3'>
+            <div className='col-md-5 col-sm-10 col-10 mx-3 my-3'>
               <div className='col-md-5 p-0'>Front side</div>
                 <label htmlFor='front-side-image' className="front mt-3">
                  {license?.front ? <img src={reduxUser.license?.front ? `${process.env.REACT_APP_URL}/public/images/license/${reduxUser.license?.front}` : URL.createObjectURL(license?.front)} alt="" /> : 'Click here to upload the front side of your driving license.'}
@@ -106,7 +108,7 @@ export default function ProfileDetails() {
                  } id='front-side-image' hidden />
                 </label >
             </div>
-            <div className='col-md-5 mx-3 my-3'>
+            <div className='col-md-5 col-sm-10 col-10 mx-3 my-3'>
               <div className='col-md-5 p-0'>Back side</div>
               <label htmlFor="back-side-image" className="back mt-3">
                 {license?.back ? <img src={reduxUser.license?.back ? `${process.env.REACT_APP_URL}/public/images/license/${reduxUser.license?.back}` : URL.createObjectURL(license.back)} alt="" /> : 'Click here to upload the front side of your driving license.'}
@@ -117,10 +119,11 @@ export default function ProfileDetails() {
               </label>
             </div>
           </div>
-         { licenseUploaded && <button className='profile-submit-btn' onClick={()=>  uploadLicense(license,reduxUser,dispatch,setLicenseUploaded,authenticationHandler)}>save and continue</button>}
+         { licenseUploaded && <button className='profile-submit-btn' onClick={()=>  uploadLicense(license,reduxUser,dispatch,setLicenseUploaded,authenticationHandler,setLoading)}>save and continue</button>}
         </div>
-      </div>
       <ToastContainer />
-    </>
+      </div>
+        }
+      </>
   )
 }

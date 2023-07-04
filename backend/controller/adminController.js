@@ -13,35 +13,33 @@ module.exports = {
       
     // for add notifications
 
-    addNotifications (req, res) {
+    addNotifications (req, res, next ) {
         try {
-            console.log('on add');
          const {title,message,user,owner} = JSON.parse(req.body.notification)
        notificationModel.create({title, message, user, owner, image:req?.file?.filename}).then((response) => {
         res.status(200).json({success:true,data:response})
        })    
         } catch (e) {
-           console.log(e.message); 
+            next()
         }
       
     },
 
     // for get all notifications
 
-    getAllNotifications (req, res ){
+    getAllNotifications (req, res, next ){
         try {
             notificationModel.find({}).sort({_id:-1}).then((response)=>{
                 res.status(200).json({succes:true,data:response})
             })
         } catch (e) {
-            console.log(e.message);
+            next()
         }
     },
 
-
     // for get all license verifications
 
-    getAllVerifications (req, res ){
+    getAllVerifications (req, res, next ){
         try {
             userModel.find({
                 'license.verification': 'pending',
@@ -51,27 +49,25 @@ module.exports = {
                 res.status(200).json({succes:true,data:response})
             })
         } catch (e) {
-            console.log(e.message);
+            next()
         }
     },
 
-
     // for get all user details
 
-    getAllUserDetails ( req, res) {
+    getAllUserDetails ( req, res, next ) {
      try {
         userModel.find({}).then((data) => {
             res.status(200).json({ success: true, data})
         })
      } catch (e) {
-        console.log(e.message);
+        next()
      }
     },
 
-
     // for verify license
 
-    verifyLisence ( req, res) {
+    verifyLisence ( req, res, next ) {
         try {
             const { id, status } = req.body
             userModel.findByIdAndUpdate(id,{$set:{'license.verification':status}},{new:true}).then(()=>{
@@ -85,13 +81,13 @@ module.exports = {
             })
            
         } catch (e) {
-            console.log(e.message);
+            next()
         }
     },
 
     // for block and unblock user
 
-    blockUnblock ( req, res) {
+    blockUnblock ( req, res, next ) {
         try{
            const { status , userId } = req.body
            const block = status === 'block'
@@ -99,13 +95,13 @@ module.exports = {
             res.status(200).json({success:true,data: {_id:data._id, block:data.block}})
            })
         } catch ( e ) {
-            console.log(e.message);
+            next()
         }
     },
 
     // for get all owner details
 
-    async getAllOwners ( req, res) {
+    async getAllOwners ( req, res, next) {
         try{
             
            const ownerDetails = await ownerModel.find({})
@@ -133,50 +129,50 @@ module.exports = {
 
           res.status(200).json( {succes:true , data})
         } catch (e) {
-            console.log(e.message);
+            next()
         }
     },
 
    // getting all spams 
 
-   getAllSpams ( req, res ) {
+   getAllSpams ( req, res, next ) {
     try{
      reportModel.find({}).sort({createdAt:-1}).populate('reportedBy').populate('productId').then((data) => {
         res.status(200).json( {success:true, data})
      })
     }catch (e) {
-     console.log(e.message);
+        next()
     }
    },
 
    // get all bookings 
 
-   getAllbookings ( req, res ) {
+   getAllbookings ( req, res, next ) {
     try{
         bookingModel.find({}).populate('userId').populate('vehicle.ownerId').then((data) => {
             res.status(200).json({succes:true,data})
         })
     } catch (e) {
-        console.log(e)
+        next()
     }
    },
 
 
    // get all sales report
 
-   getAllSales ( req, res ) {
+   getAllSales ( req, res, next ) {
     try{
         bookingModel.find({status:'completed'}).populate('userId').populate('vehicle.ownerId').then((data) => {
             res.status(200).json({succes:true,data})
         })
     } catch (e) {
-        console.log(e)
+        next()
     }
    },
 
    // add coupon
 
-   addCoupon ( req, res ) {
+   addCoupon ( req, res, next ) {
     try{
         couponModel.create(req.body).then((response) => {
             res.status(200).json({success:true,message:'coupon added'})
@@ -189,36 +185,37 @@ module.exports = {
        } 
         })
     } catch (e) {
-       
-        console.log(e)
+        next()
     }
    },
+
    // get coupon
 
-   getCoupon ( req, res ) {
+   getCoupon ( req, res, next ) {
     try{
         couponModel.find({}).then((data) => {
             res.status(200).json({success:true,data})
         })
     } catch (e) {
-        console.log(e.message)
+        next()
     }
    },
+
    // get all vehicles
 
-   getVehicles ( req, res ) {
+   getVehicles ( req, res, next ) {
     try{
         vehicleModel.find({}).then((data) => {
             res.status(200).json({success:true,data})
         })
     } catch (e) {
-        console.log(e.message)
+        next()
     }
-   }
-   ,
+   },
+
    // getting all sales data for graph
 
-   getAllSalesData ( req, res ) {
+   getAllSalesData ( req, res, next ) {
     try{
         bookingModel.find({status:'completed'}).then((data) => {
          const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -232,12 +229,13 @@ module.exports = {
           res.status(200).json({succes:true,days,revenue})
         })
     } catch (e) {
-        console.log(e.message)
+        next()
     }
    },
+
    // add banner
 
-   addBanner ( req, res ) {
+   addBanner ( req, res, next ) {
     try{
        bannerModel.create({image:req.file.filename}).then(() => {
         bannerModel.find({}).then(data => {
@@ -245,23 +243,25 @@ module.exports = {
         })
        }) 
     } catch (e) {
-        console.log(e.message)
+        next()
     }
    },
+
    // get all banners
 
-   getBanners ( req, res ) {
+   getBanners ( req, res, next ) {
     try{
        bannerModel.find({}).then((data) => {
        res.status(200).json({succes:true,data})
        }) 
     } catch (e) {
-        console.log(e.message)
+        next()
     }
    },
+
    // delete banner
 
-   DeleteBanner ( req, res ) {
+   DeleteBanner ( req, res, next ) {
     try{
       const { bannerId } = req.params
       bannerModel.findOneAndDelete({_id:bannerId}).then((response) => {
@@ -271,7 +271,7 @@ module.exports = {
         })
       })
     } catch (e) {
-        console.log(e.message)
+        next()
     }
    }
 }

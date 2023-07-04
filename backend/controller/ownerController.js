@@ -5,43 +5,51 @@ const path = require('path');
 const bookingModel = require("../model/bookingModel");
 
 module.exports = {
-    addVehicle(req, res) {
+
+    // add vehicles
+
+    addVehicle(req, res, next) {
         try {
-            const { product_name, category, price, description, brand, year, model, ownerId, type, places, segment, mileage, seats } = JSON.parse(req.body.product);
+            const { product_name, category, price, description, brand, year,
+                 model, ownerId, type, places, segment, mileage, seats } = JSON.parse(req.body.product);
+
             const proPrice = price - ''
-            console.log('req.owner idfiles:' , ownerId);
             const images = []
 
             for(const file of req.files.images){
                 images.push(file.filename)
             }
-            const rcFront = req.files['rc[front]'][0].filename; // Get the filename of the rcFront image
-            const rcBack = req.files['rc[back]'][0].filename; // Get the filename of the rcBack image
+
             const rc = {
                 front :  req.files['rc[front]'][0].filename ,
                 back : req.files['rc[back]'][0].filename
             }
-            console.log('images:' , images);
-            console.log('rc front:' , rcFront);
-            console.log('rc back:' , rcBack);
+
             vehicleModel.create({ product_name, category, price: proPrice, description, image:images ,brand, year, model,rc , ownerId , type, places, segment, mileage, seats}).then((response) => {
                 res.status(200).json({ success: true, message: 'vehicle added successfully' })
+
             }).catch((err) => {
-                console.log(err);
+                next()
             })
         } catch (error) {
-            console.log(error.message);
+           next()
         }
     },
-    async allVehicles(req, res) {
+
+    // get all vehicles
+
+    async allVehicles(req, res, next) {
         try {
             const allVehicle = await vehicleModel.find({ownerId:req.params.id})
             res.status(200).json({ success: true, allVehicle })
         } catch (error) {
-            console.log(error.message);
+            next()
         }
     },
-    async getVehiclesDetails (req,res) {
+
+    // get specific vehicle details by the params
+
+    async getVehiclesDetails ( req, res, next) {
         try {
             const {id} = req.params
            const data = await vehicleModel.findById(id).populate({
@@ -52,22 +60,24 @@ module.exports = {
           })
            res.status(200).json({success:true,data})
         } catch (error) {
-            console.log('on erro');
-            console.log(error.message);
+            next()
         }
     },
-    async getReviews (req,res) {
+
+    // get reviews product wise
+
+    async getReviews ( req, res, next ) {
         try {
-            console.log(req.params.id);
           const data = await  vehicleModel.find({ownerId:req.params.id},{reviews:1,product_name:1,_id:0,image:1})
-          console.log(data,11111);
-          console.log(data[0].reviews,11111);
           res.status(200).json({success:true,data})
         } catch (error) {
-            console.log(error.message);
+            next()
         }
     },
-    async deleteVehicleImage (req,res) {
+
+    // delete vehicle image
+    
+    async deleteVehicleImage ( req, res, next) {
         try {
             const {id,vehicleId} = req.params 
             vehicleModel
@@ -79,101 +89,102 @@ module.exports = {
             if (!response) {
             return res.status(400).json({ success: false, message: 'Image array should have at least one element' });
              }
-                console.log(response,656);
                 fs.unlink(path.join(__dirname,'../../backend/public/images/',id),(err)=>{})
                 res.status(200).json({success:true,data:response})
              })
         } catch (error) {
-            console.log(error.message);
+            next()
         }
     },
-    EditVehicleDetials (req,res) {
+
+    // edit vehicle details 
+
+    EditVehicleDetials ( req, res, next ) {
         try {
-            console.log(req.body,78);
             const {data} = req.body
             vehicleModel.findOneAndUpdate({_id:data.id},{...data},{new:true}).then((response)=>{
-                console.log(response,87);
                 res.status(200).json({success:true,message:"details updated successfully"})
             })
         } catch (error) {
-            console.log(error.message);
+            next()
         }
     },
-    async addVehicleImages (req,res) {
-        try {
-            console.log('req.files:', req.headers['vehcleid']);
 
+    // add vehicle images
+
+    async addVehicleImages ( req, res, next ) {
+        try {
             let images = []
             for(const file of req.files){
                 images.push(file.filename)
             }
-            console.log('images:' , images);
-            vehicleModel.findOneAndUpdate({_id:req.headers['vehcleid']},{ $push: { image: { $each: [...images] } } },{new:true}).then((response)=>{
-                console.log(response,899);
+            vehicleModel.findOneAndUpdate({_id:req.headers['vehcleid']},
+            { $push: { image: { $each: [...images] } } },{new:true}).then((response)=>{
                 res.status(200).json({success:true,data:response})
             })
         } catch (error) {
-            console.log(error.message);
+            next()
         }
     },
 
-    bookingVerifications ( req, res) {
+    // verify bookings
+
+    bookingVerifications ( req, res, next) {
         try {
             bookingModel.find({$and: [{'approvel.approved': false}, {'approvel.declined': false}]}).then((response) => {
                 res.status(200).json({success:true,data:response})
             })
         } catch (e) {
-            console.log(e.message);
+            next()
         }
     },
     
-    async editProductDetails ({params:{id}},res) {
+    // edit product details 
+
+    async editProductDetails ( {params:{id}}, res, next) {
     try {
-      console.log(id);
       const data = await vehicleModel.findById(id)
       res.status(200).json({success:true,data})
     } catch (error) {
-      console.log(error.message);
+      next()
     }
-    }
-    ,
-    verifyBooking (req, res) {
+    },
+
+    // verify bookings
+
+    verifyBooking (req, res, next ) {
         try {
             const {id,verify} = req.body
             const query = `approvel.${verify}`
             bookingModel.findByIdAndUpdate({_id:id},{$set:{[query]:true},status:verify}).then((response)=>{
-                
                 bookingModel.find({$and: [{'approvel.approved': false}, {'approvel.declined': false}]}).then((response) => {
                     res.status(200).json({success:true,data:response})
                 })
             })
         } catch (e) {
-            console.log(e.message);
+            next()
         }
     },
 
-
     // get owner sales report
 
-    ownerSalesReport ( req, res ) {
+    ownerSalesReport ( req, res, next ) {
         try{
-            console.log('ownerId',req.headers.ownerId)
            bookingModel.find({'vehicle.ownerId':req?.headers?.ownerId,status:'completed'})
            .populate('userId').populate('vehicle.ownerId').then((data) => {
               res.status(200).json({success:true,data})
            })
         } catch (e) {
-            console.log(e.message);
+            next()
         }
     },
 
     // get all sales of owner  
 
-    getOwnerSales ( req, res ) {
+    getOwnerSales ( req, res, next ) {
         try{
             const { ownerId } = req.headers
             bookingModel.find({status:'completed','vehicle.ownerId':ownerId}).then((data) => {
-                console.log(data);
                 
                 const revenue = [0, 0, 0, 0, 0, 0, 0];
                  data.forEach((item) => {
@@ -182,11 +193,10 @@ module.exports = {
                     const totalAmount = item.totalAmount;
                      revenue[dayIndex] += totalAmount;
                   });
-                  console.log(revenue,'jkjh');
                   res.status(200).json({success:true,revenue})
             })
         } catch (e) {
-            console.log(e.message);
+            next()
         }
     }
 }

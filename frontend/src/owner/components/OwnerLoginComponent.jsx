@@ -18,7 +18,7 @@ function OwnerLoginComponent () {
     
         const token = localStorage.getItem('owner')
         if (token){
-            navigate('/owner-Home')
+            navigate('/owner/home')
         }
     },[])
     const handleSubmit = (e) => {
@@ -48,7 +48,7 @@ function OwnerLoginComponent () {
                 })
             )
             localStorage.setItem('owner',data.token)
-            navigate('/owner-Home')
+            navigate('/owner/home')
         } else {
             toast.error(data.message)
         }

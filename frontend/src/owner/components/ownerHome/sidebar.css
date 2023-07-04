@@ -1,5 +1,6 @@
 .side-bar {
     background-color: #F2F2F2;
+    height: 80vh;
 }
 
 .menu-items {
@@ -261,5 +262,17 @@
 .chat-history {
     min-height: 59vh;
     max-height: 59vh;
-    overflow: auto;
+    overflow: auto;   
 }
+
+.chat-history::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .chat-history::-webkit-scrollbar-thumb {
+    background-color: rgba(113, 113, 113, 0.945);
+  }
+
+  .chat-history::-webkit-scrollbar-track {
+    background-color: rgb(182, 182, 182);
+  }

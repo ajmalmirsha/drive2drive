@@ -4,6 +4,7 @@ import Banner from "../../Components/userHome/Banner";
 import ListProducts from "../../Components/userHome/ListProducts";
 import Navbar from "../../Components/userHome/Navbar";
 import { userApi } from "../../../utils/Apis";
+import Spinner from "../../../common/spinners/Spinner";
 
 export default function UserHome (){
     const [vehicle, setVehicles] = useState([])
@@ -12,11 +13,13 @@ export default function UserHome (){
         pickDate:'',
         dropDate:''
     })
+    const [ loading, setLoading ] = useState(false)
     const [ filteredVehicle, setFilteredVehicle ] = useState([])
     useEffect(() => {
         (  function () {
+            setLoading(true)
               userApi.get('/list-all-vehicle').then(({data:{allVehicle}}) =>{
-                console.log('all vehicles ',allVehicle);
+                setLoading(false)
                setVehicles(allVehicle)
               })
          })()
@@ -40,11 +43,13 @@ export default function UserHome (){
         <>
        <Navbar/>
        <AddressInputs handleSubmit={handleSubmit} />
-       { filteredVehicle?.length > 0 &&
+       {filteredVehicle?.length > 0 &&
        <ListProducts vehicle={filteredVehicle} title={`vehicles available on ${search.place}`} />
        }
        <Banner/>
+       { loading ? <Spinner/> :
        <ListProducts vehicle={vehicle}/>
+       }
         </>
     )
 }

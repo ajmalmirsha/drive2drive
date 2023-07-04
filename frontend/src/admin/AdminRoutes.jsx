@@ -24,7 +24,7 @@ export default function AdminRoutes () {
         <Route exact path='/list/bookings' element={<AdminPrivateRoute><AdminHome props={'bookings'} /></AdminPrivateRoute> } />
         <Route exact path='/sales-report' element={<AdminPrivateRoute><AdminHome props={'salesReport'} /></AdminPrivateRoute> } />
         <Route exact path='/vehicle/list' element={<AdminPrivateRoute><AdminHome props={'vehicles-list'} /></AdminPrivateRoute> } />
-        {/* <Route exact path='/*' element={<UserErrorPage link={'/admin/home'} />} /> */}
+        <Route exact path='/*' element={<UserErrorPage link={'/admin/home'} />} />
         </Routes>
         </>
     )

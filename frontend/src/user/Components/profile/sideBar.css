@@ -1,9 +1,16 @@
 .sidebar{
    background: #ffffff;
-    width: 300px;
+    /* width: 300px; */
     height: 500px;
     border-radius: 10px;
 }
+
+@media (max-width: 994px) {
+    .sidebar {
+      display: none;
+    }
+  }
+  
 
 .side-bar-top{
     background: #E5E7EB;
