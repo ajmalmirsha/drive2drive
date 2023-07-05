@@ -33,7 +33,7 @@ function AddVehicle() {
     }
   })
 
-  const [hub, setHub] = useState(false)
+  // const [hub, setHub] = useState(false)
 
 
   const navigate = useNavigate()
@@ -41,7 +41,6 @@ function AddVehicle() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log(product);
     const nullProperties = Object.entries(product)
       .filter(([key, value]) =>
         value === null ||
@@ -70,7 +69,6 @@ function AddVehicle() {
     } else {
       setLoading(true)
       const formData = new FormData()
-      console.log(product.images, 89889);
       for (let i = 0; i < product.images.length; i++) {
         formData.append('images', product.images[i]);
       }
@@ -97,13 +95,10 @@ function AddVehicle() {
             draggable: true,
             progress: undefined,
             theme: "dark",
-            onClose: () => {
-              navigate('/owner/list-vehicle')
-            }
           })
+          navigate('/owner/list-vehicle')
         }
       }).catch(err => {
-        console.log('add pro error', err);
         ownerAuthenticationHandler(err)
       })
 
@@ -121,7 +116,6 @@ function AddVehicle() {
   }, [product.rc.front, product.rc.back])
 
   const handleSelectChange = (selected) => {
-    console.log(selected);
     if (selected?.length > 0) {
       setProduct({
         ...product,
@@ -227,7 +221,6 @@ function AddVehicle() {
                 <div className="form-outline col-md-4 mb-4">
                   <label className="form-label" htmlFor="form7Example7">Price / perday</label>
                   <input value={product.price} name="price" onChange={(e) => {
-                      console.log(!isNaN(e.target.value));
                     !isNaN(e.target.value) && setProduct({ ...product, [e.target.name]: e.target.value })
 
                   }} type="text" id="form7Example7" className="form-control" />
@@ -251,14 +244,14 @@ function AddVehicle() {
 
               </div>
               <div className="form-outline mb-4">
-                <div className="my-1">
+                {/* <div className="my-1">
                   <input type="checkbox" onChange={(e) => setHub(e.target.checked)} /> i have a hub to collect car
-                </div>
-                {
+                </div> */}
+                {/* {
                   hub ?
                     <input type="text" onChange={(e) => handleSelectChange([])} placeholder="enter your hub location" />
                     :
-                    <>
+                    <> */}
                       <label htmlFor="places">add Places</label>
                       <Select
                         id='places'
@@ -267,13 +260,13 @@ function AddVehicle() {
                         // defaultValue={[colourOptions[], colourOptions[5]]}
                         isMulti
                         isCreatable={true}
-                        // options={colourOptions}
+                        options={product.places}
                         isLoading={false}
                         value={product.places}
                         onChange={handleSelectChange}
                       />
-                    </>
-                }
+                    {/* </>
+                } */}
               </div>
 
 
@@ -301,7 +294,7 @@ function AddVehicle() {
                 <label htmlFor="rcBack" className="col-md-6 border d-flex justify-content-center align-items-center p-2" style={{ height: '200px' }} >
                   {product.rc.back?.name ? <img className="w-100 h-100" src={URL.createObjectURL(product.rc.back)} alt="" /> :
                     <p>Upload back side of your rc book</p>}
-                  <input name="images" hidden onChange={(e) => setProduct({ ...product, rc: { ...product.rc, back: e.target.files[0] } })} type="file" id="rcBack" className="form-control" />
+                  <input name="images" hidden  onChange={(e) => setProduct({ ...product, rc: { ...product.rc, back: e.target.files[0] } })} type="file" id="rcBack" className="form-control" />
                 </label>
               </div>
 

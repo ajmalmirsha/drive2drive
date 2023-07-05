@@ -2,12 +2,13 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ToastContainer, toast } from "react-toastify"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { setOwnerDetails } from "../../redux/ownerSlice"
+import Spinner from "../../common/spinners/Spinner"
 
 
 function OwnerLoginComponent () {
-   
+    const [ loading, setLoading ] = useState(false)
     const navigate = useNavigate()
     const [ owner, setOwner] = useState({
         email:'',
@@ -15,7 +16,7 @@ function OwnerLoginComponent () {
     })
     const dispatch = useDispatch()
     useEffect (() => {
-    
+        
         const token = localStorage.getItem('owner')
         if (token){
             navigate('/owner/home')
@@ -33,7 +34,9 @@ function OwnerLoginComponent () {
         }
     }
     const verifyAdmin = async (ownerData) => {
+        setLoading(true)
         const {data} = await axios.post(process.env.REACT_APP_URL + '/owner/login', { ownerData })
+        setLoading(false)
         if (data.success){
             dispatch(
                 setOwnerDetails({
@@ -54,6 +57,7 @@ function OwnerLoginComponent () {
     }
     return (
         <div className="formContainer">
+            { loading ? <Spinner/> :
             <div className="formWrapper">
                 <span className="title">Login</span>
                 <form onSubmit={handleSubmit}>
@@ -64,6 +68,7 @@ function OwnerLoginComponent () {
                 {/* <GoogleLogin onSuccess={googleSuccess} onError={googleError} /> */}
                 <p>You do have an account? <span onClick={() => navigate('/owner-register')}>Signup</span></p>
             </div>
+            }
             <ToastContainer />
         </div>
     )

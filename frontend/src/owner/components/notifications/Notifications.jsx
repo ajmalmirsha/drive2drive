@@ -4,45 +4,45 @@ import '../../../user/Components/notifications/userNotifications.css'
 import { useErrorHandler } from '../../../user/ErrorHandlers/ErrorHandler'
 import { useSelector } from "react-redux"
 import { io } from "socket.io-client"
+import Spinner from "../../../common/spinners/Spinner"
+
 export default function Notifications() {
   const socket = useRef()
   const [notifications, setNotifications] = useState([])
   const { ownerAuthenticationHandler } = useErrorHandler()
   const owner = useSelector(state => state.owner)
+  const [ loading, setLoading ] = useState(false)
   useEffect(() => {
+    setLoading(true)
     socket.current = io(process.env.REACT_APP_URL)
-    socket.current.emit("add-user",owner.id)
-    console.log('admin added to socket');
+    socket.current.emit("add-user", owner.id)
     ownerApi.get('/get-owner-notifications').then(({ data: { data } }) => {
-      console.log(data,7887);
+      setLoading(false)
       setNotifications(data)
-    }).catch( err => {
-      console.log(err,56);
-       ownerAuthenticationHandler(err)
+    }).catch(err => {
+      ownerAuthenticationHandler(err)
     })
   }, [])
 
   const handleNotificationReceive = useCallback((data) => {
-    console.log(notifications, 'got new notification', data.data);
     setNotifications(prevNotifications => [data.data, ...prevNotifications]);
   }, [notifications]);
-  
+
   useEffect(() => {
-    console.log(notifications, 'first notification');
-  
     socket.current.on("notification-recieve-owner", handleNotificationReceive);
-  
     return () => {
-      // Clean up the event listener when the component unmounts
       socket.current.off("notification-recieve-owner", handleNotificationReceive);
     };
   }, [handleNotificationReceive]);
-  
+
   return (
-    <div className="col-md-9 list-notifications my-3">
-      {notifications.length > 0 && notifications.map((x) => {
+    <div className="col-md-9 list-notifications" style={{height:'80vh'}} >
+      <h3 className="my-2" >Notifications</h3>
+      <hr />
+      <div className="custom-scrollbar-white" style={{overflowY:'auto',height:'65vh'}} >
+      { loading ? <Spinner/> : notifications.length > 0 && notifications.map((x) => {
         return (
-          <div className="notifications row m-3">
+          <div className="notifications row m-3"  >
             <div className="col-md-10 pt-1">
               <h4>{x.title}</h4>
               <p>{x.message}</p>
@@ -56,6 +56,7 @@ export default function Notifications() {
           </div>
         )
       })}
+      </div>
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { ToastContainer, toast } from "react-toastify"
 import { setAdminDetails } from "../../../redux/adminSlice"
 import { useDispatch } from "react-redux"
+import Spinner from "../../../common/spinners/Spinner"
 
 
 export default function AdminLogin () {
@@ -14,6 +15,7 @@ export default function AdminLogin () {
             email:'',
             password:''
         })
+        const [ loading, setLoading ] = useState(false)
         useEffect (() => {
             const token = localStorage.getItem('admin')
             if (token){
@@ -32,9 +34,10 @@ export default function AdminLogin () {
             }
         }
         const verifyAdmin = async (admin) => {
-           try {
-            const {data , status} = await axios.post(process.env.REACT_APP_URL + '/admin/login', { admin })
-           console.log(data);
+            try {
+               setLoading(true)
+               const {data , status} = await axios.post(process.env.REACT_APP_URL + '/admin/login', { admin })
+               setLoading(false)
             if ( status == 200){
                 localStorage.setItem('admin',data.token)
                 dispatch(
@@ -53,6 +56,7 @@ export default function AdminLogin () {
         }
         return (
             <div className="formContainer">
+                { loading ? <Spinner/> :
                 <div className="formWrapper">
                     <span className="title">Login</span>
                     <form onSubmit={handleSubmit}>
@@ -62,6 +66,7 @@ export default function AdminLogin () {
                     </form>
                     {/* <GoogleLogin onSuccess={googleSuccess} onError={googleError} /> */}
                 </div>
+                }
                 <ToastContainer />
 
             </div>

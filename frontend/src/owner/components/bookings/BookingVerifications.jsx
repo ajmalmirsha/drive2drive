@@ -7,23 +7,29 @@ import { faCircleCheck, faCircleXmark, faEye } from "@fortawesome/free-solid-svg
 import { useEffect, useState } from "react";
 import { ownerApi } from "../../../utils/Apis";
 import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler";
+import Spinner from "../../../common/spinners/Spinner"
 
 
 export default function BookingVerifications() {
     const [verification, setVerification] = useState([])
     const { ownerAuthenticationHandler } = useErrorHandler()
+    const [ loading, setLoading ] = useState(false)
     useEffect(() => {
         (function () {
+            setLoading(true)
             ownerApi.get(`/get-all-booking-verifications`).then(({ data: { data } }) => {
+                setLoading(false)
                 setVerification(data)
             }).catch(err => {
                 ownerAuthenticationHandler(err)
             })
         })()
     }, [])
-
+    
     function ConfirmVerification(id, verify) {
+        setLoading(true)
         ownerApi.put(`/verify/booking`, { id, verify }).then(({ data: { data } }) => {
+            setLoading(false)
             setVerification(data)
         }).catch(err => {
             ownerAuthenticationHandler(err)
@@ -35,7 +41,7 @@ export default function BookingVerifications() {
             <div className="row my-4 mx-2 gap-2">
                 <SideBar />
                 <div className="col-md-9 col-sm-7 booking-verification" >
-                    {verification.length > 0 && verification.map((x) => {
+                    { loading ? <Spinner/> : verification.length > 0 && verification.map((x) => {
                         return (
                             <>
                                 <div className="bookings row m-3" >

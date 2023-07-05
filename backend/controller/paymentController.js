@@ -1,16 +1,17 @@
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2022-08-01",
-  });
+
+const stripe = require("stripe")
+  const Stripe = stripe(process.env.STRIPE_SECRET_KEY);
 
 module.exports = {
 
     // create payment intent
 
-    async createPaymentIntent (req, res)  {
+    async createPaymentIntent (req, res, next)  {
         try {
+          const amount = parseInt(req.body?.amount)
           const paymentIntent = await Stripe.paymentIntents.create({
             currency: "Inr",
-            amount: req.body.amount * 100,
+            amount: amount * 100,
             automatic_payment_methods: { enabled: true },
           });
       
@@ -18,11 +19,7 @@ module.exports = {
             clientSecret: paymentIntent.client_secret,
           });
         } catch (e) {
-          return res.status(400).send({
-            error: {
-              message: e.message,
-            },
-          });
+         next()
         }
       },
 

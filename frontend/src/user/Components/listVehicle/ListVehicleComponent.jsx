@@ -26,7 +26,6 @@ export default function ListVehicleComponent({ props }) {
     setVehicles(props);
     const data = [...new Set(props.flatMap(item => item.places.map(place => place.value)))]
       .map(value => ({ label: value }));
-    console.log(data, 7575);
     setUniquePlaces(data)
   }, [props]);
 
@@ -43,10 +42,6 @@ export default function ListVehicleComponent({ props }) {
       place.value.toLowerCase().includes(searchInput.toLowerCase())
     ) || vehicle.price.toString().toLowerCase().includes(searchInput.toLowerCase())
   );
-
-  // useEffect(()=>{
-  //   setFilteredVehicle(result)
-  // },[result])
 
   // Function to sort vehicles in ascending order based on price
   const sortByLowToHigh = () => {
@@ -91,13 +86,17 @@ export default function ListVehicleComponent({ props }) {
     .catch(function (error) {
 
     });
-  const handleDropdownChange = ({target}) => {
-    console.log(target, 444)
-    if( target?.key ){
+  const handleDropdownChange = ({ target }) => {
+    if (target?.key === 'places') {
+      return setVehicles(props.filter((vehicle) => {
+        return vehicle.places.some((place) => place.value === target?.value);
+      }));
+    }
+    if (target?.key) {
       setVehicles(props.filter((vehicle) => {
         return vehicle[target?.key] === target?.value
       }));
-    } 
+    }
     // setSearchInput(target.value)
     //    const result = vehicles.filter((vehicle) =>
     //   vehicle.places.some((place) =>
@@ -136,7 +135,7 @@ export default function ListVehicleComponent({ props }) {
           items: uniquePlaces.map(place => ({
             label: place.label,
             icon: 'pi pi-fw pi-home',
-            command: () => handleDropdownChange({ target: { value: place.label } })
+            command: () => handleDropdownChange({ target: { value: place.label, key: 'places' } })
           })),
 
         },
@@ -146,13 +145,13 @@ export default function ListVehicleComponent({ props }) {
           items: [{
             label: 'Manual',
             icon: 'pi pi-fw pi-home',
-            command: () => handleDropdownChange({ target: { value: 'manual' , key:'category'} })
-           },
-           {
+            command: () => handleDropdownChange({ target: { value: 'manual', key: 'category' } })
+          },
+          {
             label: 'Automatic',
             icon: 'pi pi-fw pi-home',
-            command: () => handleDropdownChange({ target: { value: 'automatic' , key:'category'} })
-           }
+            command: () => handleDropdownChange({ target: { value: 'automatic', key: 'category' } })
+          }
           ]
 
         },
@@ -162,18 +161,18 @@ export default function ListVehicleComponent({ props }) {
           items: [{
             label: 'Vintage',
             icon: 'pi pi-fw pi-home',
-            command: () => handleDropdownChange({ target: { value: 'vintage' , key:'segment'} })
-           },
-           {
+            command: () => handleDropdownChange({ target: { value: 'vintage', key: 'segment' } })
+          },
+          {
             label: 'Premium',
             icon: 'pi pi-fw pi-home',
-            command: () => handleDropdownChange({ target: { value: 'premium' , key:'segment'} })
-           },
-           {
+            command: () => handleDropdownChange({ target: { value: 'premium', key: 'segment' } })
+          },
+          {
             label: 'Normal',
             icon: 'pi pi-fw pi-home',
-            command: () => handleDropdownChange({ target: { value: 'normal' , key:'segment'} })
-           }
+            command: () => handleDropdownChange({ target: { value: 'normal', key: 'segment' } })
+          }
           ]
 
         },
@@ -182,35 +181,35 @@ export default function ListVehicleComponent({ props }) {
           icon: 'pi pi-fw pi-pencil',
           items: [
             {
-            label: 'Sedan',
-            icon: 'pi pi-fw pi-home',
-            command: () => handleDropdownChange({ target: { value: 'Sedan' , key:'type'} })
-           },
-           {
-            label: 'Hatchback',
-            icon: 'pi pi-fw pi-home',
-            command: () => handleDropdownChange({ target: { value: 'Hatchback' , key:'type'} })
-           },
-           {
-            label: 'SUV',
-            icon: 'pi pi-fw pi-home',
-            command: () => handleDropdownChange({ target: { value: 'SUV' , key:'type'} })
-           },
+              label: 'Sedan',
+              icon: 'pi pi-fw pi-home',
+              command: () => handleDropdownChange({ target: { value: 'Sedan', key: 'type' } })
+            },
             {
-            label: 'Crossover',
-            icon: 'pi pi-fw pi-home',
-            command: () => handleDropdownChange({ target: { value: 'Crossover' , key:'type'} })
-           },
-           {
-            label: 'Coupe',
-            icon: 'pi pi-fw pi-home',
-            command: () => handleDropdownChange({ target: { value: 'Coupe' , key:'type'} })
-           },
-           {
-            label: 'Convertible',
-            icon: 'pi pi-fw pi-home',
-            command: () => handleDropdownChange({ target: { value: 'Convertible' , key:'type'} })
-           }
+              label: 'Hatchback',
+              icon: 'pi pi-fw pi-home',
+              command: () => handleDropdownChange({ target: { value: 'Hatchback', key: 'type' } })
+            },
+            {
+              label: 'SUV',
+              icon: 'pi pi-fw pi-home',
+              command: () => handleDropdownChange({ target: { value: 'SUV', key: 'type' } })
+            },
+            {
+              label: 'Crossover',
+              icon: 'pi pi-fw pi-home',
+              command: () => handleDropdownChange({ target: { value: 'Crossover', key: 'type' } })
+            },
+            {
+              label: 'Coupe',
+              icon: 'pi pi-fw pi-home',
+              command: () => handleDropdownChange({ target: { value: 'Coupe', key: 'type' } })
+            },
+            {
+              label: 'Convertible',
+              icon: 'pi pi-fw pi-home',
+              command: () => handleDropdownChange({ target: { value: 'Convertible', key: 'type' } })
+            }
           ]
 
         },
@@ -219,9 +218,9 @@ export default function ListVehicleComponent({ props }) {
   ];
 
   const end = <div className="">
-               <InputText value={searchInput} onChange={handleSearchInputChange} placeholder="Search" type="text" className="w-full" />
-               <span class="px-2">{listening ? <FontAwesomeIcon onClick={SpeechRecognition.stopListening} icon={faSquare} style={{ color: "#b00c0c", }} /> : <FontAwesomeIcon onClick={SpeechRecognition.startListening} icon={faMicrophone} />}</span>
-              </div>
+    <InputText value={searchInput} onChange={handleSearchInputChange} placeholder="Search" type="text" className="w-full" />
+    <span class="px-2">{listening ? <FontAwesomeIcon onClick={SpeechRecognition.stopListening} icon={faSquare} style={{ color: "#b00c0c", }} /> : <FontAwesomeIcon onClick={SpeechRecognition.startListening} icon={faMicrophone} />}</span>
+  </div>
 
   return (
 
@@ -331,24 +330,25 @@ export default function ListVehicleComponent({ props }) {
           <img src="https://cdn.dribbble.com/users/2382015/screenshots/6065978/no_result_still_2x.gif?compress=1&resize=400x300&vertical=top" alt="" />
         }
       </div>
-      <nav className='d-flex  justify-content-center'>
-        <ul className="pagination">
-          <li className="page-item">
-            <a className="page-link" onClick={prevPage} >Prev</a>
-          </li>
-          {
-            numbers.map((n, i) => {
-              return (<li className={`page-item ${currentPage === n && 'active'}`} key={i}>
-                <a className="page-link" onClick={() => { changeCPage(n) }}  >{n}</a>
-              </li>)
-            })
-          }
-          <li className="page-item">
-            <a className="page-link" onClick={nextPage} >Next</a>
-          </li>
-        </ul>
-      </nav>
-
+      {filteredVehicles.length > recordsPerPage &&
+        <nav className='d-flex  justify-content-center'>
+          <ul className="pagination">
+            <li className="page-item">
+              <a className="page-link" onClick={prevPage} >Prev</a>
+            </li>
+            {
+              numbers.map((n, i) => {
+                return (<li className={`page-item ${currentPage === n && 'active'}`} key={i}>
+                  <a className="page-link" onClick={() => { changeCPage(n) }}  >{n}</a>
+                </li>)
+              })
+            }
+            <li className="page-item">
+              <a className="page-link" onClick={nextPage} >Next</a>
+            </li>
+          </ul>
+        </nav>
+      }
 
 
     </section>

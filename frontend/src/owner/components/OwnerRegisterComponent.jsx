@@ -4,9 +4,13 @@ import axios from 'axios'
 import { GoogleLogin } from '@react-oauth/google'
 import './ownerRegisterCombo.css'
 import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { setOwnerDetails } from '../../redux/ownerSlice'
 function OwnerRegisterComponent() {
     const [owner, setOwner] = useState({ username: '', email: '', password: '' })
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    
     useEffect(() => {
         const token = localStorage.getItem('owner')
         if (token) {
@@ -35,10 +39,22 @@ function OwnerRegisterComponent() {
                 const { data, status, message } = await axios.post(process.env.REACT_APP_URL + '/owner/owner-register', { owner })
                 if (status == 200) {
                     localStorage.setItem('owner', data.token)
+                    dispatch(
+                        setOwnerDetails({
+                            id:data.owner._id,
+                            email:data.owner.email,
+                            phone:data.owner?.phone,
+                            image:data.owner?.image,
+                            username:data.owner?.username,
+                            adminverify:data.owner?.adminverify,
+                            dob:data.owner?.dob
+                        })
+                    )
                     navigate('/owner/home')
                 }
             } catch (error) {
-                const { status, data } = error.response
+                console.log(error,34);
+                const { status, data } = error?.response
                 if (status == 401) {
                     toast.error(data.message)
                 }

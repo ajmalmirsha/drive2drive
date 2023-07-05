@@ -8,7 +8,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
 
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { FilterMatchMode } from 'primereact/api';
 
 export default function SalesReport({ report, owner }) {
   const [data, setData] = useState([])
@@ -16,7 +16,7 @@ export default function SalesReport({ report, owner }) {
     setData(report)
   }, [report])
 
-  const [filters, setFilters] = useState({
+  const filters = {
     'vehicle.vehicleName': { value: null, matchMode: FilterMatchMode.CONTAINS },
     "vehicle.category": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     'country.name': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -24,7 +24,7 @@ export default function SalesReport({ report, owner }) {
     'vehicle.type': { value: null, matchMode: FilterMatchMode.EQUALS },
     'vehicle.ownerId.username': { value: null, matchMode: FilterMatchMode.EQUALS },
     'totalAmount': { value: null, matchMode: FilterMatchMode.EQUALS }
-  });
+  }
 
 
   const exportData = () => {
@@ -65,13 +65,11 @@ export default function SalesReport({ report, owner }) {
     } else if (e.value.name === 'Monthly') {
       days = 30
     }
-    // Sort the data by updatedAt field in descending order
+  
     report.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
-    // Get the current date and subtract 7 days to get the date from one week ago
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - days);
-    // Filter the data for sales that occurred within the last week
     const lastWeekSales = report.filter((item) => new Date(item.updatedAt) >= oneWeekAgo);
 
     setData(lastWeekSales)

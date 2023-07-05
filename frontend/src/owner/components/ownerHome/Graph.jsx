@@ -2,14 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import { Chart } from 'primereact/chart';
 import { ownerApi } from '../../../utils/Apis';
-
+import Spinner from '../../../common/spinners/Spinner'
 
 export default function Graph () {
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
     const [ revenue, setRevenue ] = useState([])
+    const [ loading, setLoading ] = useState(false)
     useEffect(()=> {
+        setLoading(true)
         ownerApi.get('/get/owner/sales').then(({data:{revenue}}) => {
+            setLoading(false)
             setRevenue(revenue)
         })
     },[])
@@ -85,9 +88,12 @@ export default function Graph () {
 
     return (
         <div className="col-md-9">
+            {
+                loading ? <Spinner/> :
         <div className="card">
             <Chart type="line" data={chartData} options={chartOptions} />
         </div>
+            }
         </div>
     )
 }

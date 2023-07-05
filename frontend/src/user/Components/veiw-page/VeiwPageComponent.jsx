@@ -37,7 +37,6 @@ const ViewPageComponent = () => {
           setLoading(false)
           setReviews(data.reviews.reverse())
         }).catch((err) => {
-          console.log('on chatche');
           userAuthenticationHandler(err)
         })
       }
@@ -50,7 +49,6 @@ const ViewPageComponent = () => {
     const avgRating = ratingsSum / reviews.length;
     const roundedAvgRating = avgRating.toFixed()
     setAvgRating(roundedAvgRating)
-    console.log(vehicle, 987);
   }, [reviews])
 
   const navigate = useNavigate()
@@ -117,10 +115,10 @@ const ViewPageComponent = () => {
 
   const handleReportSubmit = (e) => {
     e.preventDefault()
-    console.log(report);
     userApi.post('/add-report', { report, proId: vehicle._id }).then(({ data: { message } }) => {
       toast.success(message)
       setReport('')
+      setVisible(false)
     }).catch(err => {
       userAuthenticationHandler(err)
     })
@@ -208,7 +206,6 @@ const ViewPageComponent = () => {
             <div className="product-description">{vehicle?.description}</div>
             <div className="row">
               <div className="col-md-6 col-sm-6 col-6"><button onClick={() => {
-                console.log(user);
                 user?.license?.verification === 'verified' ? navigate(`/checkout/${vehicle._id}`) :
                   toast.error(`your license verification ${user?.license?.verification}`)
               }
@@ -309,25 +306,12 @@ const ViewPageComponent = () => {
                     <img className='review-image' src={`${process.env.REACT_APP_URL}/public/images/reviewImages/${review.image}`} alt="" />
                   </div>}
                 </li>
-              )) : "add your first review"}
+              )) :  vehicle?.bookedUsers?.includes(user.id) ? "add your first review" : 'no reviews uploaded'}
             </ul>
           </div>
         </div>
       </div>
-      {/* <!-- Modal --> */}
-
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog ">
-          <div class="modal-content">
-
-
-            <div class="modal-body m-0 p-0" style={{ height: '80vh' }} >
-              {ownerId && <ChatPage ownerId={ownerId} />}
-            </div>
-
-          </div>
-        </div>
-      </div>
+    
       <ToastContainer />
     </div>
   );

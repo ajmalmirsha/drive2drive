@@ -3,23 +3,24 @@ import { useSelector } from "react-redux"
 import './reviewList.css'
 import img from '../../../images/default.png'
 import { ownerApi } from "../../../utils/Apis"
+import Spinner from "../../../common/spinners/Spinner"
 import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler"
 export default function ReviewList() {
   const { id } = useSelector(state => state.owner)
   const [users, setUsers] = useState([])
   const [selectedUser, setSelectedUser] = useState(null);
+  const [ loading, setLoading ] = useState(false)
   const { ownerAuthenticationHandler } = useErrorHandler()
   useEffect(() => {
-    if (localStorage.getItem('owner')) {
+      setLoading(true)
       ownerApi.get(`/get-reviews/${id}`).then(({ data: { data } }) => {
-        console.log(data, 666);
+        setLoading(false)
         const filteredData = data.filter((item) => item.reviews.length > 0);
-
         setUsers(filteredData)
       }).catch ( err => {
         ownerAuthenticationHandler(err)
       })
-    }
+    
 
   }, [])
 
@@ -27,11 +28,11 @@ export default function ReviewList() {
     <div className="col-md-5  ms-3 mt-3 review-list">
       <h3>Reviews</h3>
       <hr />
-
+   { loading ? <Spinner/> :
       <div className="main">
         <div className="heads">
           {
-            users.map((y) => {
+           users.length > 0 ? users.map((y) => {
               return (
                 <div className="">
                   <div
@@ -41,10 +42,7 @@ export default function ReviewList() {
                     className="row vehicles-review-list"
                   >
                     <p className="col-md-8">{y.product_name}
-                      {/* {selectedUser == y &&<p onClick={()=>{
-            console.log('clicked');
-            
-          }} className="float-end"><FontAwesomeIcon  icon={faCircleXmark} /></p>} */}
+
                     </p>
                     <div className="col-md-4">
                       <img className="vehicle-image " src={`${process.env.REACT_APP_URL}/public/images/${y.image[0]}`} alt="" />
@@ -80,11 +78,11 @@ export default function ReviewList() {
                     }) : null}
                 </div>
               );
-            })
+            }) : <p className="text-center" >no reviews</p>
           }
         </div>
       </div>
-
+}
     </div>
   )
 }

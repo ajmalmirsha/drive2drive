@@ -8,12 +8,14 @@ import { io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
 import { adminApi } from '../../../utils/Apis';
 import {  useErrorHandler } from '../../../user/ErrorHandlers/ErrorHandler'
+import Spinner from "../../../common/spinners/Spinner"
 
 
 export default function Notifications () {
   const { adminAuthenticationHandler } = useErrorHandler()
   const socket = useRef()
   const admin = useSelector(state => state.admin)
+  const [ loading, setLoading ] = useState(false)
   const [notification , setNotification] = useState({
     title:'',
     message:'',
@@ -23,9 +25,11 @@ export default function Notifications () {
   })
   const [allNotifications, setallNotifications] = useState([])
   useEffect(()=>{
+    setLoading(true)
     socket.current = io(process.env.REACT_APP_URL)
     socket.current.emit("add-user",admin.id)
     adminApi.get(`/get-all-notifications`).then(({data:{data}})=>{
+      setLoading(false)
       setallNotifications([...data])
     }).catch( err => {
        adminAuthenticationHandler(err)
@@ -34,6 +38,7 @@ export default function Notifications () {
 
   function handleSubmit (e) {
     e.preventDefault()
+    setLoading(true)
     if(!notification.title.trim()){
       return toast.error('add a title !')
     }
@@ -47,9 +52,8 @@ export default function Notifications () {
       }
   }
 
-  console.log('adding new notifications');
-
     adminApi.post(`/add-notification`,formData,config).then(({data:{data}}) => {
+      setLoading(false)
       setallNotifications([{...data},...allNotifications])
       
       setNotification({
@@ -102,7 +106,7 @@ export default function Notifications () {
 <div>
   <h5>Recent Notifications</h5>
   {
-   allNotifications.length > 0 && allNotifications.map((x)=>{
+   loading ? <Spinner/> : allNotifications.length > 0 && allNotifications.map((x)=>{
       return (
         <div className="set-notifications my-5 mx-5 pb-2 row">
         <div className="col-md-9">

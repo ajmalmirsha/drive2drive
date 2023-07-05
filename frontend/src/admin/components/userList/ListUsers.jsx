@@ -7,22 +7,26 @@ import { adminApi } from "../../../utils/Apis";
 import img from '../../../images/default.png'
 import './listUsers.css'
 import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler";
-export default function ListUsers () {
-  
+import Spinner from "../../../common/spinners/Spinner"
+
+export default function ListUsers() {
+
   const { adminAuthenticationHandler } = useErrorHandler()
-  const navigate = useNavigate()
   const [users, setUsers] = useState([])
   const [searchInput, setSearchInput] = useState("");
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
-     adminApi.get('/get-all-user-details').then(({data:{data}}) => {
-        setUsers(data)
-     }).catch( err => {
+    setLoading(true)
+    adminApi.get('/get-all-user-details').then(({ data: { data } }) => {
+      setLoading(false)
+      setUsers(data)
+    }).catch(err => {
       adminAuthenticationHandler(err)
-     })
-  } , [])
-  
- 
-   
+    })
+  }, [])
+
+
+
   // Handle search input change
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
@@ -51,16 +55,16 @@ export default function ListUsers () {
 
   useEffect(() => {
     setSearchInput(searchInput + transcript)
-  },[transcript])
-  
+  }, [transcript])
+
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
   }
 
   navigator.mediaDevices.getUserMedia({ audio: true })
-  .catch(function(error) {
-    
-  });
+    .catch(function (error) {
+
+    });
 
   const updateField = (id, field, value) => {
     setUsers(prevState => {
@@ -72,33 +76,33 @@ export default function ListUsers () {
       });
     });
   };
-  
 
-  function  handleBlockUser (status,userId)  {
-            adminApi.put('/user/block/un-block',{status,userId}).then(({data:{data}}) => {
-              updateField(data._id, 'block', data.block);
-            }).catch( err => {
-              adminAuthenticationHandler(err)
-            })
+
+  function handleBlockUser(status, userId) {
+    adminApi.put('/user/block/un-block', { status, userId }).then(({ data: { data } }) => {
+      updateField(data._id, 'block', data.block);
+    }).catch(err => {
+      adminAuthenticationHandler(err)
+    })
   }
 
 
   return (
 
-    <section className="col-md-10 col-sm-9 mt-2" style={{ backgroundColor: "#ffff" , height:'100vh'}}>
-      <div class="row justify-content-center overflow-auto mb-3 " style={{height:'90vh'}} >
+    <section className="col-md-10 col-sm-9 mt-2" style={{ backgroundColor: "#ffff", height: '100vh' }}>
+      <div class="row justify-content-center overflow-auto mb-3 " style={{ height: '90vh' }} >
         <div class="col-md-12 col-xl-10">
           <div className="search mb-4 w-100 container d-flex justify-content-end">
-           
-                 
-                  <input value={searchInput} 
-                  onChange={handleSearchInputChange}
-                  type="text" class="form-control form-input w-25" placeholder="Search..." />
-                  <span class="px-2">{ listening ? <FontAwesomeIcon onClick={SpeechRecognition.stopListening} icon={faSquare} style={{color: "#b00c0c",}} /> : <FontAwesomeIcon  onClick={SpeechRecognition.startListening} icon={faMicrophone} />}</span>
+
+
+            <input value={searchInput}
+              onChange={handleSearchInputChange}
+              type="text" class="form-control form-input w-25" placeholder="Search..." />
+            <span class="px-2">{listening ? <FontAwesomeIcon onClick={SpeechRecognition.stopListening} icon={faSquare} style={{ color: "#b00c0c", }} /> : <FontAwesomeIcon onClick={SpeechRecognition.startListening} icon={faMicrophone} />}</span>
           </div>
         </div>
-        {records.length > 0 ? records.map((x) => {
-          return ( 
+        { loading ? <Spinner/> : records.length > 0 ? records.map((x) => {
+          return (
             <div class="row justify-content-center  p-0 m-0" >
               <div class="col-md-12 col-xl-11 ">
                 <div class="card shadow-0 border rounded-3">
@@ -106,9 +110,9 @@ export default function ListUsers () {
                     <div class="row">
                       <div class="col-md-12 col-lg-2  d-flex justify-content-center align-items-center col-xl-3 mb-4 mb-lg-0">
                         <div class="bg-image hover-zoom ripple rounded ripple-surface">
-                          <img  src={x.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ? 
-           x.image : x.image ? `${process.env.REACT_APP_URL}/public/images/${x.image}`
-            : img}
+                          <img src={x.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ?
+                            x.image : x.image ? `${process.env.REACT_APP_URL}/public/images/${x.image}`
+                              : img}
                             class="user-image" />
                           <a href="#!">
                             <div class="hover-overlay">
@@ -141,13 +145,13 @@ export default function ListUsers () {
                         </p>
                       </div>
                       <div class="col-md-6 col-lg-3 col-xl-3 align-items-center border-sm-start-none border-start d-flex flex-column justify-content-center align-items-center">
-                       
+
                         <div class="d-flex flex-column mt-4">
-                            {
-                                x.block ?
-                                <button  onClick={(e) => handleBlockUser('unblock',x._id)} class="btn btn-outline-success btn-sm" type="button">un block</button> :
-                                <button  onClick={(e) => handleBlockUser('block',x._id)} class="btn btn-outline-danger btn-sm" type="button">block</button>
-                            }
+                          {
+                            x.block ?
+                              <button onClick={(e) => handleBlockUser('unblock', x._id)} class="btn btn-outline-success btn-sm" type="button">un block</button> :
+                              <button onClick={(e) => handleBlockUser('block', x._id)} class="btn btn-outline-danger btn-sm" type="button">block</button>
+                          }
                         </div>
                       </div>
                     </div>

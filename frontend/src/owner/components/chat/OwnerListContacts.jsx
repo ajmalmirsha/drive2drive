@@ -10,9 +10,7 @@ export default function OwnerListContacts ({setSender,socket}) {
     const [listUpdated, setListUpdated] = useState(null)
     const { ownerAuthenticationHandler } = useErrorHandler()
     useEffect(()=> {
-        console.log('gone');
         ownerApi.get('/get-all-contacts').then( ({data:{data}}) => {
-           console.log(data,88);
            setContacts(data)
         }).catch (err => {
           ownerAuthenticationHandler(err)

@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 import { adminApi } from '../../../utils/Apis';
 import {  useErrorHandler } from '../../../user/ErrorHandlers/ErrorHandler'
+import Spinner from "../../../common/spinners/Spinner"
+
 export default function ListOwners() {
   const { adminAuthenticationHandler } = useErrorHandler()
     const [ owner, setOwner ] = useState([])
-  useEffect( () => {
-     adminApi.get('/get/all/owners').then(({data:{data}}) => {
-        console.log(data);
+    const [ loading, setLoading ] = useState(false)
+    useEffect( () => {
+      setLoading(true)
+      adminApi.get('/get/all/owners').then(({data:{data}}) => {
+       setLoading(false)
          setOwner(data)
      }).catch( err => {
       adminAuthenticationHandler(err)
@@ -16,7 +20,7 @@ export default function ListOwners() {
 
   return (
       <div className="accordion list-owners col-md-10 col-sm-9 pt-5 px-3 accordion-flush vh-100 overflow-auto" id="accordionFlushExample">
-        { owner.length > 0 && owner.map((x,i) => {
+        { loading ? <Spinner/> : owner.length > 0 && owner.map((x,i) => {
         return(
         <div className="accordion-item">
           <h2 className="accordion-header" id={`flush-heading${i}`}>

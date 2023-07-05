@@ -1,17 +1,15 @@
 
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import './listproduct.css'
 import { useNavigate } from 'react-router-dom'
-import { userApi } from '../../../utils/Apis'
 
 function ListProducts({vehicle,title}) {
-    const inputRef = useRef()
     const navigate = useNavigate()
 
     // pagination
 
     const [currentPage, setCurrentPage] = useState(1)
-    const recordsPerPage = 4
+    const recordsPerPage = 8
     const lastIndex = currentPage * recordsPerPage
     const firstIndex = lastIndex - recordsPerPage
     const records = vehicle.slice(firstIndex, lastIndex)
@@ -36,13 +34,13 @@ function ListProducts({vehicle,title}) {
                     }} className="card " style={{ width: "18rem" }}>
                         <img style={{ height: '12rem' }} src={`${process.env.REACT_APP_URL}/public/images/${x.image[0]}`} className="card-img-top" alt="..." />
                         <div className="card-body">
-                            <h5 className="card-title">{x.product_name}</h5>
+                            <h5 className="card-title text-ellipsis ">{x.product_name}</h5>
                             <p className="card-text">{x.description}</p>
 
                             <div className="d-flex justify-content-between align-items-center">
-                                <p className="price fw-bold pt-3">
-                                    {x.price}
-                                </p>
+                                <h5 className="price fw-bold pt-3">
+                                    {x.price} <small>/perday</small> 
+                                </h5>
                                 <a href="#" className="btn btn-primary">Book now</a>
                             </div>
                         </div>
@@ -51,7 +49,7 @@ function ListProducts({vehicle,title}) {
             </div>
 
           { 
-          records?.length > recordsPerPage && (
+          vehicle?.length > recordsPerPage && (
           <nav className='d-flex  justify-content-center'>
                 <ul className="pagination">
                     <li className="page-item">
@@ -69,7 +67,7 @@ function ListProducts({vehicle,title}) {
                     </li>
                 </ul>
             </nav>
-            )}
+             )}
 
         </>
     )

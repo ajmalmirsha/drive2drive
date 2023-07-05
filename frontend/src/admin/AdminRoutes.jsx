@@ -1,10 +1,8 @@
 import { Route, Routes } from "react-router-dom";
-import Coupon from "./components/coupon/Coupon";
 import AdminPrivateRoute from "./middlewares/AdminPrivateRoutes";
 import AdminHome from "./pages/admin-home/AdminHome";
 import AdminPublicRoute from "./middlewares/AdminPublicRoutes";
 import AdminLogin from "./pages/admin-login/AdminLogin";
-import AdminSideBar from "./components/AdminSideBar";
 import UserErrorPage from "../Error/error-pages/UserErrorPage";
 
 

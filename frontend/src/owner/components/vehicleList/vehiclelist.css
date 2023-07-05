@@ -11,3 +11,11 @@
 .vehicle-image {
    width: 50px;
 }
+
+.vehicle-description-container {
+   display: -webkit-box;
+   -webkit-line-clamp: 3;
+   -webkit-box-orient: vertical;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
