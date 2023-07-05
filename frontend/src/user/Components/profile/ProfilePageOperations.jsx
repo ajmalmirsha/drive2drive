@@ -54,7 +54,7 @@ import { userApi } from "../../../utils/Apis";
                if (status === 200) {
         
               const { userData } = data
-              const { setUserDetails } = await import('../../../redux/userSlice')
+              
               console.log(userData.license?.rear, 84);
               dispatch(
                 setUserDetails({

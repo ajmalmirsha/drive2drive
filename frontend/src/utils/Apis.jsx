@@ -3,34 +3,33 @@ import axios from "axios";
 
 
 export const userApi = axios.create({
-    baseURL:`http://localhost:4000`
+    // baseURL:`http://localhost:4000`
     // baseURL:`https://drive2drive.site`
+    baseURL:`https://drive2drive.onrender.com`
 })
 
 export const ownerApi=axios.create({
-    baseURL:`http://localhost:4000/owner`
+    // baseURL:`http://localhost:4000/owner`
     // baseURL:`https://drive2drive.site/owner`
+    baseURL:`https://drive2drive.onrender.com/owner`
 })
 
 export const adminApi=axios.create({
-    baseURL:`http://localhost:4000/admin`
+    // baseURL:`http://localhost:4000/admin`
     // baseURL:`https://drive2drive.site/admin`
+    baseURL:`https://drive2drive.onrender.com/admin`
 })
 
 
 userApi.interceptors.request.use((req) => {
-    console.log('inside inteseptor');
     if (localStorage.getItem('user')){
-        console.log('user token is there');
         req.headers.Authentication =  localStorage.getItem("user");
     }
         return req; 
     
 })
 ownerApi.interceptors.request.use((req) => {
-    console.log('inside admin inteseptor');
     if (localStorage.getItem('owner')){
-        console.log('user token is there');
         req.headers.Authentication =  localStorage.getItem("owner");
     }
         return req; 

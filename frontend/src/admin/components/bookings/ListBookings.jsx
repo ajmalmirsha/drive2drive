@@ -1,7 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { classNames } from 'primereact/utils';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { adminApi } from '../../../utils/Apis';

@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
-import './500.css'
 import { useNavigate } from 'react-router-dom';
+import './500.css'
 
 
 export default function ErrorPage500 () {

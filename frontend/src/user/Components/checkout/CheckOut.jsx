@@ -6,8 +6,6 @@ import './checkOut.css'
 import Payment from "../Stripe/Payment";
 import Select from 'react-select';
 import Creatable from 'react-select/creatable';
-import kms from '../../../images/kms.png'
-import refund from '../../../images/refund.png'
 import { toast, ToastContainer } from 'react-toastify'
 import { userApi } from "../../../utils/Apis";
 import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler";

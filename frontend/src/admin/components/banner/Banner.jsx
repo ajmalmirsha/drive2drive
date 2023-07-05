@@ -3,7 +3,7 @@ import { Table, Tbody, Td, Th, Thead, Tr } from "react-super-responsive-table"
 import { adminApi } from '../../../utils/Apis'
 import { useErrorHandler } from '../../../user/ErrorHandlers/ErrorHandler'
 import { toast as toaster, ToastContainer } from 'react-toastify'
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { Button } from "primereact/button"
 
