@@ -40,7 +40,6 @@ export function useErrorHandler() {
 
   }
   function adminAuthenticationHandler(props) {
-
     const { response: { status, data } } = props
     if (status === 401 && data.Auth === false) {
       localStorage.removeItem("admin");
