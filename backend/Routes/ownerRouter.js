@@ -79,8 +79,4 @@ router.get('/get/sales-report',ownerAuthenticator,ownerSalesReport)
 // getting  owner sales for chart
 router.get('/get/owner/sales',ownerAuthenticator,getOwnerSales)
 
-router.use((req, res)=> {
-  res.status(500).json({success:false})
-})
-
 module.exports = router

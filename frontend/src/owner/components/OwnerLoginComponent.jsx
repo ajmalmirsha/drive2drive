@@ -34,7 +34,6 @@ function OwnerLoginComponent () {
     }
     const verifyAdmin = async (ownerData) => {
         const {data} = await axios.post(process.env.REACT_APP_URL + '/owner/login', { ownerData })
-       console.log(data,'owner details');
         if (data.success){
             dispatch(
                 setOwnerDetails({

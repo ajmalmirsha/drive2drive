@@ -90,8 +90,6 @@ router.post('/apply/coupon',userAuthenticator,applyCoupon)
 // get banners
 router.get('/get/all/banners',userAuthenticator,getBanners)
 
-router.use((req, res)=> {
-  res.status(500).json({success:false})
-})
+
 
 module.exports = router

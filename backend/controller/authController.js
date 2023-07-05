@@ -135,7 +135,6 @@ module.exports = {
 
     async ownerLogin  ( req, res, next ) {
         try {
-            console.log('on owner login');
             const { email, password } = req.body.ownerData
             const owner = await ownerModel.findOne({ email })
             if (owner) {
@@ -151,7 +150,6 @@ module.exports = {
                 res.status(200).json({ success: false, message: 'invalid email' })
             }
         } catch (error) {
-            console.log('owner chache');
            const err = handleError(error)
            res.status(200).json({ success: false, message: err }) 
         }
