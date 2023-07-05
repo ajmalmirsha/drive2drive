@@ -46,7 +46,7 @@ export default function UserHome (){
        {filteredVehicle?.length > 0 &&
        <ListProducts vehicle={filteredVehicle} title={`vehicles available on ${search.place}`} />
        }
-       <Banner/>
+       <Banner vehicles={vehicle} />
        { loading ? <Spinner/> :
        <ListProducts vehicle={vehicle}/>
        }

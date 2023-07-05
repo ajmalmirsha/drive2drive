@@ -6,58 +6,69 @@ import { Galleria } from 'primereact/galleria';
 import { useErrorHandler } from '../../ErrorHandlers/ErrorHandler'
 import './banner.css'
 import { Skeleton } from 'primereact/skeleton'
-function Banner () {
-    const [ banner, setBanners ] = useState([])
+import { Button } from 'primereact/button';
+import { Carousel } from 'primereact/carousel';
+import { Tag } from 'primereact/tag';
+import { useNavigate } from 'react-router-dom';
+import Spinner from '../../../common/spinners/Spinner';
+function Banner ({vehicles}) {
     const [ loading, setLoading ]  = useState(false)
-    const [images, setImages] = useState(null);
     const { userAuthenticationHandler } = useErrorHandler()
   useEffect(()=>{
+    console.log('vehicles',vehicles);
     setLoading(true)
     userApi.get('/get/all/banners').then(({data:{data}}) => {
       setLoading(false)
-       console.log(data);
-       const result = data.map((item) => ({
-        itemImageSrc: `${process.env.REACT_APP_URL}/public/banner/${item.image}`,
-        thumbnailImageSrc: `${process.env.REACT_APP_URL}/public/banner/${item.image}`,
-        alt: `Description for ${item.image}`,
-        title: `Title ${item._id}`,
-      }));
-      console.log('result', result);
-      setImages(result)
+      
     }).catch( err => {
        userAuthenticationHandler(err)
     })
   },[])
-      const responsiveOptions = [
-          {
-              breakpoint: '991px',
-              numVisible: 4
-          },
-          {
-              breakpoint: '767px',
-              numVisible: 3
-          },
-          {
-              breakpoint: '575px',
-              numVisible: 1
-          }
-      ];
-  
-      const itemTemplate = (item) => {
-          return <img src={item.itemImageSrc} alt={item.alt} style={{ width: '100%' }} />
-      }
-  
-      const thumbnailTemplate = (item) => {
-          return <img src={item.thumbnailImageSrc} alt={item.alt} />
-      }
-  
-      return (
-          <div className="card">
-              <Galleria value={images} responsiveOptions={responsiveOptions} numVisible={5} style={{ maxWidth: '640px' }} 
-                  item={itemTemplate} thumbnail={thumbnailTemplate} />
-          </div>
-      )
 
+  const navigate = useNavigate()
+  
+  const responsiveOptions = [
+      {
+          breakpoint: '1199px',
+          numVisible: 1,
+          numScroll: 1
+      },
+      {
+          breakpoint: '991px',
+          numVisible: 2,
+          numScroll: 1
+      },
+      {
+          breakpoint: '767px',
+          numVisible: 1,
+          numScroll: 1
+      }
+  ];
+
+  const productTemplate = (product) => {
+      return (
+          <div className="border-1 surface-border border-round m-2 text-center py-5 px-3">
+              <div className="mb-3" onClick={() => { navigate(`/veiw-detail/${product._id}`) }} >
+                  <img src={`${process.env.REACT_APP_URL}/public/images/${product.image[0]}`} alt={product.product_name} className="w-6 shadow-2" />
+              </div>
+              <div>
+                  <h4 className="mb-1">{product.product_name}</h4>
+                  <h6 className="mt-0 mb-3">₹{product.price}</h6>
+                  <div className="mt-5 flex flex-wrap gap-2 justify-content-center">
+                      <Button icon="pi pi-star-fill" className="p-button-success" onClick={() =>{ navigate(`/checkout/${product._id}`) }} >Book now</Button>
+                  </div>
+              </div>
+          </div>
+      );
+  };
+  
+  return (
+    <div className="card">
+      {loading ? <Spinner/> :
+        <Carousel value={vehicles} numScroll={1} numVisible={3} responsiveOptions={responsiveOptions} itemTemplate={productTemplate} />
+      }
+    </div>
+)
 }
 
 export default Banner
