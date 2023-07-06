@@ -1,4 +1,4 @@
-
+require('dotenv').config();
 const stripe = require("stripe")
   const Stripe = stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -8,6 +8,7 @@ module.exports = {
 
     async createPaymentIntent (req, res, next)  {
         try {
+          console.log('inside payemnt intetnt');
           const amount = parseInt(req.body?.amount)
           const paymentIntent = await Stripe.paymentIntents.create({
             currency: "Inr",
@@ -19,6 +20,7 @@ module.exports = {
             clientSecret: paymentIntent.client_secret,
           });
         } catch (e) {
+          console.log(e);
          next()
         }
       },

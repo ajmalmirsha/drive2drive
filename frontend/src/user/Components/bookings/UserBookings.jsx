@@ -25,7 +25,6 @@ export default function UserBookings() {
 
   // Sort by vehicle name (ascending order)
   const sort = (value) => {
-    console.log(value);
     if (value === 'rent asc') {
       const sortedBookings = [...bookings].sort((a, b) => a.vehicle.vehicleName.localeCompare(b.vehicle.vehicleName));
       setBookings(sortedBookings);
@@ -222,7 +221,6 @@ export default function UserBookings() {
                                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                  <p>jhghjh</p>
                                   <Payment props={x.totalAmount} setBookings={setBookings} couponId={x?.coupon} bookingId={x._id} />
                                 </div>
 

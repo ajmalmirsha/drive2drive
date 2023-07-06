@@ -84,7 +84,6 @@ router.get('/get/all/banners',getBanners)
 router.delete('/delete/banner/:bannerId',DeleteBanner)
 
 router.use((req, res)=> {
-    console.log(' admin router');
     res.status(500).json({success:false})
 })
 

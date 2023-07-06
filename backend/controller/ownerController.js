@@ -131,7 +131,8 @@ module.exports = {
 
     bookingVerifications ( req, res, next) {
         try {
-            bookingModel.find({$and: [{'approvel.approved': false}, {'approvel.declined': false}]}).then((response) => {
+            const { ownerId } = req.headers
+            bookingModel.find({$and: [{'approvel.approved': false}, {'approvel.declined': false},{'vehicle.ownerId': ownerId}]}).then((response) => {
                 res.status(200).json({success:true,data:response})
             })
         } catch (e) {

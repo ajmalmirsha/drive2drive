@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { ToastContainer, toast } from "react-toastify"
 import './editVehicle.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownLeftAndUpRightToCenter, faFileUpload, faTrash, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faDownLeftAndUpRightToCenter, faFileUpload, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ownerApi } from "../../../utils/Apis"
 import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler"
 import Select from 'react-select/creatable';

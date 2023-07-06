@@ -53,7 +53,7 @@ router.get('/edit-product-details/:id',ownerAuthenticator,editProductDetails)
 router.post('/edit-vehicle',ownerAuthenticator, EditVehicleDetials)
 
 // get all booking verifications
-router.get('/get-all-booking-verifications',ownerAuthenticator,ownerAuthenticator, bookingVerifications)
+router.get('/get-all-booking-verifications',ownerAuthenticator, bookingVerifications)
 
 // verify bookings
 router.put('/verify/booking',ownerAuthenticator, verifyBooking)

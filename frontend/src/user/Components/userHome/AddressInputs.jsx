@@ -27,11 +27,10 @@ export default function AddressInputs ({ handleSubmit }) {
     // ]
     function handleStartDateChange (dateStr) {
         const date = new Date(dateStr);
-        console.log(new Date(),new Date(pickDate).setHours(18, 0),'sdjg');
+
         const options = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
         const formattedDateTime = date.toLocaleString('en-US', options);
         
-        console.log(formattedDateTime);
         setpickDatePlaceHolder(formattedDateTime)
         setPickDate(dateStr);
     }
@@ -40,8 +39,7 @@ export default function AddressInputs ({ handleSubmit }) {
         
         const options = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
         const formattedDateTime = date.toLocaleString('en-US', options);
-        
-        console.log(formattedDateTime);
+
         setdropDatePlaceHolder(formattedDateTime)
         setDropDate(dateStr);
     }
@@ -71,14 +69,14 @@ export default function AddressInputs ({ handleSubmit }) {
                 name="place"
                 components={{ Placeholder: CustomPlaceholder }}
                 options={placeOptions}
-                styles={{
-                    menu: (provided) => ({
-                      ...provided,
-                      maxHeight: '200px',
-                      overflow: 'auto',
-                      zIndex: 9999,
-                    }),
-                  }}
+                // styles={{
+                //     menu: (provided) => ({
+                //       ...provided,
+                //       maxHeight: '200px',
+                //       overflow: 'auto',
+                //       zIndex: 9999,
+                //     }),
+                //   }}
               />
              </div>
              <div className="col-md-3 col-6 py-2">  
@@ -88,8 +86,8 @@ export default function AddressInputs ({ handleSubmit }) {
                  shouldCloseOnSelect
                  minDate={new Date()}
                  maxDate={ dropDate && dropDate }
-                 minTime={new Date().setHours(0, 0, 0, 0)}
-                 maxTime={ dropDate ? new Date(dropDate).setHours(18, 0) : new Date().setHours(18, 0)}
+                 minTime={new Date()}
+                 maxTime={ dropDate ? dropDate : new Date().setHours(18, 0)}
                  placeholderText={  pickDatePlaceHolder ? pickDatePlaceHolder : 'Pick-up date'}
                  calendarClassName="bg-white shadow-lg rounded-lg py-4 px-2 "
                  className="form-control  text-xl bg-slate-200 h-100 d-block text-ellipsis"
@@ -102,8 +100,9 @@ export default function AddressInputs ({ handleSubmit }) {
                  showTimeSelect
                  shouldCloseOnSelect
                  minDate={ pickDate ? pickDate : new Date()}
-                 minTime={ pickDate ? new Date(pickDate).setHours(18, 0) : new Date().setHours(18, 0)}
-                 maxTime={new Date().setHours(23, 59, 59, 999)}
+                 minTime={ pickDate ? pickDate : new Date() }
+                 maxTime={ pickDate ? new Date(pickDate).setHours(18, 0) : new Date().setHours(18, 0)}
+                 disabled={ pickDate ? false : true }
                  placeholderText={  dropDatePlaceHolder ? dropDatePlaceHolder : 'Drop-off date'}
                  calendarClassName="bg-white shadow-lg rounded-lg py-4 px-2 "
                  className="form-control w-100  text-xl bg-slate-200 h-100 d-block text-ellipsis"

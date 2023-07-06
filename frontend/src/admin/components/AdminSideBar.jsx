@@ -9,6 +9,8 @@ import { faBook } from "@fortawesome/free-solid-svg-icons";
 export default function AdminSideBar () {
    const disaptch = useDispatch()
    const navigate = useNavigate()
+   const a = 'a'
+   a.toLowerCase()
    function handleLogOut () {
       localStorage.removeItem('admin')
       disaptch(
@@ -22,7 +24,7 @@ export default function AdminSideBar () {
    }
     return (
     <div class="container-fluid col-md-2 col-sm-3 bg-dark text-white vh-100 overflow-auto">
-        <h3>Side Bar</h3>
+        <h3 className="mt-2" >Drive 2 Drive</h3>
         <hr />
      <NavLink to={'/admin/home'} className="my-2 rounded-1 p-1 d-block style-none custom-link">
         <svg  xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-speedometer2" viewBox="0 0 16 16">
