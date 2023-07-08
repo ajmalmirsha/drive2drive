@@ -96,11 +96,12 @@ module.exports = {
      async uploadProfileImage ( req, res, next) {
         try {
             const user = await userModel.findOne({_id:req.headers.userid})
+            const data = await uploadToCloudinary(req.file?.path,'profile-images')
             if(user.image.id){
                 // fs.unlink(path.join(__dirname,'../../backend/public/images/',user.image),(err)=>{}) 
                 removeFromCloudinary(user.image.id,'profile-images')
             }
-            const data = await uploadToCloudinary(req.file?.path,'profile-images')
+            console.log('on ',data);
             
             userModel.findOneAndUpdate({_id:req.headers.userid},{
                 $set:{
@@ -114,6 +115,7 @@ module.exports = {
             }
             )
         } catch (error) {
+            console.log(error);
             next()
         }
     },
