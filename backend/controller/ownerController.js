@@ -1,14 +1,15 @@
 
 const vehicleModel = require("../model/vehicleModel");
-const fs = require('fs')
-const path = require('path');
 const bookingModel = require("../model/bookingModel");
+const { uploadToCloudinary, removeFromCloudinary } = require("../config/cloudnary");
+
+
 
 module.exports = {
 
     // add vehicles
 
-    addVehicle(req, res, next) {
+   async addVehicle(req, res, next) {
         try {
             const { product_name, category, price, description, brand, year,
                  model, ownerId, type, places, segment, mileage, seats } = JSON.parse(req.body.product);
@@ -17,21 +18,34 @@ module.exports = {
             const images = []
 
             for(const file of req.files.images){
-                images.push(file.filename)
+                const data = await uploadToCloudinary(file?.path,'vehicle-images')
+                images.push({
+                    url:data?.url,
+                    id:data?.public_id
+                })
             }
-
+           
+            let rcFront
+            let rcBack
+            
+            if(req.files['rc[front]'][0].path){
+                rcFront = await uploadToCloudinary(req.files['rc[front]'][0].path,'rc-images')
+            }
+            if(req.files['rc[back]'][0].path){
+                rcBack = await uploadToCloudinary(req.files['rc[back]'][0].path,'rc-images')
+            }
+            
             const rc = {
-                front :  req.files['rc[front]'][0].filename ,
-                back : req.files['rc[back]'][0].filename
+                front :  rcFront,
+                back : rcBack
             }
-
             vehicleModel.create({ product_name, category, price: proPrice, description, image:images ,brand, year, model,rc , ownerId , type, places, segment, mileage, seats}).then((response) => {
                 res.status(200).json({ success: true, message: 'vehicle added successfully' })
-
             }).catch((err) => {
                 next()
             })
         } catch (error) {
+            console.log(error);
            next()
         }
     },
@@ -79,18 +93,23 @@ module.exports = {
     
     async deleteVehicleImage ( req, res, next) {
         try {
-            const {id,vehicleId} = req.params 
+            const {vehicleId} = req.params 
+            console.log(req.query);
+            const { id } = req.query
             vehicleModel
             .findOneAndUpdate(
             { _id: vehicleId, $expr: { $gt: [{ $size: '$image' }, 1] } },
-            { $pull: { image: id } },
+            { $pull: { image: {id:id} } },
             { new: true }
             ).then((response) => {
             if (!response) {
             return res.status(400).json({ success: false, message: 'Image array should have at least one element' });
              }
-                fs.unlink(path.join(__dirname,'../../backend/public/images/',id),(err)=>{})
-                res.status(200).json({success:true,data:response})
+
+             console.log(id,'res',response);
+                // fs.unlink(path.join(__dirname,'../../backend/public/images/',id),(err)=>{})
+               removeFromCloudinary(id)
+               res.status(200).json({success:true,data:response})
              })
         } catch (error) {
             next()
@@ -114,15 +133,22 @@ module.exports = {
 
     async addVehicleImages ( req, res, next ) {
         try {
+            const files = req.files; 
             let images = []
-            for(const file of req.files){
-                images.push(file.filename)
+            for (const file of files) {
+             const data = await uploadToCloudinary(file.path,'vehicle-images')
+             images.push({url:data.url,id:data.public_id})
             }
+
             vehicleModel.findOneAndUpdate({_id:req.headers['vehcleid']},
             { $push: { image: { $each: [...images] } } },{new:true}).then((response)=>{
+                console.log(response,45);
                 res.status(200).json({success:true,data:response})
+            }).catch(err => {
+                console.log(err);
             })
         } catch (error) {
+            console.log(error);
             next()
         }
     },

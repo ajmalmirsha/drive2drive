@@ -135,4 +135,7 @@ const notificationstorages = multer.diskStorage({
 
 const notificationImage = multer({ storage: notificationstorages });
 
-module.exports = { uploadOptions, uploadlicense, reviewImage, notificationImage, bannerUploadOptions };
+
+const cloud = multer.diskStorage({})
+const cloudinaryUpload = multer({storage : cloud})
+module.exports = { uploadOptions, uploadlicense, reviewImage, notificationImage, bannerUploadOptions, cloudinaryUpload };

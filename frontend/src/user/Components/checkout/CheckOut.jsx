@@ -12,6 +12,18 @@ import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler";
 import Swal from 'sweetalert2'
 import { Calendar } from 'primereact/calendar';
 export default function CheckOut() {
+  const { userAuthenticationHandler } = useErrorHandler()
+
+  useEffect(() => {
+    userApi.get('/check-license-verifications').then(({data}) => {
+      console.log(data);
+      if(!data?.success){
+       navigate(-1)
+      }
+   }).catch(err => {
+     userAuthenticationHandler(err)
+   })
+  },[])
   const [datetime12h, setDateTime12h] = useState(null);
   const { vehicleId } = useParams()
   const [vehicle, setVehicle] = useState({})
@@ -21,7 +33,6 @@ export default function CheckOut() {
   const [booking, setBooking] = useState({})
   const [validation, setValidation] = useState({})
   const [submit, setSubmit] = useState(false)
-  const { userAuthenticationHandler } = useErrorHandler()
   const [paid, setPaid] = useState(false)
   const [totalPrice, setTotalPrice] = useState(null)
   const [finalPrice, setFinalPrice] = useState(null)
@@ -214,6 +225,7 @@ export default function CheckOut() {
       }).catch(err => {
         const { response: { data: { message } } } = err
         toast.error(message)
+        userAuthenticationHandler(err)
       })
     }
   }
@@ -229,7 +241,7 @@ export default function CheckOut() {
               <div className="card-body row">
                 <div className="col-md-6 row">
                   <div className="col-md-7">
-                    <img className="check-out-main-img" src={`${process.env.REACT_APP_URL}/public/images/${vehicle?.image?.length && vehicle?.image[0]}`} alt="" />
+                    <img className="check-out-main-img" src={vehicle?.image[0]?.url} alt="" />
                     {!couponDetails.disPercent && totalPrice && <div className="col-md-12 my-5 row">
                       <div className="col-md-8">
                         <input type="text" placeholder="Coupon code" onChange={(e) => { setCoupon(e.target.value) }} className="border border-radius form-control" />

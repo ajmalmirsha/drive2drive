@@ -7,13 +7,14 @@ import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { useFormik } from 'formik';
 import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
+// import { Toast } from 'primereact/toast';
 import { classNames } from 'primereact/utils';
 import { Calendar } from 'primereact/calendar';
 import { adminApi } from '../../../utils/Apis';
 import { InputNumber } from 'primereact/inputnumber';
 import { useErrorHandler } from '../../../user/ErrorHandlers/ErrorHandler'
 import Spinner from "../../../common/spinners/Spinner"
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Coupon() {
   const [nodes, setNodes] = useState([]);
@@ -30,14 +31,19 @@ export default function Coupon() {
       adminAuthenticationHandler(err)
     });
   }, [])
+  const show = (data) => {
+    toast.success(data)
+  };
   const addCoupon = (data) => {
     setLoading(true)
-    adminApi.post('/add-coupon', data).then(({ data: { message } }) => {
+    adminApi.post('/add-coupon', data).then(({ data: { message, data } }) => {
       setLoading(false)
-      show(message)
+      setNodes([data, ...nodes]);
+      show(message);
       setVisible(false)
     }).catch(err => {
-      err.response.status === 409 && toast.current.show({ severity: 'error', summary: err.response.data.message });
+      err.response.status === 409 && toast.error(err.response.data.message)
+      setLoading(false)
       adminAuthenticationHandler(err)
     })
   }
@@ -56,11 +62,8 @@ export default function Coupon() {
   };
 
   let header = getHeader();
-  const toast = useRef(null);
 
-  const show = (data) => {
-    toast.current.show({ severity: 'success', summary: data });
-  };
+ 
 
   const formik = useFormik({
     initialValues: {
@@ -124,7 +127,6 @@ export default function Coupon() {
       <Dialog header="Add Coupon" visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)}>
         <div className="card flex justify-content-center mt-4">
           <form onSubmit={formik.handleSubmit} className="flex flex-column gap-2">
-            <Toast ref={toast} />
 
             <span className="p-float-label py-2 d-block">
               <InputText
@@ -223,6 +225,7 @@ export default function Coupon() {
         </Dialog>
         </>
         )}
+        <ToastContainer/>
     </div>
   )
 }

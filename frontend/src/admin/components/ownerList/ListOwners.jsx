@@ -55,7 +55,7 @@ export default function ListOwners() {
                     return (
                <div className="border col-md-6 p-0 row">
                  <div className="col-md-3 d-flex justify-content-center align-items-center">
-                    <img className='w-100' src={`${process.env.REACT_APP_URL}/public/images/${y.image[0]}`} alt="" />
+                    <img className='w-100' src={y.image[0]?.url} alt="" />
                  </div>
                  <div className="col-md-5 mx-2">
                 <h5 className='m-0' >{y.product_name}</h5>

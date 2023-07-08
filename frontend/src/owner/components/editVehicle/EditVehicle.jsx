@@ -9,6 +9,7 @@ import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler"
 import Select from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 import Spinner from "../../../common/spinners/Spinner"
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 export default function EditVehicle() {
   const { id } = useParams()
@@ -29,6 +30,7 @@ export default function EditVehicle() {
     places: [],
   })
   const [loading, setLoading] = useState(false)
+  const [uploadLoading, setUploadLoading] = useState(false)
   const [droppedImage, setDroppedImage] = useState([])
   const { ownerAuthenticationHandler } = useErrorHandler()
   useEffect(() => {
@@ -67,10 +69,23 @@ export default function EditVehicle() {
 
     const handleDrop = (event) => {
       event.preventDefault();
+    
       const fullImageUrl = event.dataTransfer.getData('text/plain');
-      const filename = fullImageUrl.substring(fullImageUrl.lastIndexOf('/') + 1);
-      onDrop(filename);
+      console.log('full image url', fullImageUrl);
+    
+      const key = event.dataTransfer.getData('key');
+      console.log('Dropped image key:', key);
+    
+      const imgElement = document.createElement('img');
+      imgElement.src = fullImageUrl;
+    
+      imgElement.addEventListener('load', () => {
+        const filename = fullImageUrl.substring(fullImageUrl.lastIndexOf('/') + 1);
+        onDrop(key);
+      });
     };
+    
+    
 
     return (
       <div
@@ -141,7 +156,8 @@ export default function EditVehicle() {
 
   const handleDropImage = (imageId) => {
     setLoading(true)
-    ownerApi.post(`/delete/vehicle/image/${imageId}/${product.id}`).then(({ data: { data } }) => {
+    console.log('image id',imageId);
+    ownerApi.post(`/delete/vehicle/image/${product.id}?id=${imageId}`).then(({ data: { data } }) => {
       setLoading(false)
       setProduct({
         id: data._id,
@@ -174,10 +190,10 @@ export default function EditVehicle() {
   }
 
   function uploadImages() {
-    setLoading(true)
     if (droppedImage.length + product.images.length > 4) {
       return toast.error('maximum 4 images you can upload !')
     }
+    setUploadLoading(true)
     const formData = new FormData()
     for (let i = 0; i < droppedImage.length; i++) {
       formData.append('images', droppedImage[i]);
@@ -192,7 +208,8 @@ export default function EditVehicle() {
       withCredentials: true,
     };
 
-    ownerApi.post('/upload-vehicle-images', formData, config).then(({ data: { data } }) => {
+     ownerApi.post('/upload-vehicle-images', formData, config).then(({ data: { data } }) => {
+      setUploadLoading(false)
       setProduct({
         id: data._id,
         product_name: data.product_name,
@@ -210,9 +227,10 @@ export default function EditVehicle() {
         places: data.places,
       });
       setDroppedImage([])
-      setLoading(false)
+     
 
     }).catch(err => {
+      console.log(err);
       ownerAuthenticationHandler(err)
     })
   }
@@ -270,6 +288,17 @@ export default function EditVehicle() {
       })
     }
   };
+  const uploadImage = (e) =>{
+    e.preventDefault()
+    console.log(e.target.files);
+    const files = e.target.files;
+    if (files && e.target.files?.length !== 0  ) {
+      const imageFiles = Array.from(files).filter(file => file.type.includes('image'));
+      if (imageFiles.length > 0) {
+        onImageDrop(imageFiles);
+      }
+    }
+    }
   return (
 
     <div className="col-md-9 my-3">
@@ -285,7 +314,13 @@ export default function EditVehicle() {
               {
                 product?.images.map((x) => {
                   return (
-                    <img src={`${process.env.REACT_APP_URL}/public/images/${x}`} alt="" />
+                    <img key={x.id}
+                    onDragStart={(event) => {
+                      event.dataTransfer.setData('text/plain', x.url);
+                      event.dataTransfer.setData('key', x.id);
+                    }}
+                    draggable="true"
+                    src={x.url} alt="" />
                   )
                 })
               }
@@ -300,7 +335,7 @@ export default function EditVehicle() {
 
             <div className="form-outline mb-4">
               <label className="form-label" htmlFor="form7Example5">Product name</label>
-              <input name="product_name" value={product.product_name} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example5" className="form-control" />
+              <input name="product_name"  value={product.product_name} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example5" className="form-control" />
             </div>
             {/* <select onChange={(e)=>{
    setProduct({ ...product, category: e.target.value })
@@ -431,11 +466,10 @@ export default function EditVehicle() {
 
             <div className="form-outline mb-4">
               <label className="form-label" htmlFor="form7Example7">image</label>
-              <input multiple name="images" hidden onChange={(e) => onImageDrop(e.target.files)} type="file" id="image-upload" className="form-control" />
+              <input multiple accept="image/*" name="images" hidden onChange={uploadImage} type="file" id="image-upload" className="form-control" />
 
             </div>
-
-            <div className="container">
+             <div className="container">
               <div className="row">
                 <div className="col-md-6">
                   <label
@@ -444,10 +478,15 @@ export default function EditVehicle() {
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
                     style={{ width: '300px', height: '200px', border: '2px dashed black' }}
-                  >
+                    >
                     Drop or Upload Image Here
                   </label>
                 </div>
+                    {  uploadLoading ? 
+                    <div className="col-md-6" >
+                    <ProgressSpinner style={{width: '50px', height: '50px',display:'block'}} strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" /> 
+                     <div className="text-center">uploading images</div> 
+                    </div> :
                 <div className="col-md-6">
                   <div className="dropped-add-image">
                     {droppedImage &&
@@ -470,7 +509,7 @@ export default function EditVehicle() {
                     </div>
                   )}
                 </div>
-
+            }
 
               </div>
             </div>

@@ -19,6 +19,7 @@ mongoose.connect(process.env.MONGO_URL).then(()=>{
     console.log('connected to database');
 })
 
+
 app.use(express.json())
 
 const PORT = process.env.PORT || 4000

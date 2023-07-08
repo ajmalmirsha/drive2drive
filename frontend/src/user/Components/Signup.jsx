@@ -29,18 +29,28 @@ function Signup() {
             const respo = await axios.post(process.env.REACT_APP_URL + '/signup', { user })
 
             const { data } = respo
+            console.log(data,87);
             dispatch(
                 setUserDetails({
                     id: data.user._id,
                     username: data.user.username,
                     email: data.user.email,
                     phone: data.user?.phone,
-                    image: data.user?.image,
+                    image: {
+                        url: data.user?.image?.url,
+                        id: data.user?.image?.id
+                    },
                     dob: data.user?.dob,
                     license: {
-                        front: data.user.license?.front,
-                        back: data.user.license?.back,
-                        verification: data.user?.license?.verification
+                        front :{
+                            url: data.license?.front?.url,
+                            id: data.license?.front?.id
+                        },
+                        back  : {
+                            url: data.license?.rear?.url,
+                            id: data.license?.rear?.id
+                        },
+                        verification: data?.license?.verification 
                     }
                 })
             )

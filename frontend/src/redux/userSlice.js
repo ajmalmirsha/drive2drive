@@ -6,7 +6,10 @@ const initialState = {
     username: "",
     email: "",
     phone: null,
-    image: "",
+    image: {
+        url:'',
+        id:''
+    },
     dob: null,
     license: {
         front: '',

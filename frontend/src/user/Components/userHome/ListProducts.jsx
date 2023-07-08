@@ -32,7 +32,7 @@ function ListProducts({vehicle,title}) {
                     <div onClick={() => {
                         navigate(`/veiw-detail/${x._id}`)
                     }} className="card " style={{ width: "18rem" }}>
-                        <img style={{ height: '12rem' }} src={`${process.env.REACT_APP_URL}/public/images/${x.image[0]}`} className="card-img-top" alt="..." />
+                        <img style={{ height: '12rem' }} src={x.image[0]?.url} className="card-img-top" alt="..." />
                         <div className="card-body">
                             <h5 className="card-title text-ellipsis ">{x.product_name}</h5>
                             <p className="card-text">{x.description}</p>

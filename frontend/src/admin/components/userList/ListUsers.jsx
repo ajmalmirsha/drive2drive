@@ -110,9 +110,7 @@ export default function ListUsers() {
                     <div class="row">
                       <div class="col-md-12 col-lg-2  d-flex justify-content-center align-items-center col-xl-3 mb-4 mb-lg-0">
                         <div class="bg-image hover-zoom ripple rounded ripple-surface">
-                          <img src={x.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ?
-                            x.image : x.image ? `${process.env.REACT_APP_URL}/public/images/${x.image}`
-                              : img}
+                          <img src={x.image?.url ?? img}
                             class="user-image" />
                           <a href="#!">
                             <div class="hover-overlay">

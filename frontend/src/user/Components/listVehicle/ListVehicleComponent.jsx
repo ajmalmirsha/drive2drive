@@ -243,7 +243,7 @@ export default function ListVehicleComponent({ props }) {
                     <div class="row">
                       <div class="col-md-12 col-lg-3 col-xl-3 mb-4 mb-lg-0">
                         <div class="bg-image hover-zoom ripple rounded ripple-surface">
-                          <img src={`${process.env.REACT_APP_URL}/public/images/${x?.image[0]}`}
+                          <img src={x?.image[0]?.url}
                             class="w-100" />
                           <a href="#!">
                             <div class="hover-overlay">

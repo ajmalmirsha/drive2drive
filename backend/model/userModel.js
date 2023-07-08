@@ -19,8 +19,8 @@ const userSchema = new mongoose.Schema({
         default:null
     },
     image:{
-        type:String,
-        default:''
+        type:Object,
+        default:{}
     },
     dob:{
         type:String,
@@ -32,12 +32,18 @@ const userSchema = new mongoose.Schema({
     },
     license:{
         front:{
-            type:String,
-            default:''
+            type:Object,
+            default:{
+                url:'',
+                id:''
+            }
         },
         rear:{
-            type:String,
-            default:''
+            type:Object,
+            default:{
+                url:'',
+                id:''
+            }
         },
         verification: {
             type : String,

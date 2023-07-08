@@ -32,17 +32,27 @@ function LoginComponent() {
             toast.error(message)
         } else {
             localStorage.setItem('user', token)
+            console.log(user,54);
             dispatch(
                 setUserDetails({
                     id: user._id,
                     username:user.username,
                     email: user.email,
                     phone: user?.phone,
-                    image: user?.image,
+                    image: {
+                        url: user?.image?.url,
+                        id: user?.image?.id
+                    },
                     dob:user?.dob,
                     license:{
-                        front : user.license?.front,
-                        back  : user.license?.rear,
+                        front :{
+                            url: user.license?.front?.url,
+                            id: user.license?.front?.id
+                        },
+                        back  : {
+                            url: user.license?.rear?.url,
+                            id: user.license?.rear?.id
+                        },
                         verification: user?.license?.verification 
                     }
                 })

@@ -42,7 +42,7 @@ import { userApi } from "../../../utils/Apis";
   }
 
 
-  export  function handleSubmit(user,dispatch,authenticationHandler) {
+  export  function handleSubmit(user,dispatch,userauthenticationHandler) {
     console.log(user, 737);
     const { username, email } = user
         if (!username) {
@@ -77,7 +77,7 @@ import { userApi } from "../../../utils/Apis";
             } ).catch( err => {
               console.log(err.response.status);
               err.response.status == 501 ? toast.error(err.response.data.message) :            
-              authenticationHandler(err)
+              userauthenticationHandler(err)
             })
           }
   }

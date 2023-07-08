@@ -16,8 +16,7 @@ export default function Navbar() {
   const dispatch = useDispatch()
   const [menuOpen, setMenu] = useState(false)
   const menuLeft = useRef(null);
-  const menuRight = useRef(null);
-  //const router = useRouter();
+  const menuRight = useRef(null); 
   const toast = useRef(null);
   const handleLogOut = () => {
     {
@@ -58,7 +57,7 @@ export default function Navbar() {
   return (
     <div className="nav row">
       <div className="col-md-1 col-sm-2 col-2">
-        <img className='w-100 h-100' src={logo} alt="" />
+        <img onClick={() => navigate('/')} className='w-100 h-100' src={logo} alt="" />
       </div>
       <div data-bs-toggle="tooltip" data-bs-placement="top" title="" className="categories col-md-9 col-sm-7 col-7">
        <NavLink data-bs-toggle="tooltip" data-bs-placement="top" title="Home" className="nav-item pb-1 mx-3 hide-on-col" to="/">
@@ -78,7 +77,7 @@ export default function Navbar() {
     </div>
       <div className="col-md-1 col-sm-2 col-2">
         <Menu model={items} popup ref={menuLeft} id="popup_menu_right" popupAlignment="right" />
-        <img src={user?.image?.slice(0, 33) == 'https://lh3.googleusercontent.com' ? user.image : user.image ? `${process.env.REACT_APP_URL}/public/images/${user.image}` : img} onClick={(event) => menuLeft.current.toggle(event)} alt="" className='profile-img w-100 p-0' />
+        <img  src={user.image?.url ?? img} onClick={(event) => menuLeft.current.toggle(event)} alt="" className='profile-img p-0' />
       </div>
     </div>
 

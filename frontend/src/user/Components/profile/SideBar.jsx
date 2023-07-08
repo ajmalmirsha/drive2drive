@@ -11,7 +11,7 @@ export default function SideBar() {
             <div className="side-bar-top w-100">
                 <div className="wrapper">
 
-                    <img src={user.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ? user.image : user.image ? `${process.env.REACT_APP_URL}/public/images/${user.image}` : img} alt="" />
+                    <img src={ user.image?.url ?? img} alt="" />
                     <span>7907883318</span>
                 </div>
             </div>

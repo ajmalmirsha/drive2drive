@@ -41,7 +41,7 @@ export default function BookingVerifications() {
             <div className="row my-4 mx-2 gap-2">
                 <SideBar />
                 <div className="col-md-9 col-sm-7 booking-verification" >
-                    { loading ? <Spinner/> : verification.length > 0 && verification.map((x) => {
+                    { loading ? <Spinner/> : verification.length > 0 ? verification.map((x) => {
                         return (
                             <>
                                 <div className="bookings row m-3" >
@@ -94,7 +94,8 @@ export default function BookingVerifications() {
                                 <hr />
                             </>
                         )
-                    })
+                    }) :
+                    <p className="text-center pt-4" >No Bookings available</p>
                     }
                 </div>
             </div>

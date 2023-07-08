@@ -9,25 +9,50 @@ const ownerModel = require('../model/ownerModel');
 const reportModel = require('../model/reportModel');
 const couponModel = require('../model/couponModel');
 const bannerModel = require('../model/bannerModel');
+const { uploadToCloudinary, removeFromCloudinary } = require('../config/cloudnary');
 
 module.exports = {
 
   // upload lisence
 
-  uploadLisence(req, res, next) {
+ async uploadLisence(req, res, next) {
     try {
       const id = req.headers?.userid
-      if (req.files && req.files['license[front]'] && req.files['license[front]'][0] || req.files['license[back]'] && req.files['license[back]'][0]) {
+      let licenseFront
+      let licenseBack
+
+      userModel.findById(id).then((response) => {
+        if(response.license.front?.id){
+            removeFromCloudinary(response.license.front?.id)
+        }
+        if(response.license.Back?.id){
+            removeFromCloudinary(response.license.back?.id)
+        }
+      })
+      if(req.files['license[front]'][0]?.path ){
+        licenseFront = await uploadToCloudinary(req.files['license[front]'][0]?.path,'license-images')
+        console.log(licenseFront);
+      }
+      if( req.files['license[back]'][0]?.path ){
+       licenseBack = await uploadToCloudinary(req.files['license[back]'][0]?.path,'license-images')
+      }
+
         userModel.findOneAndUpdate({ _id: id }, {
           $set:
           {
-            'license.front': req.files?.['license[front]']?.[0]?.filename,
-            'license.rear': req.files?.['license[back]']?.[0]?.filename
+            'license.front': {
+              url:licenseFront?.url,
+              id: licenseFront?.public_id
+            },
+            'license.rear': {
+              url:licenseBack?.url,
+              id: licenseBack?.public_id
+            },
+            'license.verification': 'pending'
           }
         }, { new: true }).then((response) => {
           res.status(200).json({ user: response })
         })
-      }
     } catch (error) {
       next()
     }
@@ -35,8 +60,13 @@ module.exports = {
 
   // add review
 
-  addReview(req, res, next) {
+ async addReview(req, res, next) {
     try {
+      let data
+      if( req?.file?.filename ){
+         data = await uploadToCloudinary(req?.file?.path,'reviews-images')
+      }
+      console.log(data);
       const { vehicleId, rating, review } = JSON.parse(req.body.reviewData)
       const userId = new mongoose.Types.ObjectId(req.headers.userId)
       vehicleModel.findOneAndUpdate(
@@ -47,7 +77,10 @@ module.exports = {
               rating,
               review,
               userId,
-              image: req?.file?.filename
+              image: {
+                url:data?.url,
+                id:data?.public_id
+              }
             }
           }
         },
@@ -141,6 +174,7 @@ module.exports = {
 
   paymentUpdation(req, res, next) {
     try {
+      console.log('on payment update');
       const { paymentId, bookingId, paymentMethod, couponId } = req.body
       const { userId } = req.headers
       bookingModel.findByIdAndUpdate({ _id: bookingId }
@@ -293,6 +327,7 @@ module.exports = {
 
   getContacts(req, res, next) {
     try {
+      const id = req.headers?.ownerId ?? req.headers?.userId
       chatModel.distinct('sender').then((response) => {
         const senderIds = response.map((sender) => sender.toString()).filter((x) => x !== req.headers?.ownerId)
         userModel.find({ _id: { $in: senderIds } }, { username: 1, image: 1 })
@@ -368,6 +403,22 @@ module.exports = {
     try {
       bannerModel.find({}).then((data) => {
         res.status(200).json({ success: true, data })
+      })
+    } catch (e) {
+      next()
+    }
+  },
+  // check license verifications
+  checkLicenseVerification(req, res, next) {
+    try {
+      userModel.findById(req.headers.userId).then((response) => {
+        if(response.license.verification === 'pending'){
+           res.json({success:false,message:'your license verificaion is pending !'})
+        }else if(response.license.verification === 'verified'){
+          res.json({success:true})
+        }else if(response.license.verification === 'declined'){
+          res.json({success:false,message:'your license verificaion is declined !'})
+        }
       })
     } catch (e) {
       next()

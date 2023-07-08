@@ -13,7 +13,7 @@ const { addVehicle,
         ownerSalesReport, 
         getOwnerSales } = require('../controller/ownerController')
 
-const { uploadOptions } = require('../middlewares/multer/multer')
+const { uploadOptions, cloudinaryUpload } = require('../middlewares/multer/multer')
 
 const { ownerAuthenticator } = require('../middlewares/Auth/auth')
 
@@ -44,7 +44,7 @@ router.get('/get-all-vehicles/:id',ownerAuthenticator, allVehicles)
 router.get('/get-reviews/:id',ownerAuthenticator, getReviews)
 
 // delete vehicle image
-router.post('/delete/vehicle/image/:id/:vehicleId',ownerAuthenticator, deleteVehicleImage)
+router.post('/delete/vehicle/image/:vehicleId',ownerAuthenticator, deleteVehicleImage)
 
 // get product details for edit
 router.get('/edit-product-details/:id',ownerAuthenticator,editProductDetails)
@@ -59,7 +59,7 @@ router.get('/get-all-booking-verifications',ownerAuthenticator, bookingVerificat
 router.put('/verify/booking',ownerAuthenticator, verifyBooking)
 
 // upload vehicle images
-router.post('/upload-vehicle-images',ownerAuthenticator,uploadOptions.array('images',4), addVehicleImages)
+router.post('/upload-vehicle-images',ownerAuthenticator,cloudinaryUpload.array('images',4), addVehicleImages)
 
 // send messages
 router.post('/sent-message',ownerAuthenticator,setMessage)

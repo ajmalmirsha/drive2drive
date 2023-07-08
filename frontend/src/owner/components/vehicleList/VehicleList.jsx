@@ -60,7 +60,7 @@ function VehicleList() {
               {records.map((x, i) => (
                 <Tr >
                   <Td>{i + 1}</Td>
-                  <Td><img className="vehicle-image" src={`${process.env.REACT_APP_URL}/public/images/${x.image[0]}`} alt="" /></Td>
+                  <Td><img className="vehicle-image" src={x?.image[0]?.url} alt="" /></Td>
                   <Td>{x.product_name}</Td>
                   <Td>{x.category}</Td>
                   <Td>

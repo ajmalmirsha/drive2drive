@@ -38,18 +38,17 @@ export default function LicenseVerify() {
         return (
           <div className='main-verify my-2' >
             <div className="head-top-license-verify ps-2 pt-2">
-              <img className='user-profile' src={x?.image?.slice(0, 33) == 'https://lh3.googleusercontent.com' ? x.image : x.image ? `${process.env.REACT_APP_URL}/public/images/${x.image}` : img} alt="" />
+              <img className='user-profile' src={x.image?.url ?? img} alt="" />
               <span className="ms-2">{x.username}</span>
             </div>
             <div className="body-license-verify row">
               <div
                 className="col-md-4 d-flex  justify-content-center align-items-center">
-                <img className='license-verfy-img m-3' src={`${process.env.REACT_APP_URL}/public/images/license/${x.license?.front}`} alt="" />
-
+                <img className='license-verfy-img m-3' src={x.license?.front?.url} alt="" />
               </div>
               <div
                 className="col-md-4 d-flex justify-content-center align-items-center">
-                <img className='license-verfy-img' src={`${process.env.REACT_APP_URL}/public/images/license/${x.license?.rear}`} alt="" />
+                <img className='license-verfy-img' src={x.license?.rear?.url} alt="" />
               </div>
 
 

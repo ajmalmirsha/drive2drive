@@ -5,6 +5,7 @@ const fs = require('fs')
 const path = require('path')
 const ownerModel = require('../model/ownerModel')
 const adminModel = require('../model/adminModel')
+const { removeFromCloudinary, uploadToCloudinary } = require('../config/cloudnary')
 
  function handleError (err) {
     if(err.code === 11000) {
@@ -19,7 +20,10 @@ module.exports = {
     signup( req, res, next ) {
        try {
         const { username, email, password } = req.body.user
-        const image = req.body.user?.image
+        const image = {
+            url:req.body.user?.image,
+            id:''     
+        }
         userModel.create({ username, email, password, image }).then((response) => {
             const token = jwt.sign({ userId: response._id }, process.env.USER_JWT_SECRET, { expiresIn: '1day' })
             res.status(200).json({ success: true, message: 'user registered successfully', token , user:response})
@@ -92,12 +96,18 @@ module.exports = {
      async uploadProfileImage ( req, res, next) {
         try {
             const user = await userModel.findOne({_id:req.headers.userid})
-            if(user.image){
-                fs.unlink(path.join(__dirname,'../../backend/public/images/',user.image),(err)=>{}) 
+            if(user.image.id){
+                // fs.unlink(path.join(__dirname,'../../backend/public/images/',user.image),(err)=>{}) 
+                removeFromCloudinary(user.image.id,'profile-images')
             }
+            const data = await uploadToCloudinary(req.file?.path,'profile-images')
+            
             userModel.findOneAndUpdate({_id:req.headers.userid},{
                 $set:{
-                    image:req.file.filename
+                    image:{
+                        url:data?.url,
+                        id:data?.public_id
+                    }
                 }
             },{new:true}).then((response)=>{
             res.status(200).json({ success: true, message:'profile picture updated successfully', user:response})

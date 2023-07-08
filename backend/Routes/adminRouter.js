@@ -22,7 +22,7 @@ const { adminLogin } = require('../controller/authController')
 const { adminAuthenticator } = require('../middlewares/Auth/auth')
 
 
-const { notificationImage, bannerUploadOptions } = require('../middlewares/multer/multer')
+const { notificationImage, bannerUploadOptions, cloudinaryUpload } = require('../middlewares/multer/multer')
 
 const router = require('express').Router()
 
@@ -33,7 +33,7 @@ router.post('/login',adminLogin)
 router.use(adminAuthenticator)
 
 // add new notification
-router.post('/add-notification',notificationImage.single('image'),addNotifications)
+router.post('/add-notification',cloudinaryUpload.single('image'),addNotifications)
 
 // get all notifications
 router.get('/get-all-notifications',getAllNotifications)

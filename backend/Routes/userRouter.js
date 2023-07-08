@@ -15,11 +15,12 @@ const { uploadLisence,
         getAvailablePlaces, 
         addReport, 
         applyCoupon, 
-        getBanners } = require('../controller/userController')
+        getBanners, 
+        checkLicenseVerification} = require('../controller/userController')
 
 const { userAuthenticator } = require('../middlewares/Auth/auth')
 
-const { uploadOptions, uploadlicense, reviewImage } = require('../middlewares/multer/multer')
+const { uploadOptions, uploadlicense, reviewImage, cloudinaryUpload } = require('../middlewares/multer/multer')
 
 require('dotenv').config();
 
@@ -52,7 +53,7 @@ router.post('/add-booking',userAuthenticator,addBooking)
 router.post('/update-user',userAuthenticator,updateUser)
 
 // update profile image
-router.post('/upload-profile-image',userAuthenticator,uploadOptions.single('image'),uploadProfileImage)
+router.post('/upload-profile-image',userAuthenticator,cloudinaryUpload.single('image'),uploadProfileImage)
 
 // get vehicle details
 router.get('/vehicle/data/:id',userAuthenticator,getVehiclesDetails)
@@ -61,10 +62,10 @@ router.get('/vehicle/data/:id',userAuthenticator,getVehiclesDetails)
 router.get('/get-all-approved-bookings',userAuthenticator,getApprovedBookings)
 
 // add new review
-router.post('/vehicle/review/add',userAuthenticator,reviewImage.single('image'),addReview)
+router.post('/vehicle/review/add',userAuthenticator,cloudinaryUpload.single('image'),addReview)
 
 // add license
-router.post('/add-license', uploadlicense.fields([
+router.post('/add-license', cloudinaryUpload.fields([
   { name: 'license[front]', maxCount: 1 },
   { name: 'license[back]', maxCount: 1 }
 ]), uploadLisence);
@@ -89,6 +90,9 @@ router.post('/apply/coupon',userAuthenticator,applyCoupon)
 
 // get banners
 router.get('/get/all/banners',userAuthenticator,getBanners)
+
+// for checking license verifiaction
+router.get('/check-license-verifications',userAuthenticator,checkLicenseVerification)
 
 
 

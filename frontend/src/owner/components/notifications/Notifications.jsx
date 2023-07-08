@@ -40,22 +40,24 @@ export default function Notifications() {
       <h3 className="my-2" >Notifications</h3>
       <hr />
       <div className="custom-scrollbar-white" style={{overflowY:'auto',height:'65vh'}} >
-      { loading ? <Spinner/> : notifications.length > 0 && notifications.map((x) => {
+      { loading ? <Spinner/> : notifications.length > 0 ? notifications.map((x) => {
         return (
           <div className="notifications row m-3"  >
             <div className="col-md-10 pt-1">
               <h4>{x.title}</h4>
               <p>{x.message}</p>
             </div>
+              {x.image?.url &&
             <div className="col-md-2 d-flex align-items-center">
-              {x.image &&
-                <img className='notification-img my-2 img-fluid' src={process.env.REACT_APP_URL + '/public/images/notification/' + x.image} alt="" />
-              }
+                <img className='notification-img my-2 img-fluid' src={x.image?.url} alt="" />
             </div>
+              }
 
           </div>
         )
-      })}
+      }) :
+      <p className="text-center" >you don't have any notifications.</p>
+      }
       </div>
     </div>
   )

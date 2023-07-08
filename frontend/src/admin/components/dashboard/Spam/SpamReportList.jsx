@@ -29,16 +29,14 @@ export default function SpamReportList() {
                     return (
                         <div className="row p-2 bg-dark m-0 p-0 text-white">
                             <div className="">
-                                <img style={{ height: '30px', width: '30px' }} className='rounded-circle m-1' src={x.reportedBy.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ?
-                                    x.reportedBy.image : x.reportedBy.image ? `${process.env.REACT_APP_URL}/public/images/${x.reportedBy.image}`
-                                        : img} alt="" />
+                                <img style={{ height: '30px', width: '30px' }} className='rounded-circle m-1' src={ x.reportedBy.image?.url ?? img} alt="" />
                                 {x.reportedBy?.username}
                             </div>
                             <div className="col-md-8">
                                 {x.report}
                             </div>
                             <div className="col-md-4">
-                                <img style={{ maxHeight: '100%', minHeight: '100px', height: '60%', objectFit: 'cover' }} className='w-100 ' src={`${process.env.REACT_APP_URL}/public/images/${x?.productId?.image[0]}`} alt="" />
+                                <img style={{ maxHeight: '100%', minHeight: '100px', height: '60%', objectFit: 'cover' }} className='w-100 ' src={x?.productId?.image[0]?.url} alt="" />
                                 <p>{x.productId?.product_name}</p>
                             </div>
                             <hr />

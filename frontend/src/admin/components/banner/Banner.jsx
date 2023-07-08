@@ -105,7 +105,15 @@ export default function Banner() {
               <div class="modal-body ">
                 <label htmlFor="">Image</label>
                 {image?.name && <img className="w-100 my-3" src={URL.createObjectURL(image)} alt="" />}
-                <input ref={fileInputRef} onChange={(e) => { setImage(e.target.files[0]) }} type="file" />
+                <input ref={fileInputRef} onChange={(e) => {
+                  const files = e.target.files;
+                  if (files && e.target.files?.length !== 0  ) {
+                    const imageFiles = Array.from(files).filter(file => file.type.includes('image'));
+                    if (imageFiles.length > 0) {
+                      setImage(e.target.files[0])
+                    }
+                  }
+                   }} accept="image/*" type="file" />
               </div>
               <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">upload image</button>

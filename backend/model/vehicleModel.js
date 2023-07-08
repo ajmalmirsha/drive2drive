@@ -14,8 +14,8 @@ const reviewSchema = new mongoose.Schema({
       default:null
     },
     image: {
-      type: String,
-      default:''
+      type: Object,
+      default:{}
     }
   });
   
@@ -75,10 +75,12 @@ const vehicleSchema = new mongoose.Schema({
     },
     rc:{
         front : {
-          type: String
+          type: Object,
+          default:{}
         },
         back : {
-          type: String
+          type: Object,
+          default:{}
         },
         verified :  {
           type: Boolean,

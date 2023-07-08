@@ -18,8 +18,8 @@ const notificationSchema = new mongoose.Schema({
         default:false
     },
     image:{
-       type:String,
-       default:'' 
+       type:Object,
+       default:{} 
     }
 })
 

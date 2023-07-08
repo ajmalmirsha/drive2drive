@@ -24,7 +24,10 @@ export default function OwnerSalesReport (){
     <SideBar />
     { loading ? <Spinner/> :
         <div className="col-md-9 col-sm-7" >
-         <SalesReport owner={true} report={report} />
+            { report.length > 0 ? 
+         <SalesReport owner={true} report={report} /> :
+            <p className="text-center pt-4" >We couldn't find any sales reports to display. It seems there have been no sales activity recorded yet.</p>  
+            }
         </div>
     }
         </div>

@@ -131,7 +131,7 @@ function AddVehicle() {
 
   return (
 <>
-      {loading ? <Spinner /> :
+      {loading ? <div className="col-md-9" ><Spinner /></div>  :
     <div className="col-md-9" >
         <div className="card mb-4">
           <div className="card-header py-3">
@@ -277,7 +277,16 @@ function AddVehicle() {
 
               <div className="form-outline mb-4">
                 <label className="form-label" htmlFor="form7Example7">image</label>
-                <input multiple name="images" onChange={(e) => setProduct({ ...product, [e.target.name]: Array.from(e.target.files) })} type="file" id="form7Example7" className="form-control" />
+                <input multiple name="images" onChange={(e) =>{
+                   const files = e.target.files;
+                   if (files && e.target.files?.length !== 0  ) {
+                     const imageFiles = Array.from(files).filter(file => file.type.includes('image'));
+                     if (imageFiles.length > 0) {
+                      console.log(imageFiles);
+                       setProduct({ ...product, [e.target.name]: Array.from(e.target.files) })
+                     }
+                   }
+                   }} type="file"  accept="image/*"  id="form7Example7" className="form-control" />
               </div>
               <div className="form-outline mb-4 row">
                 <label className="form-label" htmlFor="form7Example7">Upload your Rc</label>

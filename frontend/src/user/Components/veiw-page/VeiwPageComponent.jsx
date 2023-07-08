@@ -27,7 +27,6 @@ const ViewPageComponent = () => {
   const [report, setReport] = useState('')
   const [visible, setVisible] = useState(false);
   const [chatVisible, setChatVisible] = useState(false);
-
   useEffect(() => {
     (
       function () {
@@ -74,7 +73,13 @@ const ViewPageComponent = () => {
 
   // Handle image selection
   const handleImageSelect = (e) => {
-    setSelectedImages(e.target.files[0]);
+    const files = e.target.files;
+    if (files && e.target.files?.length !== 0  ) {
+      const imageFiles = Array.from(files).filter(file => file.type.includes('image'));
+      if (imageFiles.length > 0) {
+        setSelectedImages(e.target.files[0]);
+      }
+    }
   };
 
   // Handle form submission
@@ -124,6 +129,20 @@ const ViewPageComponent = () => {
     })
   }
 
+  const redirectToCheckOut = (e) => {
+  
+      userApi.get('/check-license-verifications').then(({data}) => {
+         if(data?.success){
+          navigate(`/checkout/${vehicle._id}`)
+         }else{
+          toast.error(data.message)
+         }
+      }).catch(err => {
+        userAuthenticationHandler(err)
+      })
+
+  }
+
 
 
   return (
@@ -136,10 +155,10 @@ const ViewPageComponent = () => {
                 smallImage: {
                   alt: 'loading',
                   isFluidWidth: true,
-                  src: `${process.env.REACT_APP_URL}/public/images/${vehicle?.image?.length && vehicle?.image[mainImage]}`,
+                  src: vehicle?.image?.length && vehicle?.image[mainImage]?.url,
                 },
                 largeImage: {
-                  src: `${process.env.REACT_APP_URL}/public/images/${vehicle?.image?.length && vehicle?.image[mainImage]}`,
+                  src: vehicle?.image?.length && vehicle?.image[mainImage]?.url,
                   width: 1250,
                   height: 1200,
                 },
@@ -154,7 +173,7 @@ const ViewPageComponent = () => {
           <div className="row">{
             vehicle?.image?.length && vehicle?.image.map((x, i) => {
 
-              return (i !== mainImage && (loading ? <Skeleton width="100%" height="100%"></Skeleton> : <img key={i} src={`${process.env.REACT_APP_URL}/public/images/${x}`} alt="loading" onClick={() => { setMainImage(i) }} className="col-md-4 col-sm-4 col-4 my-5   sub-images" />))
+              return (i !== mainImage && (loading ? <Skeleton width="100%" height="100%"></Skeleton> : <img key={i} src={x.url} alt="loading" onClick={() => { setMainImage(i) }} className="col-md-4 col-sm-4 col-4 my-5   sub-images" />))
 
             })
           }</div>
@@ -205,11 +224,7 @@ const ViewPageComponent = () => {
             <div className="product-price">{vehicle?.price}</div>
             <div className="product-description">{vehicle?.description}</div>
             <div className="row">
-              <div className="col-md-6 col-sm-6 col-6"><button onClick={() => {
-                user?.license?.verification === 'verified' ? navigate(`/checkout/${vehicle._id}`) :
-                  toast.error(`your license verification ${user?.license?.verification}`)
-              }
-              } className='btn btn-primary'>Book Now</button>
+              <div className="col-md-6 col-sm-6 col-6"><button onClick={redirectToCheckOut} className='btn btn-primary'>Book Now</button>
               </div>
               <div className="col-md-6 col-sm-6 col-6">
                 <button type="button" onClick={() => {
@@ -303,7 +318,7 @@ const ViewPageComponent = () => {
                     <p className="review-text">{review.review}</p>
                   </div>
                   {review.image && <div className="col-md-3">
-                    <img className='review-image' src={`${process.env.REACT_APP_URL}/public/images/reviewImages/${review.image}`} alt="" />
+                    <img className='review-image' src={review.image?.url} alt="" />
                   </div>}
                 </li>
               )) :  vehicle?.bookedUsers?.includes(user.id) ? "add your first review" : 'no reviews uploaded'}

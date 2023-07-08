@@ -15,14 +15,14 @@ function OwnerNavBar() {
     return (
 
         <div className="nav-bar-owner mt-3  mx-4">
-            <button onClick={()=>{
+            <button className='btn btn-outline-danger ' onClick={()=>{
                 localStorage.removeItem('owner')
                 dispatch(
                     setOwnerDetails({})
                 )
                 navigate('/owner-login')
             }}>lOGOUT</button>
-            <img className='profile-img-nav me-3' src={img} alt="" />
+            <img className='profile-img-nav mx-3' src={img} alt="" />
         </div>
 
     )

@@ -8,11 +8,13 @@ import Payment from "../Stripe/Payment"
 import { TreeSelect } from 'primereact/treeselect';
 import { Button } from 'primereact/button';
 import Spinner from "../../../common/spinners/Spinner"
+import { useNavigate } from "react-router-dom"
 
 export default function UserBookings() {
   const [bookings, setBookings] = useState([])
   const { userAuthenticationHandler } = useErrorHandler()
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
   useEffect(() => {
     setLoading(true)
     userApi.get('/get-all-approved-bookings').then(({ data: { data } }) => {
@@ -143,13 +145,13 @@ export default function UserBookings() {
             className="md:w-20rem w-full col-md-3" placeholder="Sort"
             expandedKeys={expandedKeys} onToggle={(e) => setExpandedKeys(e.value)} panelHeaderTemplate={headerTemplate}></TreeSelect>
         </div>
-        <div className="col-md-12 booking-verification" >
-          {bookings.length > 0 && bookings.map((x) => {
+        <div className="col-md-12 booking-verification" style={{height:'75vh',overflowY:'auto'}} >
+          {bookings.length > 0 ? bookings.map((x) => {
             return (
               <>
                 <div className="bookings row m-3" >
                   <div className="col-md-2 d-flex justify-content-center align-items-center">
-                    <img className="booking-verify-vehicle-img" src={`${process.env.REACT_APP_URL}/public/images/${x.vehicle.image[0]}`} alt="" />
+                    <img onClick={() => navigate(`/veiw-detail/${x.vehicle._id}`) } className="booking-verify-vehicle-img" src={x.vehicle.image[0].url} alt="" style={{cursor:'pointer'}} />
                   </div>
                   <div className="col-md-6 vehicle-details row">
                     <div className="row">
@@ -244,6 +246,7 @@ export default function UserBookings() {
               </>
             )
           })
+           : <p className="text-center mt-4">no bookings available</p>
           }
         </div>
       </div>
