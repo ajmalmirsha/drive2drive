@@ -46,6 +46,7 @@ export default function OwnerChatSection({ sender, socket }) {
 
     const sendMessage = (e) => {
         e.preventDefault()
+        if(msg.trim()){
         socket.current.emit("send-msg", {
             to: sender.id,
             from: owner.id,
@@ -60,6 +61,7 @@ export default function OwnerChatSection({ sender, socket }) {
         }).catch(err => {
             userAuthenticationHandler(err)
         })
+        }
     }
 
 
@@ -71,9 +73,7 @@ export default function OwnerChatSection({ sender, socket }) {
                 <div class="row">
                     <div class="col-lg-6">
                         <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                            {sender?.image && <img src={sender?.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ?
-                                sender.image : sender.image ? `${process.env.REACT_APP_URL}/public/images/${sender.image}`
-                                    : img} alt="avatar" />}
+                            {sender?.image && <img src={ sender.image?.url ?? img} alt="avatar" />}
                         </a>
                         <div class="chat-about">
                             <h6 class="m-b-0">{sender?.username}</h6>

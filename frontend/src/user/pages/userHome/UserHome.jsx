@@ -5,6 +5,7 @@ import ListProducts from "../../Components/userHome/ListProducts";
 import Navbar from "../../Components/userHome/Navbar";
 import { userApi } from "../../../utils/Apis";
 import Spinner from "../../../common/spinners/Spinner";
+import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler";
 
 export default function UserHome (){
     const [vehicle, setVehicles] = useState([])
@@ -15,12 +16,15 @@ export default function UserHome (){
     })
     const [ loading, setLoading ] = useState(false)
     const [ filteredVehicle, setFilteredVehicle ] = useState([])
+    const { userAuthenticationHandler } = useErrorHandler()
     useEffect(() => {
         (  function () {
             setLoading(true)
               userApi.get('/list-all-vehicle').then(({data:{allVehicle}}) =>{
                 setLoading(false)
                setVehicles(allVehicle)
+              }).catch(err => {
+                userAuthenticationHandler(err)
               })
          })()
  

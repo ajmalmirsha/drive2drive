@@ -74,6 +74,10 @@ module.exports = {
           })
            res.status(200).json({success:true,data})
         } catch (error) {
+            console.log(error.message);
+            if(error.message.includes('Cast to ObjectId failed for value ')){
+                return res.status(404).json({success:false,message:'invalid vehicle id'})
+            }
             next()
         }
     },

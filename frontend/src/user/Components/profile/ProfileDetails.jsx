@@ -31,6 +31,9 @@ export default function ProfileDetails() {
     phone: reduxUser?.phone,
     dob: reduxUser?.dob,
   })
+  const currentDate = new Date();
+  const maxDate = new Date(currentDate.getFullYear() - 18, currentDate.getMonth(), currentDate.getDate()).toISOString().split('T')[0];
+
 
   return (
     <>
@@ -85,6 +88,7 @@ export default function ProfileDetails() {
                 className='profile-input'
                 type={user.dob ? inputType : 'date'}
                 id='dob'
+                max={maxDate} 
               />
 
             </div>

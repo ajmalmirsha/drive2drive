@@ -38,6 +38,7 @@ export default function ChatSection({ sender, socket}) {
   }, [])
   const sendMessage = (e) => {
     e.preventDefault()
+    if(msg){
     const msgs = [...messages]
       msgs.push({ fromSelf: true, message: msg, time: 'just now' })
       setMessages(msgs)
@@ -51,6 +52,7 @@ export default function ChatSection({ sender, socket}) {
     }).catch(err => {
       userAuthenticationHandler(err)
     })
+   }
   }
 
 

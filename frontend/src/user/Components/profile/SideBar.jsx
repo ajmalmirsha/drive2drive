@@ -12,13 +12,13 @@ export default function SideBar() {
                 <div className="wrapper">
 
                     <img src={ user.image?.url ?? img} alt="" />
-                    <span>7907883318</span>
+                    <span className='fw-bold' >{ user.username }</span>
                 </div>
             </div>
             <div className="side-bar-items w-100">
                 <div className='menuItemsactive'><p>My Profile</p></div>
                 <div className='menuItems' onClick={() => navigate('/bookings')} ><p>Bookings</p></div>
-                <div className='menuItems'><p>Terms & Conditions</p></div>
+                <div className='menuItems'  onClick={() => navigate('/terms-conditions')}  ><p>Terms & Conditions</p></div>
                 {/* <div className='menuItems'><p>Logout</p></div> */}
             </div>
         </div>

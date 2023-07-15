@@ -32,9 +32,7 @@ export default function OwnerListContacts ({setSender,socket}) {
             { contacts.length > 0 && contacts.map((x) => {
                 return(
             <li class="clearfix my-1" onClick={() => { setSender({id:x._id,username:x.username,image:x.image}) }} >
-                <img src={x.image.slice(0, 33) == 'https://lh3.googleusercontent.com' ? 
-           x.image : x.image ? `${process.env.REACT_APP_URL}/public/images/${x.image}`
-            : img} alt="avatar"  />
+                <img src={ x.image?.url ?? img} alt="avatar"  />
                 <div class="about">
                     <div class="name">{x.username}</div>
                     {/* <div class="status"> <i class="fa fa-circle offline"></i> left 7 mins ago </div>                                             */}

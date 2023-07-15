@@ -45,7 +45,7 @@ export default function ReviewList() {
 
                     </p>
                     <div className="col-md-4">
-                      <img className="vehicle-image " src={`${process.env.REACT_APP_URL}/public/images/${y.image[0]}`} alt="" />
+                      <img className="vehicle-image " src={y.image[0]?.url} alt="" />
                     </div>
                   </div>
 
@@ -54,7 +54,7 @@ export default function ReviewList() {
                     y.reviews.map((x) => {
                       return (
                         <div className="review-content my-2 p-2 bg-white">
-                          <img className="user-profile" src={x.userimage.slice(0, 33) == 'https://lh3.googleusercontent.com' ? x.userimage : x.userimage ? `${process.env.REACT_APP_URL}/public/images/${x.userimage}` : img} alt="" />
+                          <img className="user-profile" src={x.userimage?.url ?? img} alt="" />
                           <span className="ms-2 fw-900">
                             {x.username}
                             <div className="d-inline">
@@ -72,7 +72,7 @@ export default function ReviewList() {
                           </span>
                           <div className="my-1">{x.review}</div>
                           {x.image && <div className="col-md-3">
-                            <img className='review-image' src={`${process.env.REACT_APP_URL}/public/images/reviewImages/${x.image}`} alt="LOADING" />
+                            <img className='review-image' src={x.image?.url} alt="LOADING" />
                           </div>}              </div>
                       );
                     }) : null}

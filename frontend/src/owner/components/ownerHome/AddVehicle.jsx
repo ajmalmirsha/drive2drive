@@ -17,13 +17,13 @@ function AddVehicle() {
     category: null,
     type: null,
     segment: null,
-    price: null,
+    price: '',
     description: null,
     model: null,
     brand: null,
-    year: null,
-    seats: null,
-    mileage: null,
+    year: '',
+    seats: '',
+    mileage: '',
     ownerId: owner.id,
     images: [],
     places: [],
@@ -213,7 +213,9 @@ function AddVehicle() {
 
                 <div className="col-md-4 form-outline mb-4">
                   <label className="form-label" htmlFor="form7Example6">Year</label>
-                  <input name="year" onBlur={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
+                  <input value={product?.year} name="year" onChange={(e) =>{
+                       !isNaN(e.target.value) &&  setProduct({ ...product, [e.target.name]: e.target.value }) 
+                  }} type="text" id="form7Example6" className="form-control" />
                 </div>
 
               </div>

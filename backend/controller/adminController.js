@@ -57,8 +57,8 @@ module.exports = {
         try {
             userModel.find({
                 'license.verification': 'pending',
-                'license.front': { $ne: '' },
-                'license.rear': { $ne: '' }
+                'license.front.url': { $ne: '' },
+                'license.rear.url': { $ne: '' }
             }).then((response) => {
                 res.status(200).json({ succes: true, data: response })
             })
@@ -249,9 +249,16 @@ module.exports = {
 
     // add banner
 
-    addBanner(req, res, next) {
+    async addBanner(req, res, next) {
         try {
-            bannerModel.create({ image: req.file.filename }).then(() => {
+            if (req.file?.path) {
+                var data = await uploadToCloudinary(req.file?.path, 'banner-images')
+            }
+            const image = {
+                url:data.url,
+                id:data.public_id
+            }
+            bannerModel.create({ image }).then(() => {
                 bannerModel.find({}).then(data => {
                     res.status(200).json({ succes: true, data, message: 'banner added successfully' })
                 })
@@ -278,8 +285,8 @@ module.exports = {
     DeleteBanner(req, res, next) {
         try {
             const { bannerId } = req.params
+            console.log(bannerId);
             bannerModel.findOneAndDelete({ _id: bannerId }).then((response) => {
-                fs.unlink(path.join(__dirname, '../../backend/public/images/banner/', response?.image), (err) => { })
                 bannerModel.find({}).then((data) => {
                     res.status(200).json({ success: true, message: 'banner deleted successfully', data })
                 })

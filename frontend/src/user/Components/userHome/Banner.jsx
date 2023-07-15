@@ -15,60 +15,46 @@ import img from '../../../images/banners/The Ford Mustang_.jpeg'
 function Banner ({vehicles}) {
     const [ loading, setLoading ]  = useState(false)
     const { userAuthenticationHandler } = useErrorHandler()
-  // useEffect(()=>{
-  //   console.log('vehicles',vehicles);
-  //   setLoading(true)
-  //   userApi.get('/get/all/banners').then(({data:{data}}) => {
-  //     setLoading(false)
-      
-  //   }).catch( err => {
-  //      userAuthenticationHandler(err)
-  //   })
-  // },[])
+    const [banner,setBanner] = useState([])
+  useEffect(()=>{
+    console.log('vehicles',vehicles);
+    setLoading(true)
+    userApi.get('/get/all/banners').then(({data:{data}}) => {
+      setLoading(false) 
+      console.log('banner',data); 
+      setBanner(data)
+    }).catch( err => {
+       userAuthenticationHandler(err)
+    })
+  },[])
 
   const navigate = useNavigate()
   
-  // const responsiveOptions = [
-  //     {
-  //         breakpoint: '1199px',
-  //         numVisible: 1,
-  //         numScroll: 1
-  //     },
-  //     {
-  //         breakpoint: '991px',
-  //         numVisible: 2,
-  //         numScroll: 1
-  //     },
-  //     {
-  //         breakpoint: '767px',
-  //         numVisible: 1,
-  //         numScroll: 1
-  //     }
-  // ];
-
-  // const productTemplate = (product) => {
-  //     return (
-  //         <div className="border-1 surface-border border-round m-5 text-center">
-  //             <div className="mb-3" onClick={() => { navigate(`/veiw-detail/${product._id}`) }} >
-  //                 <img src={`${process.env.REACT_APP_URL}/public/images/${product.image[0]}`} alt={product.product_name} className="w-6 shadow-2" />
-  //             </div>
-  //             <div>
-  //                 <h4 className="mb-1">{product.product_name}</h4>
-  //                 <h6 className="mt-0 mb-3">₹{product.price}</h6>
-  //                 <div className="mt-5 flex flex-wrap gap-2 justify-content-center">
-  //                     <Button icon="pi pi-star-fill" className="p-button-success" onClick={() =>{ navigate(`/checkout/${product._id}`) }} >Book now</Button>
-  //                 </div>
-  //             </div>
-  //         </div>
-       
-  //     );
-  // };
   
   return (
     <div className="card">
-      {/* {loading ? <Spinner/> :
-        <Carousel value={vehicles} numScroll={1} numVisible={3} responsiveOptions={responsiveOptions} itemTemplate={productTemplate} />
-      } */}
+
+<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+<div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src={banner[0]?.image?.url} class="d-block w-100" alt="..." />
+    </div>
+    { banner.length > 1 && banner.map((x)=> {
+    <div class="carousel-item">
+      <img src={x?.image?.url} class="d-block w-100" alt="..." />
+    </div>
+    })
+    }
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
 
           <div className="d-flex justify-content-center ">
             <img className='w-50' src={img} alt="" />

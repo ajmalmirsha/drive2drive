@@ -5,7 +5,7 @@ const userModel = require('../../model/userModel')
 module.exports = {
    userAuthenticator(req, res, next) {
       try {
-         console.log('user authenticator 8',req.headers.authentication);
+         console.log('user authenticator 8');
          if (req.headers.authentication) {
             jwt.verify(req.headers.authentication, process.env.USER_JWT_SECRET, (err, decode) => {
                if (err) {

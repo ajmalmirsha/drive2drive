@@ -18,6 +18,7 @@ export default function Banner() {
   const [selectedBannerId, setSelectedBannerId] = useState(null);
 
   const [ loading, setLoading ] = useState(false)
+  const [ submitLoading, setSubmitLoading ] = useState(false)
   const resetFileInput = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = null;
@@ -53,7 +54,7 @@ export default function Banner() {
     if(!image){
      return toaster.error('upload image');
     }
-    setLoading(true)
+    setSubmitLoading(true)
     const formData = new FormData();
     formData.append('image', image);
     const config = {
@@ -63,7 +64,7 @@ export default function Banner() {
       withCredentials: true,
     };
     adminApi.post('/add/banner', formData, config).then(({ data: { data, message } }) => {
-      setLoading(false)
+      setSubmitLoading(false)
       toaster.success(message);
       resetFileInput();
       setImage({});
@@ -101,6 +102,7 @@ export default function Banner() {
               <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Banner</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            { submitLoading ? <Spinner/> :
             <form onSubmit={handleSubmit}>
               <div class="modal-body ">
                 <label htmlFor="">Image</label>
@@ -119,6 +121,7 @@ export default function Banner() {
                 <button type="submit" class="btn btn-primary">upload image</button>
               </div>
             </form>
+           }
           </div>
         </div>
       </div>
@@ -131,10 +134,10 @@ export default function Banner() {
           </Tr>
         </Thead>
         <Tbody>
-          {banner.length > 0 && banner.map((x) => {
+          {banner.length > 0 ? banner.map((x) => {
             return (
               <Tr >
-                <Td><img className="w-100 my-4" src={`${process.env.REACT_APP_URL}/public/images/banner/${x?.image}`} alt="" /></Td>
+                <Td><img className="w-100 my-4" src={x?.image?.url} alt="" /></Td>
                 <Td>   <Toast ref={toast} />
                   {/* <ConfirmDialog visible={dialogVisible}  onHide={() => setDialogVisible(false)} ref={dialogRef} /> */}
                   <div className="card flex flex-wrap gap-2 justify-content-center">
@@ -143,7 +146,7 @@ export default function Banner() {
                 </Td>
               </Tr>
             )
-          })
+          }) : <p className="text-center" >add the first banner</p>
           }
 
 

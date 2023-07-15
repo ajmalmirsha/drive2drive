@@ -75,7 +75,7 @@ router.get('/get/all/vehicles',getVehicles)
 router.get('/get/all/sales/data',getAllSalesData)
 
 // add banner
-router.post('/add/banner',bannerUploadOptions.single('image'),addBanner)
+router.post('/add/banner',cloudinaryUpload.single('image'),addBanner)
 
 // get all banners
 router.get('/get/all/banners',getBanners)

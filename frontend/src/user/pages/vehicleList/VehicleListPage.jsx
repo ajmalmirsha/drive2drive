@@ -14,10 +14,12 @@ export default function VehicleListPage(){
     const {userAuthenticationHandler} = useErrorHandler()
     useEffect(()=>{
         setLoading(true)
+        console.log('axios gone');
         userApi.get(`/list-all-vehicle`).then(({data:{allVehicle}})=>{
             setLoading(false)
             setState(allVehicle)
         }).catch( err => {
+            console.log(err,897);
             userAuthenticationHandler(err)
         })
     },[])

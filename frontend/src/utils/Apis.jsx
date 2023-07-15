@@ -10,8 +10,8 @@ export const userApi = axios.create({
 })
 
 export const ownerApi=axios.create({
+    baseURL:`${process.env.REACT_APP_URL}/owner`,
     // baseURL:`http://localhost:4000/owner`
-    baseURL:`http://localhost:4000/owner`
     // baseURL:`https://drive2drive.site/owner`
     // baseURL:`https://drive2drive.onrender.com/owner`
 })
@@ -32,7 +32,6 @@ userApi.interceptors.request.use((req) => {
     
 })
 ownerApi.interceptors.request.use((req) => {
-    console.log('inter');
     if (localStorage.getItem('owner')){
         req.headers.Authentication =  localStorage.getItem("owner");
     }

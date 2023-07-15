@@ -31,6 +31,7 @@ import "primereact/resources/primereact.min.css";
 import OwnerSalesReport from './owner/pages/sales-report/OwnerSalesReport';
 import UserErrorPage from './Error/error-pages/UserErrorPage';
 import ErrorPage500 from './Error/500/ErrorPage500';
+import TermsAndConditions from './user/Components/terms-conditions/TermsAndConditions';
 function App() {
  
   return (
@@ -50,6 +51,7 @@ function App() {
       <Route exact path='/bookings' element={<UserBookings/>} />
       <Route exact path='/chat/:ownerId' element={<ChatPage/>} />
       <Route exact path='/SERVER-ERROR-500' element={<ErrorPage500/>} />
+      <Route exact path='/terms-conditions' element={<TermsAndConditions/>} />
       <Route exact path='/*' element={<UserErrorPage link={'/'} />} />
 
     {/* owner routes */}

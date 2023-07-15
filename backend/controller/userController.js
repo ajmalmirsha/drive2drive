@@ -29,11 +29,12 @@ module.exports = {
             removeFromCloudinary(response.license.back?.id)
         }
       })
-      if(req.files['license[front]'][0]?.path ){
+      console.log(req.files);
+      if(req?.files['license[front]'][0]?.path ){
         licenseFront = await uploadToCloudinary(req.files['license[front]'][0]?.path,'license-images')
         console.log(licenseFront);
       }
-      if( req.files['license[back]'][0]?.path ){
+      if( req?.files['license[back]'][0]?.path ){
        licenseBack = await uploadToCloudinary(req.files['license[back]'][0]?.path,'license-images')
       }
 
@@ -54,6 +55,7 @@ module.exports = {
           res.status(200).json({ user: response })
         })
     } catch (error) {
+      console.log(error);
       next()
     }
   },

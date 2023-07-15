@@ -36,6 +36,10 @@ const ViewPageComponent = () => {
           setLoading(false)
           setReviews(data.reviews.reverse())
         }).catch((err) => {
+          console.log(err);
+          if(err?.response?.status === 404){
+            return navigate(-1)
+          } 
           userAuthenticationHandler(err)
         })
       }
@@ -182,10 +186,12 @@ const ViewPageComponent = () => {
               Report spam
             </button>
             <Dialog header='Report spam' visible={visible} modal={false} style={{ width: '50vw' }} onHide={() => setVisible(false)}>
-              <form onSubmit={handleReportSubmit} >
+              <form onSubmit={(e)=>{
+                e.preventDefault()
+                report && handleReportSubmit(e)}} >
                 <textarea value={report} onChange={(e) => setReport(e.target.value)} className='d-block w-100' name="" id="" cols="30" rows="10"></textarea>
                 <div className="d-flex pt-2 justify-content-center">
-                  <button className='d-block btn btn-danger' type='submit'>Report</button>
+                  <button className={`d-block btn btn-danger ${ report ? '' : 'disabled' }`} type='submit'>Report</button>
                 </div>
               </form>
             </Dialog>

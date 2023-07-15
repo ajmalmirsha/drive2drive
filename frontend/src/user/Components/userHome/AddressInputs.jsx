@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker-cssmodules.min.css";
 
 import { useEffect, useState } from 'react';
 import { userApi } from '../../../utils/Apis';
+import { useErrorHandler } from '../../ErrorHandlers/ErrorHandler';
 export default function AddressInputs ({ handleSubmit }) {
     const [ pickDate, setPickDate] = useState(null)
     const [ dropDate, setDropDate] = useState(null)
@@ -15,9 +16,12 @@ export default function AddressInputs ({ handleSubmit }) {
     const [ dropDatePlaceHolder, setdropDatePlaceHolder ] = useState(null)
     const [ placeOptions, setPlaceOption] = useState([])
     const [ place, setPlace ] = useState({})
+    const { userAuthenticationHandler } = useErrorHandler()
     useEffect(()=> {
         userApi.get('/available-places').then( ({data:{data}}) => {
            setPlaceOption(data)
+        }).catch(err => {
+           userAuthenticationHandler(err)
         })
     },[])
     // const placeOptions = [
