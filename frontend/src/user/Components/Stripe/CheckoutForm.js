@@ -29,8 +29,6 @@ export default function CheckoutForm({bookingId,setBookings,couponId}) {
       redirect: 'if_required'
     });
 
-    console.log(response,89);
-
     if (response.error?.type === "card_error" || response.error?.type === "validation_error") {
       setMessage(response.error.message);
     } else if (!response.error) {

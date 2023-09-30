@@ -101,8 +101,7 @@ module.exports = {
                 // fs.unlink(path.join(__dirname,'../../backend/public/images/',user.image),(err)=>{}) 
                 removeFromCloudinary(user.image.id,'profile-images')
             }
-            console.log('on ',data);
-            
+           
             userModel.findOneAndUpdate({_id:req.headers.userid},{
                 $set:{
                     image:{
@@ -189,3 +188,9 @@ module.exports = {
     }
 
 }
+
+
+
+
+
+

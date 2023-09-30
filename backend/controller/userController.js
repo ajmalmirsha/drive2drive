@@ -403,7 +403,9 @@ module.exports = {
 
   getBanners(req, res, next) {
     try {
+      console.log('reached get banners');
       bannerModel.find({}).then((data) => {
+        console.log(data);
         res.status(200).json({ success: true, data })
       })
     } catch (e) {

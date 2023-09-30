@@ -84,6 +84,9 @@
   "react-dom": "^18.2.0",
  
    
+  "react-hot-toast": "^2.4.1",
+ 
+   
   "react-image-magnify": "^2.7.4",
  
    
@@ -106,6 +109,9 @@
  
    
   "react-speech-recognition": "^3.10.0",
+ 
+   
+  "react-spinners": "^0.13.8",
  
    
   "react-super-responsive-table": "^5.2.1",

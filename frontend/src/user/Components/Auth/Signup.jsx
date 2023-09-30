@@ -1,4 +1,4 @@
-import '../Components/signup.css'
+import '../Auth/signup.css'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom'
 import { GoogleLogin } from '@react-oauth/google'
 import jwt_decode from 'jwt-decode'
 import { useDispatch } from 'react-redux'
-import { setUserDetails } from '../../redux/userSlice'
-import Spinner from '../../common/spinners/Spinner'
+import { setUserDetails } from '../../../redux/userSlice'
+import Spinner from '../../../common/spinners/Spinner'
 
 
 function Signup() {

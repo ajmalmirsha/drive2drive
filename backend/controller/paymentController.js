@@ -8,7 +8,6 @@ module.exports = {
 
     async createPaymentIntent (req, res, next)  {
         try {
-          console.log('inside payemnt intetnt');
           const amount = parseInt(req.body?.amount)
           const paymentIntent = await Stripe.paymentIntents.create({
             currency: "Inr",

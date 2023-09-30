@@ -9,6 +9,4 @@ export default function OwnerPublicRoute (props) {
         }else{
             return props.children
         }
-
-   
 }

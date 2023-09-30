@@ -1,8 +1,8 @@
-import Signupcomponent from '../../Components/Signup'
+import Signupcomponent from '../../Components/Auth/Signup'
 function Signup (){
     return (
         <>
-       <Signupcomponent/>
+        <Signupcomponent/>
         </>
     )
 }

@@ -73,14 +73,6 @@ export default function AddressInputs ({ handleSubmit }) {
                 name="place"
                 components={{ Placeholder: CustomPlaceholder }}
                 options={placeOptions}
-                // styles={{
-                //     menu: (provided) => ({
-                //       ...provided,
-                //       maxHeight: '200px',
-                //       overflow: 'auto',
-                //       zIndex: 9999,
-                //     }),
-                //   }}
               />
              </div>
              <div className="col-md-3 col-6 py-2">  

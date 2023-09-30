@@ -32,6 +32,7 @@ import OwnerSalesReport from './owner/pages/sales-report/OwnerSalesReport';
 import UserErrorPage from './Error/error-pages/UserErrorPage';
 import ErrorPage500 from './Error/500/ErrorPage500';
 import TermsAndConditions from './user/Components/terms-conditions/TermsAndConditions';
+import { Toaster } from 'react-hot-toast';
 function App() {
  
   return (
@@ -76,6 +77,7 @@ function App() {
 
     </Routes>
     </BrowserRouter>
+    <Toaster />
     </>
   );
 }

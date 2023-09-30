@@ -67,7 +67,7 @@ export default function Navbar() {
        <FontAwesomeIcon size='lg' icon={faCar} />
        </NavLink>
         <NavLink className='nav-item mx-2' to="/bookings">
-          Bookings
+          Bookings 
         </NavLink>
 
       </div>
