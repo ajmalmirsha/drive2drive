@@ -5,80 +5,38 @@ import { GoogleLogin } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
 import "../Auth/login.css";
 import { useDispatch } from "react-redux";
-import { setUserDetails } from "../../../redux/userSlice";
 import img from "../../../images/login/login.png";
 import img2 from "../../../images/login/signup.png";
 import ClipLoader from "react-spinners/ClipLoader";
 import toast from "react-hot-toast";
 import useAuthHook from "../../Hooks/Auth/useAuth";
 
-
 function LoginComponent() {
   const navigate = useNavigate();
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const SignUpNameRef = useRef(null)
-  const SignUpEmailRef = useRef(null)
-  const SignUpPasswordRef = useRef(null)
-  const SignUpConfirmPassword = useRef(null)
+  const SignUpNameRef = useRef(null);
+  const SignUpEmailRef = useRef(null);
+  const SignUpPasswordRef = useRef(null);
+  const SignUpConfirmPassword = useRef(null);
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState("signin");
   const dispatch = useDispatch();
   const formRef = useRef(null);
 
-  const { handleSignUp } = useAuthHook()
-
-  useEffect(() => {
-    const token = localStorage.getItem("user");
-    if (token) {
-      navigate("/");
-    }
-  }, []);
+  const { handleSignUp, verifyUser } = useAuthHook();
 
   const handleSignUpSubmit = () => {
-    handleSignUp(SignUpNameRef?.current?.value,SignUpEmailRef?.current?.value,SignUpPasswordRef?.current?.value,SignUpConfirmPassword?.current?.value)
-  }
-
-  const verifyUser = async (users) => {
-    setLoading(true);
-    const respo = await axios.post(process.env.REACT_APP_URL + "/login", {
-      users,
-    });
-    const { success, message, token, user } = respo?.data;
-    setLoading(false);
-    if (!success) {
-      toast.error(message);
-    } else {
-      localStorage.setItem("user", token);
-      console.log(user, 54);
-      dispatch(
-        setUserDetails({
-          id: user._id,
-          username: user.username,
-          email: user.email,
-          phone: user?.phone,
-          image: {
-            url: user?.image?.url,
-            id: user?.image?.id,
-          },
-          dob: user?.dob,
-          license: {
-            front: {
-              url: user.license?.front?.url,
-              id: user.license?.front?.id,
-            },
-            back: {
-              url: user.license?.rear?.url,
-              id: user.license?.rear?.id,
-            },
-            verification: user?.license?.verification,
-          },
-        })
-      );
-      navigate("/");
-    }
+    handleSignUp(
+      SignUpNameRef?.current?.value,
+      SignUpEmailRef?.current?.value,
+      SignUpPasswordRef?.current?.value,
+      SignUpConfirmPassword?.current?.value
+    );
   };
+
   async function googleSuccess(response) {
+    setLoading(true);
     const decoded = jwt_decode(response.credential);
     const user = {
       username: decoded.name,
@@ -86,6 +44,7 @@ function LoginComponent() {
       password: decoded.sub,
     };
     verifyUser(user);
+    setLoading(false);
   }
   function googleError(response) {
     toast.error(response);
@@ -101,44 +60,7 @@ function LoginComponent() {
     }
   };
 
- 
-
   return (
-    // <div className="formContainer">
-    //   {loading ? (
-    //     <Spinner />
-    //   ) : (
-    //     <div className="formWrapper">
-    //       <span className="title">Login</span>
-    //       <form onSubmit={handleSubmit}>
-    //         <input
-    //           type="email"
-    //           name="email"
-    //           onChange={(e) =>
-    //             setUser({ ...user, [e.target.name]: e.target.value })
-    //           }
-    //           placeholder="email"
-    //         />
-    //         <input
-    //           type="password"
-    //           name="password"
-    //           onChange={(e) =>
-    //             setUser({ ...user, [e.target.name]: e.target.value })
-    //           }
-    //           placeholder="password"
-    //         />
-    //         <button>Sign in</button>
-    //       </form>
-    //       <GoogleLogin onSuccess={googleSuccess} onError={googleError} />
-    //       <p>
-    //         You do have an account?
-    //         <span onClick={() => navigate("/signup")}>Signup</span>
-    //       </p>
-    //     </div>
-    //   )}
-    //   <ToastContainer />
-    // </div>
-
     // <!----------------------- Main Container -------------------------->
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
       {/* <!----------------------- Login Container --------------------------> */}
@@ -216,13 +138,28 @@ function LoginComponent() {
             {role === "signup" && (
               <form ref={formRef} onSubmit={handleSignUpSubmit}>
                 <div class="input-group mb-3">
-                  <input ref={SignUpNameRef} type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Name" />
+                  <input
+                    ref={SignUpNameRef}
+                    type="text"
+                    class="form-control form-control-lg bg-light fs-6"
+                    placeholder="Name"
+                  />
                 </div>
                 <div class="input-group mb-3">
-                  <input  ref={SignUpEmailRef} type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Email address" />
+                  <input
+                    ref={SignUpEmailRef}
+                    type="text"
+                    class="form-control form-control-lg bg-light fs-6"
+                    placeholder="Email address"
+                  />
                 </div>
                 <div class="input-group mb-3">
-                  <input  ref={SignUpPasswordRef} type="password" class="form-control form-control-lg bg-light fs-6" placeholder="Password" />
+                  <input
+                    ref={SignUpPasswordRef}
+                    type="password"
+                    class="form-control form-control-lg bg-light fs-6"
+                    placeholder="Password"
+                  />
                 </div>
                 <div class="input-group mb-1">
                   <input
