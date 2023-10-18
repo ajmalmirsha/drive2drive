@@ -1,18 +1,13 @@
-import { useEffect, useRef, useState, CSSProperties } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useRef, useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
-import jwt_decode from "jwt-decode";
 import "../Auth/login.css";
-import { useDispatch } from "react-redux";
 import img from "../../../images/login/login.png";
 import img2 from "../../../images/login/signup.png";
 import ClipLoader from "react-spinners/ClipLoader";
 import toast from "react-hot-toast";
-import useAuthHook from "../../Hooks/Auth/useAuth";
+import useAuthHook from "../../Hooks/Auth/UseAuth";
 
 function LoginComponent() {
-  const navigate = useNavigate();
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const SignUpNameRef = useRef(null);
@@ -21,34 +16,25 @@ function LoginComponent() {
   const SignUpConfirmPassword = useRef(null);
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState("signin");
-  const dispatch = useDispatch();
   const formRef = useRef(null);
 
-  const { handleSignUp, verifyUser } = useAuthHook();
+  const { handleSignUp, verifyUser, googleSuccess } = useAuthHook();
 
-  const handleSignUpSubmit = () => {
-    handleSignUp(
+  const handleSignUpSubmit = async () => {
+    setLoading(true);
+    await handleSignUp(
       SignUpNameRef?.current?.value,
       SignUpEmailRef?.current?.value,
       SignUpPasswordRef?.current?.value,
       SignUpConfirmPassword?.current?.value
     );
+    setLoading(false);
   };
 
-  async function googleSuccess(response) {
-    setLoading(true);
-    const decoded = jwt_decode(response.credential);
-    const user = {
-      username: decoded.name,
-      email: decoded.email,
-      password: decoded.sub,
-    };
-    verifyUser(user);
-    setLoading(false);
-  }
   function googleError(response) {
     toast.error(response);
   }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!emailRef?.current?.value) {
@@ -56,7 +42,9 @@ function LoginComponent() {
     } else if (!passwordRef?.current?.value) {
       return toast.error("enter your password");
     } else {
-      verifyUser({ email: emailRef.current.value, password: passwordRef.current.value });
+      setLoading(true);
+      await verifyUser({ email: emailRef.current.value, password: passwordRef.current.value });
+      setLoading(false);
     }
   };
 
@@ -120,7 +108,7 @@ function LoginComponent() {
                       disabled
                       type="button"
                       class="btn btn-lg btn-primary w-100 fs-6"
-                      style={{ backgroundColor: "#2a9d8f", border: "none", cursor: "wait" }}
+                      style={{ backgroundColor: "#2a9d8f", border: "none", cursor: "crosshair!important" }}
                     >
                       <ClipLoader color="#36d7b7" size={19} />
                     </button>
@@ -171,12 +159,23 @@ function LoginComponent() {
                   {/* <Password class="form-control form-control-lg bg-light fs-6 w-100" placeholder="Confirm Password" toggleMask /> */}
                 </div>
                 <div class="input-group my-3 ">
-                  <button
-                    class="btn btn-lg btn-primary w-100 fs-6"
-                    style={{ backgroundColor: "#2a9d8f", border: "none" }}
-                  >
-                    {loading ? "loading" : "Sign Up"}
-                  </button>
+                  {loading ? (
+                    <button
+                      disabled
+                      type="button"
+                      class="btn btn-lg btn-primary w-100 fs-6"
+                      style={{ backgroundColor: "#2a9d8f", border: "none", cursor: "crosshair!important" }}
+                    >
+                      <ClipLoader color="#36d7b7" size={19} />
+                    </button>
+                  ) : (
+                    <button
+                      class="btn btn-lg btn-primary w-100 fs-6"
+                      style={{ backgroundColor: "#2a9d8f", border: "none" }}
+                    >
+                      Sign Up
+                    </button>
+                  )}
                 </div>
               </form>
             )}

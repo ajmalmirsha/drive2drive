@@ -17,11 +17,9 @@ function Banner({ vehicles }) {
   const { userAuthenticationHandler } = useErrorHandler()
   const [banner, setBanner] = useState([])
   useEffect(() => {
-    console.log('vehicles', vehicles);
     setLoading(true)
     userApi.get('/get/all/banners').then(({ data: { data } }) => {
       setLoading(false)
-      console.log('banner', data);
       setBanner(data)
     }).catch(err => {
       userAuthenticationHandler(err)
