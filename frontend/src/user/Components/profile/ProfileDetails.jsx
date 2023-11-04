@@ -125,9 +125,7 @@ export default function ProfileDetails() {
                   {/* {license?.back ? <img src={reduxUser.license?.back?.url ? reduxUser.license?.back?.url : license?.back?.filename &&  URL.createObjectURL(license?.back)} alt="" /> : 'Click here to upload the front side of your driving license.'} */}
                   <input onChange={(e) => {
                     e.preventDefault()
-                    console.log('sdf');
                     const files = e.target.files;
-                    console.log(files,98);
                     if (files && e.target.files?.length !== 0  ) {
                       const imageFiles = Array.from(files).filter(file => file.type.includes('image'));
                       if (imageFiles.length > 0) {

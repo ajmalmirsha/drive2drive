@@ -6,9 +6,6 @@ const reportModel = require('../model/reportModel');
 const bookingModel = require('../model/bookingModel');
 const couponModel = require("../model/couponModel");
 const bannerModel = require("../model/bannerModel");
-const fs = require('fs');
-const path = require("path");
-const { cloudinaryUpload } = require("../middlewares/multer/multer");
 const { uploadToCloudinary } = require("../config/cloudnary");
 
 module.exports = {
@@ -17,7 +14,6 @@ module.exports = {
 
     async addNotifications(req, res, next) {
         try {
-            console.log('on add notifications');
             let image
             if (req.file?.path) {
                 image = await uploadToCloudinary(req.file?.path, 'notification-images')
@@ -33,7 +29,6 @@ module.exports = {
                     res.status(200).json({ success: true, data: response })
                 })
         } catch (e) {
-            console.log(e);
             next()
         }
 
@@ -285,7 +280,6 @@ module.exports = {
     DeleteBanner(req, res, next) {
         try {
             const { bannerId } = req.params
-            console.log(bannerId);
             bannerModel.findOneAndDelete({ _id: bannerId }).then((response) => {
                 bannerModel.find({}).then((data) => {
                     res.status(200).json({ success: true, message: 'banner deleted successfully', data })

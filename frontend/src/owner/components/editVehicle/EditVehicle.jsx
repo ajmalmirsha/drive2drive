@@ -1,66 +1,65 @@
-import { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { ToastContainer, toast } from "react-toastify"
-import './editVehicle.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownLeftAndUpRightToCenter, faFileUpload, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { ownerApi } from "../../../utils/Apis"
-import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler"
-import Select from 'react-select/creatable';
-import makeAnimated from 'react-select/animated';
-import Spinner from "../../../common/spinners/Spinner"
-import { ProgressSpinner } from 'primereact/progressspinner';
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "./editVehicle.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownLeftAndUpRightToCenter, faFileUpload, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { ownerApi } from "../../../utils/Apis";
+import { useErrorHandler } from "../../../user/ErrorHandlers/ErrorHandler";
+import Select from "react-select/creatable";
+import makeAnimated from "react-select/animated";
+import Spinner from "../../../common/spinners/Spinner";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export default function EditVehicle() {
-  const { id } = useParams()
+  const { id } = useParams();
   const [product, setProduct] = useState({
     id: null,
     product_name: null,
     category: null,
     type: null,
     segment: null,
-    price: '',
+    price: "",
     description: null,
     model: null,
     brand: null,
-    year: '',
-    seats: '',
-    mileage: '',
+    year: "",
+    seats: "",
+    mileage: "",
     images: [],
     places: [],
-  })
-  const [loading, setLoading] = useState(false)
-  const [uploadLoading, setUploadLoading] = useState(false)
-  const [droppedImage, setDroppedImage] = useState([])
-  const { ownerAuthenticationHandler } = useErrorHandler()
+  });
+  const [loading, setLoading] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [droppedImage, setDroppedImage] = useState([]);
+  const { ownerAuthenticationHandler } = useErrorHandler();
   useEffect(() => {
-    setLoading(true)
-    ownerApi.get(`/edit-product-details/${id}`).then(({ data: { data } }) => {
-      setLoading(false)
-      setProduct({
-        id: data._id,
-        product_name: data.product_name,
-        category: data.category,
-        type: data.type,
-        segment: data.segment,
-        price: data.price,
-        description: data.description,
-        model: data.model,
-        brand: data.brand,
-        year: data.year,
-        seats: data.seats,
-        mileage: data.mileage,
-        images: data.image,
-        places: data.places,
+    setLoading(true);
+    ownerApi
+      .get(`/edit-product-details/${id}`)
+      .then(({ data: { data } }) => {
+        setLoading(false);
+        setProduct({
+          id: data._id,
+          product_name: data.product_name,
+          category: data.category,
+          type: data.type,
+          segment: data.segment,
+          price: data.price,
+          description: data.description,
+          model: data.model,
+          brand: data.brand,
+          year: data.year,
+          seats: data.seats,
+          mileage: data.mileage,
+          images: data.image,
+          places: data.places,
+        });
+      })
+      .catch((err) => {
+        ownerAuthenticationHandler(err);
       });
-    }).catch(err => {
-      ownerAuthenticationHandler(err)
-    })
-  }, [])
-
-
-
-
+  }, []);
 
   const DropArea = ({ onDrop }) => {
     const handleDragOver = (event) => {
@@ -69,23 +68,17 @@ export default function EditVehicle() {
 
     const handleDrop = (event) => {
       event.preventDefault();
-    
-      const fullImageUrl = event.dataTransfer.getData('text/plain');
-      console.log('full image url', fullImageUrl);
-    
-      const key = event.dataTransfer.getData('key');
-      console.log('Dropped image key:', key);
-    
-      const imgElement = document.createElement('img');
+
+      const fullImageUrl = event.dataTransfer.getData("text/plain");
+      const key = event.dataTransfer.getData("key");
+      const imgElement = document.createElement("img");
       imgElement.src = fullImageUrl;
-    
-      imgElement.addEventListener('load', () => {
-        const filename = fullImageUrl.substring(fullImageUrl.lastIndexOf('/') + 1);
+
+      imgElement.addEventListener("load", () => {
+        fullImageUrl.substring(fullImageUrl.lastIndexOf("/") + 1);
         onDrop(key);
       });
     };
-    
-    
 
     return (
       <div
@@ -98,24 +91,25 @@ export default function EditVehicle() {
     );
   };
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const nullProperties = Object.entries(product)
-      .filter(([key, value]) =>
-        value === null ||
-        (key === 'description' && value.trim() === '') ||
-        (key === 'images' && value.length === 0) ||
-        (key === 'model' && value.trim() === '') ||
-        (key === 'year' && value.trim() === '') ||
-        (key === 'brand' && value.trim() === '') ||
-        (key === 'places' && value.length === 0)
+      .filter(
+        ([key, value]) =>
+          value === null ||
+          (key === "description" && value.trim() === "") ||
+          (key === "images" && value.length === 0) ||
+          (key === "model" && value.trim() === "") ||
+          (key === "year" && value.trim() === "") ||
+          (key === "brand" && value.trim() === "") ||
+          (key === "places" && value.length === 0)
       )
       .map(([key]) => key);
 
     if (nullProperties?.length > 0) {
-      toast.error(nullProperties[0] + ' feild required !', {
+      toast.error(nullProperties[0] + " feild required !", {
         position: "top-center",
         autoClose: 4000,
         hideProgressBar: false,
@@ -125,114 +119,111 @@ export default function EditVehicle() {
         progress: undefined,
         theme: "dark",
       });
+    } else {
+      setLoading(true);
+      ownerApi
+        .post("/edit-vehicle", { data: product })
+        .then(({ data: { message }, status }) => {
+          setLoading(false);
+          if (status == 200) {
+            toast.success(message, {
+              position: "top-center",
+              autoClose: 1000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+              onClose: () => {
+                navigate("/owner/list-vehicle");
+              },
+            });
+          }
+        })
+        .catch((err) => {
+          ownerAuthenticationHandler(err);
+        });
     }
-    else {
-      setLoading(true)
-      ownerApi.post("/edit-vehicle", { data: product }).then(({ data: { message }, status }) => {
-        setLoading(false)
-        if (status == 200) {
-          toast.success(message, {
-            position: "top-center",
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-            onClose: () => {
-              navigate('/owner/list-vehicle')
-            }
-          })
-        }
-      }).catch(err => {
-        ownerAuthenticationHandler(err)
-      })
-
-
-    }
-  }
-
-
-  const handleDropImage = (imageId) => {
-    setLoading(true)
-    console.log('image id',imageId);
-    ownerApi.post(`/delete/vehicle/image/${product.id}?id=${imageId}`).then(({ data: { data } }) => {
-      setLoading(false)
-      setProduct({
-        id: data._id,
-        product_name: data.product_name,
-        category: data.category,
-        type: data.type,
-        segment: data.segment,
-        price: data.price,
-        description: data.description,
-        model: data.model,
-        brand: data.brand,
-        year: data.year,
-        seats: data.seats,
-        mileage: data.mileage,
-        images: [...data.image],
-        places: data.places,
-      });
-    }).catch(err => {
-      err.response.status == 400 && toast.error(err.response.data.message)
-      ownerAuthenticationHandler(err)
-    })
-
   };
 
+  const handleDropImage = (imageId) => {
+    setLoading(true);
+    ownerApi
+      .post(`/delete/vehicle/image/${product.id}?id=${imageId}`)
+      .then(({ data: { data } }) => {
+        setLoading(false);
+        setProduct({
+          id: data._id,
+          product_name: data.product_name,
+          category: data.category,
+          type: data.type,
+          segment: data.segment,
+          price: data.price,
+          description: data.description,
+          model: data.model,
+          brand: data.brand,
+          year: data.year,
+          seats: data.seats,
+          mileage: data.mileage,
+          images: [...data.image],
+          places: data.places,
+        });
+      })
+      .catch((err) => {
+        err.response.status == 400 && toast.error(err.response.data.message);
+        ownerAuthenticationHandler(err);
+      });
+  };
 
   function onImageDrop(file) {
-
     file.length > 0 ? setDroppedImage([...droppedImage, ...file]) : setDroppedImage([...droppedImage, file]);
-
   }
 
   function uploadImages() {
     if (droppedImage.length + product.images.length > 4) {
-      return toast.error('maximum 4 images you can upload !')
+      return toast.error("maximum 4 images you can upload !");
     }
-    setUploadLoading(true)
-    const formData = new FormData()
+    setUploadLoading(true);
+    const formData = new FormData();
     for (let i = 0; i < droppedImage.length; i++) {
-      formData.append('images', droppedImage[i]);
+      formData.append("images", droppedImage[i]);
     }
 
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
-        vehcleId: product.id
+        vehcleId: product.id,
       },
 
       withCredentials: true,
     };
 
-     ownerApi.post('/upload-vehicle-images', formData, config).then(({ data: { data } }) => {
-      setUploadLoading(false)
-      setProduct({
-        id: data._id,
-        product_name: data.product_name,
-        category: data.category,
-        type: data.type,
-        segment: data.segment,
-        price: data.price,
-        description: data.description,
-        model: data.model,
-        brand: data.brand,
-        year: data.year,
-        seats: data.seats,
-        mileage: data.mileage,
-        images: data.image,
-        places: data.places,
+    ownerApi
+      .post("/upload-vehicle-images", formData, config)
+      .then(({ data: { data } }) => {
+        setUploadLoading(false);
+        setProduct({
+          id: data._id,
+          product_name: data.product_name,
+          category: data.category,
+          type: data.type,
+          segment: data.segment,
+          price: data.price,
+          description: data.description,
+          model: data.model,
+          brand: data.brand,
+          year: data.year,
+          seats: data.seats,
+          mileage: data.mileage,
+          images: data.image,
+          places: data.places,
+        });
+        setDroppedImage([]);
+      })
+      .catch((err) => {
+        ownerAuthenticationHandler(err);
       });
-      setDroppedImage([])
-     
-
-    }).catch(err => {
-      console.log(err);
-      ownerAuthenticationHandler(err)
-    })
   }
 
   const handleDrop = (event) => {
@@ -243,7 +234,7 @@ export default function EditVehicle() {
       const reader = new FileReader();
       reader.onload = () => {
         const imageDataUrl = reader.result;
-        const arr = imageDataUrl.split(',');
+        const arr = imageDataUrl.split(",");
         const mime = arr[0].match(/:(.*?);/)[1];
         const bstr = atob(arr[1]);
         let n = bstr.length;
@@ -265,10 +256,10 @@ export default function EditVehicle() {
   const animatedComponents = makeAnimated();
 
   const colourOptions = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-  ]
+    { value: "chocolate", label: "Chocolate" },
+    { value: "strawberry", label: "Strawberry" },
+    { value: "vanilla", label: "Vanilla" },
+  ];
 
   // const placeOptions = product.places.map((place) => ({
   //   value: place,
@@ -280,64 +271,69 @@ export default function EditVehicle() {
       setProduct({
         ...product,
         places: [...selected],
-      })
+      });
     } else {
       setProduct({
         ...product,
         places: [],
-      })
+      });
     }
   };
-  const uploadImage = (e) =>{
-    e.preventDefault()
-    console.log(e.target.files);
+  const uploadImage = (e) => {
+    e.preventDefault();
     const files = e.target.files;
-    if (files && e.target.files?.length !== 0  ) {
-      const imageFiles = Array.from(files).filter(file => file.type.includes('image'));
+    if (files && e.target.files?.length !== 0) {
+      const imageFiles = Array.from(files).filter((file) => file.type.includes("image"));
       if (imageFiles.length > 0) {
         onImageDrop(imageFiles);
       }
     }
-    }
+  };
   return (
-
     <div className="col-md-9 my-3">
       <div className="card mb-4">
         <div className="card-header py-3">
           <h5 className="mb-0">Edit product</h5>
         </div>
-        { loading ? <Spinner/> :
-        <div className="card-body">
-
-          <div className="row">
-            <div className="image-list-edit col-md-8 ">
-              {
-                product?.images.map((x) => {
+        {loading ? (
+          <Spinner />
+        ) : (
+          <div className="card-body">
+            <div className="row">
+              <div className="image-list-edit col-md-8 ">
+                {product?.images.map((x) => {
                   return (
-                    <img key={x.id}
-                    onDragStart={(event) => {
-                      event.dataTransfer.setData('text/plain', x.url);
-                      event.dataTransfer.setData('key', x.id);
-                    }}
-                    draggable="true"
-                    src={x.url} alt="" />
-                  )
-                })
-              }
+                    <img
+                      key={x.id}
+                      onDragStart={(event) => {
+                        event.dataTransfer.setData("text/plain", x.url);
+                        event.dataTransfer.setData("key", x.id);
+                      }}
+                      draggable="true"
+                      src={x.url}
+                      alt=""
+                    />
+                  );
+                })}
+              </div>
+
+              <DropArea onDrop={handleDropImage} />
             </div>
-
-
-            <DropArea onDrop={handleDropImage} />
-          </div>
-          <form>
-
-
-
-            <div className="form-outline mb-4">
-              <label className="form-label" htmlFor="form7Example5">Product name</label>
-              <input name="product_name"  value={product.product_name} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example5" className="form-control" />
-            </div>
-            {/* <select onChange={(e)=>{
+            <form>
+              <div className="form-outline mb-4">
+                <label className="form-label" htmlFor="form7Example5">
+                  Product name
+                </label>
+                <input
+                  name="product_name"
+                  value={product.product_name}
+                  onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })}
+                  type="text"
+                  id="form7Example5"
+                  className="form-control"
+                />
+              </div>
+              {/* <select onChange={(e)=>{
    setProduct({ ...product, category: e.target.value })
   }} class="form-select" aria-label="Default select example">
   <option  selected>{product.category}</option>
@@ -346,180 +342,278 @@ export default function EditVehicle() {
 </select>
      */}
 
-            <div className="row">
-              <label className="form-label mt-3" htmlFor="type">Type</label>
-
-              <div className="col-md-4 mb-3 mt-1" >
-                <select id="type" onChange={(e) => {
-                  setProduct({ ...product, type: e.target.value })
-                }} value={product.type} class="form-select" aria-label="Default select example">
-                  {/* <option selected>{product.type}</option> */}
-                  <option value="Sedan">Sedan</option>
-                  <option value="Hatchback">Hatchback</option>
-                  <option value="SUV">SUV</option>
-                  <option value="Crossover">Crossover</option>
-                  <option value="Coupe">Coupe</option>
-                  <option value="Convertible">Convertible</option>
-                </select>
-              </div>
-              <div className="col-md-4 mb-3 mt-1" >
-                <select id="type" onChange={(e) => {
-                  setProduct({ ...product, segment: e.target.value })
-                }} value={product?.segment} class="form-select" aria-label="Default select example">
-                  <option value="vintage">vinatge</option>
-                  <option value="premium">premium</option>
-                  <option value="normal">normal</option>
-                </select>
-              </div>
-              <div className="col-md-4 row">
-                <div className="col-md-6 d-flex justify-content-center align-items-center">
-                  <button onClick={(e) => {
-                    e.preventDefault()
-                    setProduct({ ...product, category: 'manual' })
-                  }} className={product.category !== 'manual' ? `btn btn-outline-secondary` : 'btn btn-secondary'} >manual</button>
-                </div>
-                <div className="col-md-6 d-flex justify-content-center align-items-center">
-                  <button onClick={(e) => {
-                    e.preventDefault()
-                    setProduct({ ...product, category: 'automatic' })
-                  }} className={product.category !== 'automatic' ? `btn btn-outline-secondary` : 'btn btn-secondary'} >automatic</button>
-                </div>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-md-4 form-outline mb-4">
-                <label className="form-label" htmlFor="form7Example6">Model</label>
-                <input name="model" value={product.model} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
-              </div>
-
-              <div className="col-md-4 form-outline mb-4">
-                <label className="form-label" htmlFor="form7Example6">Brand</label>
-                <input name="brand" value={product.brand} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} type="text" id="form7Example6" className="form-control" />
-              </div>
-
-              <div className="col-md-4 form-outline mb-4">
-                <label className="form-label" htmlFor="form7Example6">Year</label>
-                <input name="year" value={product.year} onChange={(e) => {
-                   !isNaN(e.target.value) &&  setProduct({ ...product, [e.target.name]: e.target.value })
-                }} type="text" id="form7Example6" className="form-control" />
-              </div>
-
-            </div>
-
-
-            <div className="row">
-              <div className="form-outline col-md-4 mb-4">
-                <label className="form-label" htmlFor="form7Example7">Price / perday</label>
-                <input value={product.price} name="price" onChange={(e) => {
-
-                  !isNaN(e.target.value) && setProduct({ ...product, [e.target.name]: e.target.value })
-
-                }} type="text" id="form7Example7" className="form-control" />
-              </div>
-              <div className="form-outline col-md-4 mb-4">
-                <label className="form-label" htmlFor="form7Example7">no.of seats</label>
-                <input value={product.seats} name="seats" onChange={(e) => {
-
-                  !isNaN(e.target.value) && setProduct({ ...product, [e.target.name]: e.target.value })
-
-                }} type="number" id="form7Example7" className="form-control" />
-              </div>
-              <div className="form-outline col-md-4 mb-4">
-                <label className="form-label" htmlFor="form7Example7">mileage</label>
-                <input value={product.mileage} name="mileage" onChange={(e) => {
-
-                  !isNaN(e.target.value) && setProduct({ ...product, [e.target.name]: e.target.value })
-
-                }} type="text" id="form7Example7" className="form-control" />
-              </div>
-
-            </div>
-            <div className="form-outline mb-4">
-              <label htmlFor="places">add Places</label>
-              <Select
-                id='places'
-                closeMenuOnSelect={false}
-                components={animatedComponents}
-                // defaultValue={placeOptions}
-                isMulti
-                isCreatable={true}
-                options={colourOptions}
-                isLoading={false}
-                value={product.places}
-                onChange={handleSelectChange}
-              />
-            </div>
-
-
-
-            <div className="form-outline mb-4">
-              <label className="form-label" htmlFor="form7Example7">Description</label>
-              <textarea name="description" value={product.description} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} className="form-control" id="form7Example7" rows="4"></textarea>
-            </div>
-
-
-
-            <div className="form-check d-flex justify-content-center mb-2">
-              <button onClick={handleSubmit} className="btn btn-outline-dark">submit</button>
-            </div>
-
-
-
-            <div className="form-outline mb-4">
-              <label className="form-label" htmlFor="form7Example7">image</label>
-              <input multiple accept="image/*" name="images" hidden onChange={uploadImage} type="file" id="image-upload" className="form-control" />
-
-            </div>
-             <div className="container">
               <div className="row">
-                <div className="col-md-6">
-                  <label
-                    htmlFor="image-upload"
-                    className="add-drop-image text-center d-flex align-items-center justify-content-center"
-                    onDrop={handleDrop}
-                    onDragOver={handleDragOver}
-                    style={{ width: '300px', height: '200px', border: '2px dashed black' }}
-                    >
-                    Drop or Upload Image Here
-                  </label>
+                <label className="form-label mt-3" htmlFor="type">
+                  Type
+                </label>
+
+                <div className="col-md-4 mb-3 mt-1">
+                  <select
+                    id="type"
+                    onChange={(e) => {
+                      setProduct({ ...product, type: e.target.value });
+                    }}
+                    value={product.type}
+                    class="form-select"
+                    aria-label="Default select example"
+                  >
+                    {/* <option selected>{product.type}</option> */}
+                    <option value="Sedan">Sedan</option>
+                    <option value="Hatchback">Hatchback</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Crossover">Crossover</option>
+                    <option value="Coupe">Coupe</option>
+                    <option value="Convertible">Convertible</option>
+                  </select>
                 </div>
-                    {  uploadLoading ? 
-                    <div className="col-md-6" >
-                    <ProgressSpinner style={{width: '50px', height: '50px',display:'block'}} strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" /> 
-                     <div className="text-center">uploading images</div> 
-                    </div> :
-                <div className="col-md-6">
-                  <div className="dropped-add-image">
-                    {droppedImage &&
-
-                      droppedImage.map((x) => {
-                        return <img src={URL.createObjectURL(x)} alt="" />;
-                      })}
+                <div className="col-md-4 mb-3 mt-1">
+                  <select
+                    id="type"
+                    onChange={(e) => {
+                      setProduct({ ...product, segment: e.target.value });
+                    }}
+                    value={product?.segment}
+                    class="form-select"
+                    aria-label="Default select example"
+                  >
+                    <option value="vintage">vinatge</option>
+                    <option value="premium">premium</option>
+                    <option value="normal">normal</option>
+                  </select>
+                </div>
+                <div className="col-md-4 row">
+                  <div className="col-md-6 d-flex justify-content-center align-items-center">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setProduct({ ...product, category: "manual" });
+                      }}
+                      className={product.category !== "manual" ? `btn btn-outline-secondary` : "btn btn-secondary"}
+                    >
+                      manual
+                    </button>
                   </div>
-                  {droppedImage && droppedImage.length > 0 && <button onClick={(e) => {
-                    e.preventDefault()
-                    setDroppedImage([])
-                  }} className="float-md-end btn btn-danger my-2"> <FontAwesomeIcon icon={faTrash} /> clear</button>}
-                  {droppedImage && droppedImage.length > 0 && (
-                    <div className="d-flex justify-content-center mt-3">
+                  <div className="col-md-6 d-flex justify-content-center align-items-center">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setProduct({ ...product, category: "automatic" });
+                      }}
+                      className={product.category !== "automatic" ? `btn btn-outline-secondary` : "btn btn-secondary"}
+                    >
+                      automatic
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-                      <button onClick={(e) => {
-                        e.preventDefault()
-                        uploadImages()
-                      }} className="btn btn-primary"><FontAwesomeIcon icon={faFileUpload} /> Upload Image</button>
+              <div className="row">
+                <div className="col-md-4 form-outline mb-4">
+                  <label className="form-label" htmlFor="form7Example6">
+                    Model
+                  </label>
+                  <input
+                    name="model"
+                    value={product.model}
+                    onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })}
+                    type="text"
+                    id="form7Example6"
+                    className="form-control"
+                  />
+                </div>
+
+                <div className="col-md-4 form-outline mb-4">
+                  <label className="form-label" htmlFor="form7Example6">
+                    Brand
+                  </label>
+                  <input
+                    name="brand"
+                    value={product.brand}
+                    onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })}
+                    type="text"
+                    id="form7Example6"
+                    className="form-control"
+                  />
+                </div>
+
+                <div className="col-md-4 form-outline mb-4">
+                  <label className="form-label" htmlFor="form7Example6">
+                    Year
+                  </label>
+                  <input
+                    name="year"
+                    value={product.year}
+                    onChange={(e) => {
+                      !isNaN(e.target.value) && setProduct({ ...product, [e.target.name]: e.target.value });
+                    }}
+                    type="text"
+                    id="form7Example6"
+                    className="form-control"
+                  />
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="form-outline col-md-4 mb-4">
+                  <label className="form-label" htmlFor="form7Example7">
+                    Price / perday
+                  </label>
+                  <input
+                    value={product.price}
+                    name="price"
+                    onChange={(e) => {
+                      !isNaN(e.target.value) && setProduct({ ...product, [e.target.name]: e.target.value });
+                    }}
+                    type="text"
+                    id="form7Example7"
+                    className="form-control"
+                  />
+                </div>
+                <div className="form-outline col-md-4 mb-4">
+                  <label className="form-label" htmlFor="form7Example7">
+                    no.of seats
+                  </label>
+                  <input
+                    value={product.seats}
+                    name="seats"
+                    onChange={(e) => {
+                      !isNaN(e.target.value) && setProduct({ ...product, [e.target.name]: e.target.value });
+                    }}
+                    type="number"
+                    id="form7Example7"
+                    className="form-control"
+                  />
+                </div>
+                <div className="form-outline col-md-4 mb-4">
+                  <label className="form-label" htmlFor="form7Example7">
+                    mileage
+                  </label>
+                  <input
+                    value={product.mileage}
+                    name="mileage"
+                    onChange={(e) => {
+                      !isNaN(e.target.value) && setProduct({ ...product, [e.target.name]: e.target.value });
+                    }}
+                    type="text"
+                    id="form7Example7"
+                    className="form-control"
+                  />
+                </div>
+              </div>
+              <div className="form-outline mb-4">
+                <label htmlFor="places">add Places</label>
+                <Select
+                  id="places"
+                  closeMenuOnSelect={false}
+                  components={animatedComponents}
+                  // defaultValue={placeOptions}
+                  isMulti
+                  isCreatable={true}
+                  options={colourOptions}
+                  isLoading={false}
+                  value={product.places}
+                  onChange={handleSelectChange}
+                />
+              </div>
+
+              <div className="form-outline mb-4">
+                <label className="form-label" htmlFor="form7Example7">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  value={product.description}
+                  onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })}
+                  className="form-control"
+                  id="form7Example7"
+                  rows="4"
+                ></textarea>
+              </div>
+
+              <div className="form-check d-flex justify-content-center mb-2">
+                <button onClick={handleSubmit} className="btn btn-outline-dark">
+                  submit
+                </button>
+              </div>
+
+              <div className="form-outline mb-4">
+                <label className="form-label" htmlFor="form7Example7">
+                  image
+                </label>
+                <input
+                  multiple
+                  accept="image/*"
+                  name="images"
+                  hidden
+                  onChange={uploadImage}
+                  type="file"
+                  id="image-upload"
+                  className="form-control"
+                />
+              </div>
+              <div className="container">
+                <div className="row">
+                  <div className="col-md-6">
+                    <label
+                      htmlFor="image-upload"
+                      className="add-drop-image text-center d-flex align-items-center justify-content-center"
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                      style={{ width: "300px", height: "200px", border: "2px dashed black" }}
+                    >
+                      Drop or Upload Image Here
+                    </label>
+                  </div>
+                  {uploadLoading ? (
+                    <div className="col-md-6">
+                      <ProgressSpinner
+                        style={{ width: "50px", height: "50px", display: "block" }}
+                        strokeWidth="8"
+                        fill="var(--surface-ground)"
+                        animationDuration=".5s"
+                      />
+                      <div className="text-center">uploading images</div>
+                    </div>
+                  ) : (
+                    <div className="col-md-6">
+                      <div className="dropped-add-image">
+                        {droppedImage &&
+                          droppedImage.map((x) => {
+                            return <img src={URL.createObjectURL(x)} alt="" />;
+                          })}
+                      </div>
+                      {droppedImage && droppedImage.length > 0 && (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setDroppedImage([]);
+                          }}
+                          className="float-md-end btn btn-danger my-2"
+                        >
+                          {" "}
+                          <FontAwesomeIcon icon={faTrash} /> clear
+                        </button>
+                      )}
+                      {droppedImage && droppedImage.length > 0 && (
+                        <div className="d-flex justify-content-center mt-3">
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              uploadImages();
+                            }}
+                            className="btn btn-primary"
+                          >
+                            <FontAwesomeIcon icon={faFileUpload} /> Upload Image
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
-            }
-
               </div>
-            </div>
-
-
-          </form>
-        </div>
-        }
+            </form>
+          </div>
+        )}
       </div>
       <ToastContainer
         position="top-center"
@@ -534,8 +628,5 @@ export default function EditVehicle() {
         theme="dark"
       />
     </div>
-
-
-
-  )
+  );
 }

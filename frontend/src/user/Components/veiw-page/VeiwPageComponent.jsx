@@ -36,7 +36,6 @@ const ViewPageComponent = () => {
           setLoading(false)
           setReviews(data.reviews.reverse())
         }).catch((err) => {
-          console.log(err);
           if(err?.response?.status === 404){
             return navigate(-1)
           } 

@@ -16,7 +16,6 @@ export default function OwnerChatPage () {
     const owner = useSelector(state => state.owner)
     const [sender,setSender] = useState({})
     useEffect(()=>{
-    console.log(owner,'s gfh');
     if(owner.id){
       socket.current = io(process.env.REACT_APP_URL)
       socket.current.emit("add-user",owner.id)

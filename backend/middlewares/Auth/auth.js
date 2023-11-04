@@ -5,7 +5,6 @@ const userModel = require('../../model/userModel')
 module.exports = {
    userAuthenticator(req, res, next) {
       try {
-         console.log('user authenticator 8');
          if (req.headers.authentication) {
             jwt.verify(req.headers.authentication, process.env.USER_JWT_SECRET, (err, decode) => {
                if (err) {
@@ -14,7 +13,6 @@ module.exports = {
                   userModel.findById(decode.userId).then((data) => {
                      if (!data.block) {
                         req.headers.userId = decode.userId
-                        console.log('authenticated');
                         next()
                      } else {
                         res.status(401).json({ success: false, message: 'not authenticated !', Auth: false })

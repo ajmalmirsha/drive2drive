@@ -284,7 +284,6 @@ function AddVehicle() {
                    if (files && e.target.files?.length !== 0  ) {
                      const imageFiles = Array.from(files).filter(file => file.type.includes('image'));
                      if (imageFiles.length > 0) {
-                      console.log(imageFiles);
                        setProduct({ ...product, [e.target.name]: Array.from(e.target.files) })
                      }
                    }

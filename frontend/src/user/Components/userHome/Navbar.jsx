@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import "../userHome/navbar.css";
 import img from "../../../images/default.png";
 import logo from "../../../images/logo/logo-bg-removed.png";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserDetails } from "../../../redux/userSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

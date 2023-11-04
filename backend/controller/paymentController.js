@@ -19,7 +19,6 @@ module.exports = {
             clientSecret: paymentIntent.client_secret,
           });
         } catch (e) {
-          console.log(e);
          next()
         }
       },

@@ -43,7 +43,6 @@ import { userApi } from "../../../utils/Apis";
 
 
   export  function handleSubmit(user,dispatch,userauthenticationHandler) {
-    console.log(user, 737);
     const { username, email } = user
         if (!username) {
             toast.error('username required')
@@ -54,8 +53,6 @@ import { userApi } from "../../../utils/Apis";
                if (status === 200) {
         
               const { userData } = data
-              
-              console.log(userData.license?.rear, 84);
               dispatch(
                 setUserDetails({
                   id: userData._id,
@@ -75,7 +72,6 @@ import { userApi } from "../../../utils/Apis";
               toast.error(data.message)
             }
             } ).catch( err => {
-              console.log(err.response.status);
               err.response.status == 501 ? toast.error(err.response.data.message) :            
               userauthenticationHandler(err)
             })
@@ -128,10 +124,8 @@ import { userApi } from "../../../utils/Apis";
     const phoneRegex = /^(\+?91|0)?[6789]\d{9}$/;
 
     if (phoneRegex.test(phoneNumber)) {
-      console.log("Valid phone number");
       setPhoneValidation(true)
     } else {
-      console.log("Invalid phone number");
       setPhoneValidation(false)
     }
   }
@@ -140,10 +134,8 @@ import { userApi } from "../../../utils/Apis";
 
     if (emailRegex.test(email)) {
       setEmailVerification(true)
-      console.log("Valid email format");
     } else {
       setEmailVerification(false)
-      console.log("Invalid email format");
     }
 
   }

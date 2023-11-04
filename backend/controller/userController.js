@@ -1,102 +1,105 @@
-const { json, response } = require('express');
-const userModel = require('../model/userModel')
-const vehicleModel = require('../model/vehicleModel')
-const notificationModel = require('../model/notificationModel')
-const mongoose = require('mongoose');
-const bookingModel = require('../model/bookingModel');
-const chatModel = require('../model/chatModel');
-const ownerModel = require('../model/ownerModel');
-const reportModel = require('../model/reportModel');
-const couponModel = require('../model/couponModel');
-const bannerModel = require('../model/bannerModel');
-const { uploadToCloudinary, removeFromCloudinary } = require('../config/cloudnary');
+const { json, response } = require("express");
+const userModel = require("../model/userModel");
+const vehicleModel = require("../model/vehicleModel");
+const notificationModel = require("../model/notificationModel");
+const mongoose = require("mongoose");
+const bookingModel = require("../model/bookingModel");
+const chatModel = require("../model/chatModel");
+const ownerModel = require("../model/ownerModel");
+const reportModel = require("../model/reportModel");
+const couponModel = require("../model/couponModel");
+const bannerModel = require("../model/bannerModel");
+const { uploadToCloudinary, removeFromCloudinary } = require("../config/cloudnary");
 
 module.exports = {
-
   // upload lisence
 
- async uploadLisence(req, res, next) {
+  async uploadLisence(req, res, next) {
     try {
-      const id = req.headers?.userid
-      let licenseFront
-      let licenseBack
+      const id = req.headers?.userid;
+      let licenseFront;
+      let licenseBack;
 
       userModel.findById(id).then((response) => {
-        if(response.license.front?.id){
-            removeFromCloudinary(response.license.front?.id)
+        if (response.license.front?.id) {
+          removeFromCloudinary(response.license.front?.id);
         }
-        if(response.license.Back?.id){
-            removeFromCloudinary(response.license.back?.id)
+        if (response.license.Back?.id) {
+          removeFromCloudinary(response.license.back?.id);
         }
-      })
-      console.log(req.files);
-      if(req?.files['license[front]'][0]?.path ){
-        licenseFront = await uploadToCloudinary(req.files['license[front]'][0]?.path,'license-images')
-        console.log(licenseFront);
+      });
+      if (req?.files["license[front]"][0]?.path) {
+        licenseFront = await uploadToCloudinary(req.files["license[front]"][0]?.path, "license-images");
       }
-      if( req?.files['license[back]'][0]?.path ){
-       licenseBack = await uploadToCloudinary(req.files['license[back]'][0]?.path,'license-images')
+      if (req?.files["license[back]"][0]?.path) {
+        licenseBack = await uploadToCloudinary(req.files["license[back]"][0]?.path, "license-images");
       }
 
-        userModel.findOneAndUpdate({ _id: id }, {
-          $set:
+      userModel
+        .findOneAndUpdate(
+          { _id: id },
           {
-            'license.front': {
-              url:licenseFront?.url,
-              id: licenseFront?.public_id
+            $set: {
+              "license.front": {
+                url: licenseFront?.url,
+                id: licenseFront?.public_id,
+              },
+              "license.rear": {
+                url: licenseBack?.url,
+                id: licenseBack?.public_id,
+              },
+              "license.verification": "pending",
             },
-            'license.rear': {
-              url:licenseBack?.url,
-              id: licenseBack?.public_id
-            },
-            'license.verification': 'pending'
-          }
-        }, { new: true }).then((response) => {
-          res.status(200).json({ user: response })
-        })
+          },
+          { new: true }
+        )
+        .then((response) => {
+          res.status(200).json({ user: response });
+        });
     } catch (error) {
-      console.log(error);
-      next()
+      next();
     }
   },
 
   // add review
 
- async addReview(req, res, next) {
+  async addReview(req, res, next) {
     try {
-      let data
-      if( req?.file?.filename ){
-         data = await uploadToCloudinary(req?.file?.path,'reviews-images')
+      let data;
+      if (req?.file?.filename) {
+        data = await uploadToCloudinary(req?.file?.path, "reviews-images");
       }
-      console.log(data);
-      const { vehicleId, rating, review } = JSON.parse(req.body.reviewData)
-      const userId = new mongoose.Types.ObjectId(req.headers.userId)
-      vehicleModel.findOneAndUpdate(
-        { _id: vehicleId },
-        {
-          $push: {
-            reviews: {
-              rating,
-              review,
-              userId,
-              image: {
-                url:data?.url,
-                id:data?.public_id
-              }
-            }
-          }
-        },
-        { new: true }
-      ).populate({
-        path: 'reviews',
-        populate: {
-          path: 'userId'
-        }
-      }).then((response) => {
-        res.status(200).json({ success: true, message: 'review added succesfully', data: response.reviews })
-      })
+      const { vehicleId, rating, review } = JSON.parse(req.body.reviewData);
+      const userId = new mongoose.Types.ObjectId(req.headers.userId);
+      vehicleModel
+        .findOneAndUpdate(
+          { _id: vehicleId },
+          {
+            $push: {
+              reviews: {
+                rating,
+                review,
+                userId,
+                image: {
+                  url: data?.url,
+                  id: data?.public_id,
+                },
+              },
+            },
+          },
+          { new: true }
+        )
+        .populate({
+          path: "reviews",
+          populate: {
+            path: "userId",
+          },
+        })
+        .then((response) => {
+          res.status(200).json({ success: true, message: "review added succesfully", data: response.reviews });
+        });
     } catch (error) {
-      next()
+      next();
     }
   },
 
@@ -104,11 +107,14 @@ module.exports = {
 
   getVehicleData(req, res, next) {
     try {
-      vehicleModel.find({ category: req.params.vehicle }).populate('ownerId').then((data)=> {
-        res.status(200).json({ success: true, data })
-      })
+      vehicleModel
+        .find({ category: req.params.vehicle })
+        .populate("ownerId")
+        .then((data) => {
+          res.status(200).json({ success: true, data });
+        });
     } catch (error) {
-      next()
+      next();
     }
   },
 
@@ -116,10 +122,10 @@ module.exports = {
 
   async getAllVehicleDetails(req, res, next) {
     try {
-      const allVehicle = await vehicleModel.find({}).populate('ownerId')
-      res.status(200).json({ success: true, allVehicle })
+      const allVehicle = await vehicleModel.find({}).populate("ownerId");
+      res.status(200).json({ success: true, allVehicle });
     } catch (error) {
-      next()
+      next();
     }
   },
 
@@ -127,14 +133,14 @@ module.exports = {
 
   getAllNotifications(req, res, next) {
     try {
-      const { role } = req.params
+      const { role } = req.params;
       const filterCriteria = {};
       filterCriteria[role] = true;
       notificationModel.find(filterCriteria).then((response) => {
-        res.status(200).json({ success: true, notifications: response })
-      })
+        res.status(200).json({ success: true, notifications: response });
+      });
     } catch (e) {
-      next()
+      next();
     }
   },
 
@@ -142,33 +148,30 @@ module.exports = {
 
   addBooking(req, res, next) {
     try {
-      req.body.data.userId = req.headers?.userId
-      const newPickTime = req.body.data.address.pickUp.pickTime
-      vehicleModel.findOne(
-        {
+      req.body.data.userId = req.headers?.userId;
+      const newPickTime = req.body.data.address.pickUp.pickTime;
+      vehicleModel
+        .findOne({
           _id: req.body.data.vehicle._id,
           bookings: {
             $elemMatch: {
-              $and: [
-                { form: { $gte: newPickTime } }, 
-                { to: { $lte: newPickTime } } 
-              ]
-            }
-          }
-        }
-      )
+              $and: [{ form: { $gte: newPickTime } }, { to: { $lte: newPickTime } }],
+            },
+          },
+        })
         .then((matchedBooking) => {
           if (matchedBooking) {
-            return res.status(500).json({ success: true, message: 'the vehicle is already busy on this time' })
+            return res.status(500).json({ success: true, message: "the vehicle is already busy on this time" });
           } else {
             bookingModel.create({ ...req.body.data }).then((response) => {
-              res.status(200).json({ success: true, message: 'your booking request sent to owner wait for response !' })
-            })
+              res
+                .status(200)
+                .json({ success: true, message: "your booking request sent to owner wait for response !" });
+            });
           }
-        })
-     
+        });
     } catch (e) {
-     next()
+      next();
     }
   },
 
@@ -176,66 +179,70 @@ module.exports = {
 
   paymentUpdation(req, res, next) {
     try {
-      console.log('on payment update');
-      const { paymentId, bookingId, paymentMethod, couponId } = req.body
-      const { userId } = req.headers
-      bookingModel.findByIdAndUpdate({ _id: bookingId }
-        , { $set: { paid: true, 'payment.paymentId': paymentId, 'payment.method': paymentMethod, status: 'completed' } },
-        { new: true }).then((response) => {
-          vehicleModel.updateOne(
-            { _id: response.vehicle._id },
-            {
-              $push: {
-                bookings: {
-                  from: response.address.pickUp.pickTime,
-                  to: response.address.dropOff.dropTime
-                }
+      const { paymentId, bookingId, paymentMethod, couponId } = req.body;
+      const { userId } = req.headers;
+      bookingModel
+        .findByIdAndUpdate(
+          { _id: bookingId },
+          {
+            $set: { paid: true, "payment.paymentId": paymentId, "payment.method": paymentMethod, status: "completed" },
+          },
+          { new: true }
+        )
+        .then((response) => {
+          vehicleModel
+            .updateOne(
+              { _id: response.vehicle._id },
+              {
+                $push: {
+                  bookings: {
+                    from: response.address.pickUp.pickTime,
+                    to: response.address.dropOff.dropTime,
+                  },
+                },
               }
-            }
-          ).then(() => {});
+            )
+            .then(() => {});
 
           if (couponId) {
-            couponModel.updateOne({ _id: couponId }, { $addToSet: { used: userId } }).then(() => {})
+            couponModel.updateOne({ _id: couponId }, { $addToSet: { used: userId } }).then(() => {});
           }
           const pickUpTime = new Date(response.address.pickUp.pickTime);
           const today = new Date();
 
           if (pickUpTime >= today) {
             const timeDifference = pickUpTime.getTime() - today.getTime();
-            const time = timeDifference
+            const time = timeDifference;
             setTimeout(() => {
               vehicleModel
-                .updateOne(
-                  { _id: response.vehicle._id },
-                  { $addToSet: { bookedUsers: userId }, $set: { free: false } }
-                )
+                .updateOne({ _id: response.vehicle._id }, { $addToSet: { bookedUsers: userId }, $set: { free: false } })
                 .then(() => {
                   const dropTime = new Date(response.address.dropOff.dropTime);
-                  const busyTime = dropTime.getTime() - pickUpTime.getTime()
+                  const busyTime = dropTime.getTime() - pickUpTime.getTime();
                   setTimeout(() => {
                     vehicleModel
                       .updateOne(
                         { _id: response.vehicle._id },
                         { $addToSet: { bookedUsers: userId }, $set: { free: true } }
-                      ).then(() => {})
-                  }, busyTime)
+                      )
+                      .then(() => {});
+                  }, busyTime);
                 });
             }, time);
           } else {
             vehicleModel
-              .updateOne(
-                { _id: response.vehicle._id },
-                { $addToSet: { bookedUsers: userId }, $set: { free: false } }
-              )
-              .then(() => {
-              });
+              .updateOne({ _id: response.vehicle._id }, { $addToSet: { bookedUsers: userId }, $set: { free: false } })
+              .then(() => {});
           }
-          bookingModel.find({ userId }).sort({ updatedAt: -1 }).then((response) => {
-            res.status(200).json({ success: true, data: response })
-          })
-        })
+          bookingModel
+            .find({ userId })
+            .sort({ updatedAt: -1 })
+            .then((response) => {
+              res.status(200).json({ success: true, data: response });
+            });
+        });
     } catch (e) {
-      next()
+      next();
     }
   },
 
@@ -243,12 +250,15 @@ module.exports = {
 
   getApprovedBookings(req, res, next) {
     try {
-      const userId = req.headers?.userId
-      bookingModel.find({ userId }).sort({ updatedAt: -1 }).then((response) => {
-        res.status(200).json({ success: true, data: response })
-      })
+      const userId = req.headers?.userId;
+      bookingModel
+        .find({ userId })
+        .sort({ updatedAt: -1 })
+        .then((response) => {
+          res.status(200).json({ success: true, data: response });
+        });
     } catch (e) {
-      next()
+      next();
     }
   },
 
@@ -256,12 +266,15 @@ module.exports = {
 
   getSenderDetails(req, res, next) {
     try {
-      const { userId } = req.params
-      ownerModel.findById(userId).select('-password -_id').then(data => {
-        res.status(200).json({ success: true, data })
-      })
+      const { userId } = req.params;
+      ownerModel
+        .findById(userId)
+        .select("-password -_id")
+        .then((data) => {
+          res.status(200).json({ success: true, data });
+        });
     } catch (e) {
-      next()
+      next();
     }
   },
 
@@ -269,18 +282,18 @@ module.exports = {
 
   async setMessage(req, res, next) {
     try {
-      const { msg, to } = req.body
-      const from = req.headers?.userId ?? req.headers?.ownerId
+      const { msg, to } = req.body;
+      const from = req.headers?.userId ?? req.headers?.ownerId;
 
       const data = await chatModel.create({
         message: { text: msg },
         users: [from, to],
         sender: from,
-      })
+      });
       if (data) return res.status(200).json({ msg: "Message added successfully." });
       else return res.status(500).json({ msg: "Failed to add message to the database" });
     } catch (e) {
-      next()
+      next();
     }
   },
 
@@ -288,29 +301,35 @@ module.exports = {
 
   async getMessages(req, res, next) {
     try {
-      const { to } = req.body
-      const from = req.headers?.userId ?? req.headers?.ownerId
-      const messages = await chatModel.find({
-        users: {
-          $all: [from, to],
-        },
-      }).sort({ updatedAt: 1 });
+      const { to } = req.body;
+      const from = req.headers?.userId ?? req.headers?.ownerId;
+      const messages = await chatModel
+        .find({
+          users: {
+            $all: [from, to],
+          },
+        })
+        .sort({ updatedAt: 1 });
       const formattedMessages = messages.map((msg) => {
         const now = new Date();
         const timeAgo = Math.floor((now - new Date(msg.updatedAt)) / 60000);
         let timeString;
         if (timeAgo <= 0) {
-          timeString = 'just now';
+          timeString = "just now";
         } else if (timeAgo === 1) {
-          timeString = '1 minute ago';
+          timeString = "1 minute ago";
         } else if (timeAgo < 60) {
           timeString = `${timeAgo} minutes ago`;
         } else if (timeAgo < 1440) {
-          const updatedTime = new Date(msg.updatedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-          timeString = updatedTime.includes(':') ? updatedTime.replace(' ', '') : updatedTime;
+          const updatedTime = new Date(msg.updatedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+          timeString = updatedTime.includes(":") ? updatedTime.replace(" ", "") : updatedTime;
         } else {
-          const updatedTime = new Date(msg.updatedAt).toLocaleString([], { hour: 'numeric', minute: '2-digit', hour12: true });
-          timeString = updatedTime.includes(',') ? updatedTime.replace(',', '') : updatedTime;
+          const updatedTime = new Date(msg.updatedAt).toLocaleString([], {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          });
+          timeString = updatedTime.includes(",") ? updatedTime.replace(",", "") : updatedTime;
         }
         return {
           fromSelf: msg.sender.toString() === from,
@@ -321,7 +340,7 @@ module.exports = {
 
       res.status(200).json({ messages: formattedMessages });
     } catch (e) {
-      next()
+      next();
     }
   },
 
@@ -329,16 +348,15 @@ module.exports = {
 
   getContacts(req, res, next) {
     try {
-      const id = req.headers?.ownerId ?? req.headers?.userId
-      chatModel.distinct('sender').then((response) => {
-        const senderIds = response.map((sender) => sender.toString()).filter((x) => x !== req.headers?.ownerId)
-        userModel.find({ _id: { $in: senderIds } }, { username: 1, image: 1 })
-          .then((users) => {
-            res.status(200).json({ success: true, data: users })
-          })
-      })
+      const id = req.headers?.ownerId ?? req.headers?.userId;
+      chatModel.distinct("sender").then((response) => {
+        const senderIds = response.map((sender) => sender.toString()).filter((x) => x !== req.headers?.ownerId);
+        userModel.find({ _id: { $in: senderIds } }, { username: 1, image: 1 }).then((users) => {
+          res.status(200).json({ success: true, data: users });
+        });
+      });
     } catch (e) {
-      next()
+      next();
     }
   },
 
@@ -346,11 +364,14 @@ module.exports = {
 
   ownerNotifications(req, res, next) {
     try {
-      notificationModel.find({ owner: true }).sort({ _id: -1 }).then(data => {
-        res.status(200).json({ success: true, data })
-      })
+      notificationModel
+        .find({ owner: true })
+        .sort({ _id: -1 })
+        .then((data) => {
+          res.status(200).json({ success: true, data });
+        });
     } catch (e) {
-      next()
+      next();
     }
   },
 
@@ -358,10 +379,10 @@ module.exports = {
 
   async getAvailablePlaces(req, res, next) {
     try {
-      const data = await vehicleModel.distinct('places');
-      res.status(200).json({ success: true, data })
+      const data = await vehicleModel.distinct("places");
+      res.status(200).json({ success: true, data });
     } catch (err) {
-      next()
+      next();
     }
   },
 
@@ -369,13 +390,13 @@ module.exports = {
 
   addReport(req, res, next) {
     try {
-      const { report, proId, } = req.body
-      const { userId } = req.headers
+      const { report, proId } = req.body;
+      const { userId } = req.headers;
       reportModel.create({ report, productId: proId, reportedBy: userId }).then(() => {
-        res.status(200).json({ success: true, message: 'report sent successfully' })
-      })
+        res.status(200).json({ success: true, message: "report sent successfully" });
+      });
     } catch (e) {
-      next()
+      next();
     }
   },
 
@@ -383,19 +404,19 @@ module.exports = {
 
   applyCoupon(req, res, next) {
     try {
-      const { coupon } = req.body
-      const { userId } = req.headers
+      const { coupon } = req.body;
+      const { userId } = req.headers;
       couponModel.findOne({ code: coupon }).then((data) => {
         if (data.used.includes(userId)) {
-          res.status(409).json({ success: false, message: 'this coupon already used' })
+          res.status(409).json({ success: false, message: "this coupon already used" });
         } else if (data.expire < new Date()) {
-          res.status(409).json({ success: false, message: 'this coupon expired' })
+          res.status(409).json({ success: false, message: "this coupon expired" });
         } else {
-          res.status(200).json({ success: true, data })
+          res.status(200).json({ success: true, data });
         }
-      })
+      });
     } catch (e) {
-      next()
+      next();
     }
   },
 
@@ -403,31 +424,27 @@ module.exports = {
 
   getBanners(req, res, next) {
     try {
-      console.log('reached get banners');
       bannerModel.find({}).then((data) => {
-        console.log(data);
-        res.status(200).json({ success: true, data })
-      })
+        res.status(200).json({ success: true, data });
+      });
     } catch (e) {
-      next()
+      next();
     }
   },
   // check license verifications
   checkLicenseVerification(req, res, next) {
     try {
       userModel.findById(req.headers.userId).then((response) => {
-        if(response.license.verification === 'pending'){
-           res.json({success:false,message:'your license verificaion is pending !'})
-        }else if(response.license.verification === 'verified'){
-          res.json({success:true})
-        }else if(response.license.verification === 'declined'){
-          res.json({success:false,message:'your license verificaion is declined !'})
+        if (response.license.verification === "pending") {
+          res.json({ success: false, message: "your license verificaion is pending !" });
+        } else if (response.license.verification === "verified") {
+          res.json({ success: true });
+        } else if (response.license.verification === "declined") {
+          res.json({ success: false, message: "your license verificaion is declined !" });
         }
-      })
+      });
     } catch (e) {
-      next()
+      next();
     }
   },
-
-  
-}
+};

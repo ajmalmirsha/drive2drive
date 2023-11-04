@@ -77,7 +77,6 @@ function Signup() {
     } else if (!passwordPattern.test(password)) {
       toast.error("password should be strong !");
     } else {
-      console.log(confirmPassword, "   ", password);
       userSignup(user);
     }
   };
