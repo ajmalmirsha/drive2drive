@@ -13,10 +13,7 @@ export default function Navbar() {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [menuOpen, setMenu] = useState(false);
   const menuLeft = useRef(null);
-  const menuRight = useRef(null);
-  const toast = useRef(null);
   const handleLogOut = () => {
     {
       localStorage.removeItem("user");
