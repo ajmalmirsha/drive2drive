@@ -10,7 +10,7 @@ const mongoose = require("mongoose");
 const app = express();
 app.use(
   cors({
-    origin: [process.env.BASE_URL, "http://localhost:3000"],
+    origin: [process.env.BASE_URL, "http://localhost:3000", "*"],
     method: ["GET", "POST", "DELETE", "PUT", "PATCH"],
     credentials: true,
   })
