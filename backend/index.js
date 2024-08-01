@@ -8,9 +8,11 @@ const socket = require("socket.io");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const app = express();
+
+const allowedOrigins = [process.env.BASE_URL, "http://localhost:3000", "*"]
 app.use(
   cors({
-    origin: [process.env.BASE_URL, "http://localhost:3000", "*"],
+    origin: allowedOrigins,
     method: ["GET", "POST", "DELETE", "PUT", "PATCH"],
     credentials: true,
   })
@@ -34,7 +36,7 @@ app.use("/admin", adminRouter);
 
 const io = socket(server, {
   cors: {
-    origin: [process.env.BASE_URL, "http://localhost:3000"],
+    origin: allowedOrigins,
     credentials: true,
   },
 });
