@@ -43,7 +43,10 @@ function LoginComponent() {
       return toast.error("enter your password");
     } else {
       setLoading(true);
-      await verifyUser({ email: emailRef.current.value, password: passwordRef.current.value });
+      await verifyUser({
+        email: emailRef.current.value,
+        password: passwordRef.current.value,
+      });
       setLoading(false);
     }
   };
@@ -61,20 +64,59 @@ function LoginComponent() {
           style={{ background: "#2a9d8f" }}
         >
           <div class="featured-image mb-3">
-            {role === "signin" && <img src={img2} class="img-fluid side-img" style={{ width: "300px" }} />}
-            {role === "signup" && <img src={img} class="img-fluid side-img" style={{ width: "300px" }} />}
+            {role === "signin" && (
+              <img
+                src={img2}
+                class="img-fluid side-img"
+                style={{ width: "300px" }}
+              />
+            )}
+            {role === "signup" && (
+              <img
+                src={img}
+                class="img-fluid side-img"
+                style={{ width: "300px" }}
+              />
+            )}
           </div>
-          <p class="text-white fs-2" style={{ fontFamily: "Courier New", fontWeight: "600" }}>
-            Be Verified
-          </p>
-          <small class="text-white text-wrap text-center" style={{ width: "17rem", fontFamily: "Courier New" }}>
-            Join experienced Designers on this platform.
-          </small>
+          {role === "signin" ? (
+            <>
+              <p
+                class="text-white fs-2"
+                style={{ fontFamily: "cursive", fontWeight: "600" }}
+              >
+                Unlock Your Ride
+              </p>
+              <small
+                class="text-white text-wrap text-center"
+                style={{ width: "17rem", fontFamily: "Courier New" }}
+              >
+                Join experienced Designers on this platform.
+              </small>
+            </>
+          ) : (
+            <>
+              <p
+                class="text-white fs-2"
+                style={{ fontFamily: "cursive", fontWeight: "600" }}
+              >
+                Start Your Journey
+              </p>
+              <small
+                class="text-white text-wrap text-center"
+                style={{ width: "17rem", fontFamily: "Courier New" }}
+              >
+                Join experienced Designers on this platform.
+              </small>
+            </>
+          )}
         </div>
         {/* <!-------------------- ------ Right Box ----------------------------> */}
 
         <div
-          class={`col-md-6 right-box ${role === "signup" && "swap swap-right"} ${role === "signin" && "swap swap-l"}`}
+          class={`col-md-6 right-box ${
+            role === "signup" && "swap swap-right"
+          } ${role === "signin" && "swap swap-l"}`}
         >
           <div class="row align-items-center">
             {role === "signin" && (
@@ -108,7 +150,11 @@ function LoginComponent() {
                       disabled
                       type="button"
                       class="btn btn-lg btn-primary w-100 fs-6"
-                      style={{ backgroundColor: "#2a9d8f", border: "none", cursor: "crosshair!important" }}
+                      style={{
+                        backgroundColor: "#2a9d8f",
+                        border: "none",
+                        cursor: "crosshair!important",
+                      }}
                     >
                       <ClipLoader color="#36d7b7" size={19} />
                     </button>
@@ -164,7 +210,11 @@ function LoginComponent() {
                       disabled
                       type="button"
                       class="btn btn-lg btn-primary w-100 fs-6"
-                      style={{ backgroundColor: "#2a9d8f", border: "none", cursor: "crosshair!important" }}
+                      style={{
+                        backgroundColor: "#2a9d8f",
+                        border: "none",
+                        cursor: "crosshair!important",
+                      }}
                     >
                       <ClipLoader color="#36d7b7" size={19} />
                     </button>
@@ -187,7 +237,11 @@ function LoginComponent() {
               {role == "signup" ? (
                 <small className="signup">
                   Already have an account?{" "}
-                  <a href="#" className="signup" onClick={() => setRole("signin")}>
+                  <a
+                    href="#"
+                    className="signup"
+                    onClick={() => setRole("signin")}
+                  >
                     Sign In
                   </a>
                 </small>

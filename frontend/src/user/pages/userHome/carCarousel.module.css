@@ -1,0 +1,55 @@
+.carouselWrapper {
+  height: 100vh;
+}
+
+.carousel {
+  position: relative;
+  height: 85vh;
+  overflow: hidden;
+}
+
+.headerWrapper {
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  top: 5rem;
+}
+
+.header {
+  color: #ffffff;
+}
+
+.header h1 {
+  font-size: 3rem;
+}
+
+.header p {
+  font-size: 1rem;
+  text-align: center;
+}
+
+.greenBg {
+  background-color: #00816f;
+  position: absolute;
+  height: 100vh;
+  width: 100%;
+}
+
+.orangeBg {
+  background-color: #fea501;
+  position: absolute;
+  height: 160vh;
+  width: 110%;
+  transform: rotate(-50deg) translateX(10rem) translateY(30rem);
+}
+
+.carWrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  top: 40%;
+  width: 100%;
+  justify-content: space-between;
+  /* left: -35px; */
+}

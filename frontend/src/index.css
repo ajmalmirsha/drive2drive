@@ -2,7 +2,6 @@
 *{
   padding: 0;
   margin: 0;
-
 }
 /* *, *::before, *::after {
   box-sizing: unset;
@@ -12,3 +11,7 @@ body::-webkit-scrollbar {
   width: 8px;
 }
 
+.css-b8ldur-Input {
+  margin: 0 !important ;
+  width: 0;
+}

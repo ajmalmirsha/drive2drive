@@ -7,6 +7,9 @@ import { userApi } from "../../../utils/Apis";
 import Spinner from "../../../common/spinners/Spinner";
 import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler";
 import CarDisplay from "../../3dRender/CarDispaly";
+import LandingPage from "./LandingPage";
+import Search from "./Search";
+import PickCarCarousel from "./PickCarCarousel";
 
 export default function UserHome() {
   const [vehicle, setVehicles] = useState([]);
@@ -45,15 +48,10 @@ export default function UserHome() {
   };
 
   return (
-    <>
-      <Navbar />
-      <AddressInputs handleSubmit={handleSubmit} />
-      {filteredVehicle?.length > 0 && (
-        <ListProducts vehicle={filteredVehicle} title={`vehicles available on ${search.place}`} />
-      )}
-      <CarDisplay />
-      <Banner vehicles={vehicle} />
-      {loading ? <Spinner /> : <ListProducts vehicle={vehicle} />}
-    </>
+    <div>
+      <LandingPage />
+      <Search />
+      <PickCarCarousel />
+    </div>
   );
 }

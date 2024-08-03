@@ -1,0 +1,54 @@
+.nav {
+  height: 10vh;
+  z-index: 2;
+  position: absolute;
+  width: 100%;
+  padding: 0px 80px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  animation: navSlide 1s ease-in;
+}
+
+.items {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.buttonWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.login {
+  border: 1.5px solid #FEA501;
+  background-color: transparent;
+  padding: 10px 30px;
+  border-radius: 5px;
+  color: #2B2B2B;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.register {
+  background-color: #FEA501;
+  border: 1px solid #FEA501;
+  padding: 10px 30px;
+  border-radius: 5px;
+  color: #2B2B2B;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+@keyframes navSlide {
+  from{
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+}
