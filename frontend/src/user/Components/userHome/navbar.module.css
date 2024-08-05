@@ -18,6 +18,10 @@
   gap: 30px;
 }
 
+.items h5 {
+  cursor: pointer;
+}
+
 .buttonWrapper {
   display: flex;
   flex-direction: row;
@@ -25,30 +29,95 @@
 }
 
 .login {
-  border: 1.5px solid #FEA501;
+  border: 1.5px solid #fea501;
   background-color: transparent;
   padding: 10px 30px;
   border-radius: 5px;
-  color: #2B2B2B;
+  color: #2b2b2b;
   font-size: 18px;
   font-weight: 500;
 }
 
 .register {
-  background-color: #FEA501;
-  border: 1px solid #FEA501;
+  background-color: #fea501;
+  border: 1px solid #fea501;
   padding: 10px 30px;
   border-radius: 5px;
-  color: #2B2B2B;
+  color: #2b2b2b;
   font-size: 18px;
   font-weight: 500;
 }
 
 @keyframes navSlide {
-  from{
+  from {
     transform: translateY(-100%);
   }
   to {
     transform: translateY(0%);
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .items h5 {
+    font-size: 18px;
+  }
+  .buttonWrapper button {
+    padding: 8px 15px;
+  }
+  .logo h3 {
+    font-size: 22px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .items h5 {
+    font-size: 16px;
+  }
+  .items {
+    gap: 15px;
+  }
+  .login,
+  .register {
+    padding: 5px 5px;
+  }
+  .nav {
+    padding: 0px 60px;
+  }
+}
+
+@media screen and (max-width: 820px) {
+  .items h5 {
+    font-size: 16px;
+  }
+
+  .login,
+  .register {
+    font-size: 18px;
+  }
+
+  .items {
+    gap: 10px;
+  }
+  .buttonWrapper button {
+    padding: 8px 15px;
+  }
+  .logo h3 {
+    font-size: 22px;
+  }
+
+  .nav {
+    padding: 0px 40px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .nav {
+    padding: 0px 20px;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .items {
+    display: none;
   }
 }

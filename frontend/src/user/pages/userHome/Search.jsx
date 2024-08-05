@@ -86,16 +86,20 @@ export default function Search() {
                 </p>
               </div>
             </div>
-
-            <div ref={hrRef} className={style.itemsWrapper}>
-              <img src={H24Logo} alt="" />
-              <div className={style.discWrapper}>
-                <h5>24 hours car delivery</h5>
-                <p>
-                  Your rent car will be delivered promptly, allowing to proceed
-                  without unnecessary delays
-                </p>
+            <div>
+              <div ref={hrRef} className={style.itemsWrapper}>
+                <img src={H24Logo} alt="" />
+                <div className={style.discWrapper}>
+                  <h5>24 hours car delivery</h5>
+                  <p>
+                    Your rent car will be delivered promptly, allowing to
+                    proceed without unnecessary delays
+                  </p>
+                </div>
               </div>
+              {/* <div
+                style={{ height: "10vh"}}
+              ></div> */}
             </div>
 
             {/* <div className={style.itemsWrapper}>

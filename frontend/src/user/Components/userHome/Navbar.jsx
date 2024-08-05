@@ -2,18 +2,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 import style from "../userHome/navbar.module.css";
 import img from "../../../images/default.png";
 import logo from "../../../images/logo/logo-bg-removed.png";
-import { useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUserDetails } from "../../../redux/userSlice";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faCar, faHouseChimney } from "@fortawesome/free-solid-svg-icons";
-import { Menu } from "primereact/menu";
 
 export default function Navbar() {
-  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const menuLeft = useRef(null);
+
   const handleLogOut = () => {
     {
       localStorage.removeItem("user");
@@ -34,43 +29,38 @@ export default function Navbar() {
       );
     }
   };
-  const items = [
-    {
-      label: "Profile",
-      command: () => {
-        navigate("/profile");
-      },
-    },
-    {
-      label: "LogOut",
-      command: handleLogOut,
-    },
-  ];
 
-  const handleNotificationClick = () => {
-    navigate("/notifications/user");
-  };
+  const handleLoginClick = () => navigate("/login");
+
+  const handleRegisterClick = () => navigate("/login?t=r");
+
+  const handleBookingClick = () => navigate("/bookings");
+
+  const handleRentClick = () => navigate("/list-all/vehicles");
 
   return (
-    <div className={style.nav} >
-      <div>
-       <h3>Drive2Drive</h3>
+    <div className={style.nav}>
+      <div className={style.logo}>
+        <h3>Drive2Drive</h3>
       </div>
 
       <div className={style.items}>
         <h5>Home</h5>
-        <h5>Why Choose Us</h5>
-        <h5>Rent</h5>
+        <h5 onClick={handleRentClick}>Rent</h5>
+        <h5 onClick={handleBookingClick}>Bookings</h5>
         <h5>About Us</h5>
       </div>
 
       <div className={style.buttonWrapper}>
-        <button className={style.login}>login</button>
-        <button className={style.register}>register</button>
+        <button onClick={handleLoginClick} className={style.login}>
+          login
+        </button>
+        <button onClick={handleRegisterClick} className={style.register}>
+          register
+        </button>
       </div>
-
     </div>
-  )
+  );
 
   // return (
   //   <div className="nav row">

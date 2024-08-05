@@ -70,8 +70,8 @@ export default function AddressInputs({ handleSubmit }) {
     setDropDate(dateStr);
   }
   const CustomPlaceholder = (props) => (
-    <div className="text-secondary container m-0 p-0 choose-location text-ellipsis">
-      <span className="">Choose a location</span>
+    <div className={style.placeholderText}>
+      Choose a location
     </div>
   );
   // handle place change
@@ -116,7 +116,7 @@ export default function AddressInputs({ handleSubmit }) {
         <img src={Ford} alt="Ford" />
         <img src={MercedesBenz} alt="MercedesBenz" />
       </div>
-
+{/* 
       <div  className={style.searchContainer}>
         <div ref={inputRef} className={style.searchWrapper}>
           <Select
@@ -125,7 +125,7 @@ export default function AddressInputs({ handleSubmit }) {
             isSearchable={true}
             onChange={handlePlaceChange}
             name="place"
-            components={{ Placeholder: CustomPlaceholder }}
+            // components={{ Placeholder: CustomPlaceholder }}
             options={placeOptions}
           />
           <DatePicker
@@ -169,7 +169,7 @@ export default function AddressInputs({ handleSubmit }) {
             Search
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* <div className={style.searchContainer}>
         <div className={style.searchWrapper}>

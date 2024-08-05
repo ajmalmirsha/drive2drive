@@ -134,7 +134,7 @@ export default function UserBookings() {
   );
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       { loading ? <Spinner/> :
       <div className="row my-4 mx-2 gap-2">
         <div className="row d-flex justify-content-end">

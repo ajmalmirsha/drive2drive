@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import "../Auth/login.css";
 import img from "../../../images/login/login.png";
@@ -6,6 +6,7 @@ import img2 from "../../../images/login/signup.png";
 import ClipLoader from "react-spinners/ClipLoader";
 import toast from "react-hot-toast";
 import useAuthHook from "../../Hooks/Auth/UseAuth";
+import { useSearchParams } from "react-router-dom";
 
 function LoginComponent() {
   const emailRef = useRef(null);
@@ -17,6 +18,7 @@ function LoginComponent() {
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState("signin");
   const formRef = useRef(null);
+  const [url, setUrl] = useSearchParams()
 
   const { handleSignUp, verifyUser, googleSuccess } = useAuthHook();
 
@@ -32,6 +34,7 @@ function LoginComponent() {
   };
 
   function googleError(response) {
+    console.log("google error", response);
     toast.error(response);
   }
 
@@ -50,6 +53,12 @@ function LoginComponent() {
       setLoading(false);
     }
   };
+
+  useEffect(()=>{
+    if(url?.get("t") === "r"){
+      setRole("signup")
+    }
+  },[])
 
   return (
     // <!----------------------- Main Container -------------------------->

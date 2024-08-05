@@ -11,7 +11,7 @@ module.exports = {
                   res.status(401).json({ success: false, message: err.message, Auth: false })
                } else {
                   userModel.findById(decode.userId).then((data) => {
-                     if (!data.block) {
+                     if (!data?.block) {
                         req.headers.userId = decode.userId
                         next()
                      } else {

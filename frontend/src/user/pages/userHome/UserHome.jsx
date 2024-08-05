@@ -10,6 +10,7 @@ import CarDisplay from "../../3dRender/CarDispaly";
 import LandingPage from "./LandingPage";
 import Search from "./Search";
 import PickCarCarousel from "./PickCarCarousel";
+import { useSearchParams } from "react-router-dom";
 
 export default function UserHome() {
   const [vehicle, setVehicles] = useState([]);
@@ -22,18 +23,19 @@ export default function UserHome() {
   const [filteredVehicle, setFilteredVehicle] = useState([]);
   const { userAuthenticationHandler } = useErrorHandler();
   useEffect(() => {
-    (function () {
-      setLoading(true);
-      userApi
-        .get("/list-all-vehicle")
-        .then(({ data: { allVehicle } }) => {
-          setLoading(false);
-          setVehicles(allVehicle);
-        })
-        .catch((err) => {
-          userAuthenticationHandler(err);
-        });
-    })();
+    
+    // (function () {
+    //   setLoading(true);
+    //   userApi
+    //     .get("/list-all-vehicle")
+    //     .then(({ data: { allVehicle } }) => {
+    //       setLoading(false);
+    //       setVehicles(allVehicle);
+    //     })
+    //     .catch((err) => {
+    //       userAuthenticationHandler(err);
+    //     });
+    // })();
   }, []);
   const handleSubmit = (place, pickDate, dropDate) => {
     setSearch({

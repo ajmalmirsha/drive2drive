@@ -13,18 +13,17 @@ import Swal from "sweetalert2";
 import { Calendar } from "primereact/calendar";
 export default function CheckOut() {
   const { userAuthenticationHandler } = useErrorHandler();
-
   useEffect(() => {
-    userApi
-      .get("/check-license-verifications")
-      .then(({ data }) => {
-        if (!data?.success) {
-          navigate(-1);
-        }
-      })
-      .catch((err) => {
-        userAuthenticationHandler(err);
-      });
+    // userApi
+    //   .get("/check-license-verifications")
+    //   .then(({ data }) => {
+    //     if (!data?.success) {
+    //       navigate(-1);
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     userAuthenticationHandler(err);
+    //   });
   }, []);
   const [datetime12h, setDateTime12h] = useState(null);
   const { vehicleId } = useParams();
@@ -50,11 +49,13 @@ export default function CheckOut() {
     value: label,
   }));
   const navigate = useNavigate();
+
   useEffect(() => {
     userApi
       .get(`/vehicle/data/${vehicleId}`)
       .then(({ data: { data } }) => {
         setVehicle(data);
+        console.log("rendererrere", vehicle, data);
       })
       .catch((err) => {
         userAuthenticationHandler(err);
@@ -68,11 +69,10 @@ export default function CheckOut() {
       },
     };
 
-    axios(config)
-      .then(function ({ data }) {
-        const placeNames = data.map((state) => state.name);
-        setPlaces(placeNames);
-      })
+    axios(config).then(function ({ data }) {
+      const placeNames = data.map((state) => state.name);
+      setPlaces(placeNames);
+    });
 
     var headers = new Headers();
     headers.append("X-CSCAPI-KEY", process.env.REACT_APP_X_CSCAPI_KEY);
@@ -83,7 +83,10 @@ export default function CheckOut() {
       redirect: "follow",
     };
 
-    fetch("https://api.countrystatecity.in/v1/countries/IN/states", requestOptions)
+    fetch(
+      "https://api.countrystatecity.in/v1/countries/IN/states",
+      requestOptions
+    )
       .then((response) => response.text())
       .then((result) => {
         const stateNames = JSON.parse(result).map((state) => state.name);
@@ -174,7 +177,9 @@ export default function CheckOut() {
   }
   const updateFinalPrice = (data, totalPrice) => {
     if (data.disPercent) {
-      setFinalPrice((prev) => prev - Math.floor((data.disPercent / 100) * totalPrice));
+      setFinalPrice(
+        (prev) => prev - Math.floor((data.disPercent / 100) * totalPrice)
+      );
     } else {
       setFinalPrice(totalPrice);
     }
@@ -193,7 +198,9 @@ export default function CheckOut() {
       const totalDays = Math.floor(hours / 24);
       const remainingHours = hours % 24;
 
-      const totalCost = (totalDays + remainingHours / 24 + remainingMinutes / 1440) * vehicle?.price;
+      const totalCost =
+        (totalDays + remainingHours / 24 + remainingMinutes / 1440) *
+        vehicle?.price;
 
       const durationString = `${totalDays} days ${remainingHours} hours ${remainingMinutes} minutes`;
       setDuration(durationString);
@@ -222,17 +229,24 @@ export default function CheckOut() {
   };
   return (
     <div className="">
-      <Navbar />
+      {/* <Navbar /> */}
+      <div style={{height: "10vh"}}></div>
 
       <div className="container-fluid">
         <div className="row">
-          <div className={`col-lg-${payment && vehicle?.price ? 8 : 12}`}>
+          <div className={`col-lg-${!!payment && !!vehicle?.price ? 8 : 12}`}>
             <div className="card">
               <div className="card-body row">
                 <div className="col-md-6 row">
                   <div className="col-md-7">
-                    <img className="check-out-main-img" src={vehicle?.image[0]?.url} alt="" />
-                    {!couponDetails.disPercent && totalPrice && (
+                    {!!vehicle?.image?.length && (
+                      <img
+                        className="check-out-main-img"
+                        src={vehicle?.image[0]?.url || ""}
+                        alt=""
+                      />
+                    )}
+                    {!couponDetails?.disPercent && !!totalPrice && (
                       <div className="col-md-12 my-5 row">
                         <div className="col-md-8">
                           <input
@@ -245,7 +259,10 @@ export default function CheckOut() {
                           />
                         </div>
                         <div className="col-md-3 m-0 p-0">
-                          <button className="btn btn-success" onClick={handleCouponApply}>
+                          <button
+                            className="btn btn-success"
+                            onClick={handleCouponApply}
+                          >
                             apply
                           </button>
                         </div>
@@ -254,11 +271,11 @@ export default function CheckOut() {
                   </div>
 
                   <div className="col-md-5">
-                    <div className="">
+                    {/* <div className="">
                       <h5>this vehicle won't available on :</h5>
                       <div className=" booked-timmings">
-                        {vehicle.bookings?.length > 0 &&
-                          vehicle.bookings.map((x) => {
+                        {vehicle?.bookings?.length > 0 &&
+                          vehicle?.bookings.map((x) => {
                             const fromDate = new Date(x.from);
                             const toDate = new Date(x.to);
 
@@ -266,42 +283,60 @@ export default function CheckOut() {
                               return null; // Skip rendering if x.to is in the past
                             }
 
-                            const formattedFromDate = fromDate.toLocaleString("en-US", {
-                              dateStyle: "short",
-                              timeStyle: "short",
-                            });
+                            const formattedFromDate = fromDate.toLocaleString(
+                              "en-US",
+                              {
+                                dateStyle: "short",
+                                timeStyle: "short",
+                              }
+                            );
 
-                            const formattedToDate = toDate.toLocaleString("en-US", {
-                              dateStyle: "short",
-                              timeStyle: "short",
-                            });
+                            const formattedToDate = toDate.toLocaleString(
+                              "en-US",
+                              {
+                                dateStyle: "short",
+                                timeStyle: "short",
+                              }
+                            );
 
                             return (
                               <div className="row d-flex justify-content-center">
-                                <div className="col-md-4 p-0">{formattedFromDate}</div>
+                                <div className="col-md-4 p-0">
+                                  {formattedFromDate}
+                                </div>
                                 <div className="col-md-2">to</div>
-                                <div className="col-md-4 p-0">{formattedToDate}</div>
+                                <div className="col-md-4 p-0">
+                                  {formattedToDate}
+                                </div>
                               </div>
                             );
                           })}
                       </div>
-                    </div>
+                    </div> */}
                     <h3>{vehicle?.product_name}</h3>
                     <span className="d-block py-1">{vehicle?.category}</span>
                     <span className="d-block py-1">{vehicle?.model}</span>
                     <h5 className="py-1">
                       {vehicle?.price} <span className="small">/perday</span>
                     </h5>
-                    {booking.pickTime && booking.dropTime && totalPrice && <h4>Total Price : {totalPrice} </h4>}
+                    {booking.pickTime && booking.dropTime && totalPrice && (
+                      <h4>Total Price : {totalPrice} </h4>
+                    )}
                     {couponDetails.disPercent && (
                       <div className="px-2 bg-opacity-50 coupon">
                         <h5>{couponDetails.name}</h5>
-                        <p className="m-0">coupon code : {couponDetails.code}</p>
-                        <p className="m-0">discount percentage : {couponDetails.disPercent}%</p>
+                        <p className="m-0">
+                          coupon code : {couponDetails.code}
+                        </p>
+                        <p className="m-0">
+                          discount percentage : {couponDetails.disPercent}%
+                        </p>
                       </div>
                     )}
 
-                    {totalPrice && couponDetails.disPercent && <h4>final Price : {finalPrice} </h4>}
+                    {totalPrice && couponDetails.disPercent && (
+                      <h4>final Price : {finalPrice} </h4>
+                    )}
                   </div>
                   {/* <div className="row">
                   <div className="col-md-6">
@@ -325,8 +360,12 @@ export default function CheckOut() {
                       {/* pickTime */}
 
                       <div>
-                        {validation?.pickTime && <span className=" text-danger">*required</span>}
-                        {booking.pickTime && <p className="my-1 m-0">PickTime</p>}
+                        {validation?.pickTime && (
+                          <span className=" text-danger">*required</span>
+                        )}
+                        {booking.pickTime && (
+                          <p className="my-1 m-0">PickTime</p>
+                        )}
                         <Calendar
                           className="mb-2"
                           placeholder="PickTime"
@@ -336,7 +375,8 @@ export default function CheckOut() {
                           minDate={new Date()}
                           maxDate={booking.dropTime ? booking.dropTime : null}
                           onChange={(e) => {
-                            e.target.value !== "" && setValidation({ ...validation, pickTime: false });
+                            e.target.value !== "" &&
+                              setValidation({ ...validation, pickTime: false });
                             setBooking({ ...booking, pickTime: e.value });
                           }}
                           showTime
@@ -353,41 +393,53 @@ export default function CheckOut() {
 
                       {/* pickState */}
                       {booking.pickState && <p className="my-1 m-0">State</p>}
-                      {validation?.pickState && <span className="ms-1 text-danger">*select State</span>}
+                      {validation?.pickState && (
+                        <span className="ms-1 text-danger">*select State</span>
+                      )}
                       <Select
                         name="pickState"
                         className="mb-2"
                         placeholder="Select State"
                         options={aquaticCreatures}
                         onChange={(opt, { name }) => {
-                          opt.value !== "" && setValidation({ ...validation, [name]: false });
+                          opt.value !== "" &&
+                            setValidation({ ...validation, [name]: false });
                           setBooking({ ...booking, [name]: opt.value });
                         }}
                       />
 
                       {/* pickCity */}
                       {booking.pickCity && <p className="my-1 m-0">City</p>}
-                      {validation?.pickCity && <span className="text-danger">*select City</span>}
+                      {validation?.pickCity && (
+                        <span className="text-danger">*select City</span>
+                      )}
                       <Creatable
                         name="pickCity"
                         className="mb-2"
                         placeholder="Select City"
                         options={places_list}
                         onChange={(opt, { name }) => {
-                          opt.value !== "" && setValidation({ ...validation, [name]: false });
+                          opt.value !== "" &&
+                            setValidation({ ...validation, [name]: false });
                           setBooking({ ...booking, [name]: opt.value });
                         }}
                       />
 
                       {/* pickPlace */}
                       {booking.pickPlace && <p className="my-1 m-0">Place</p>}
-                      {validation?.pickPlace && <span className=" text-danger">*required</span>}
+                      {validation?.pickPlace && (
+                        <span className=" text-danger">*required</span>
+                      )}
                       <input
                         type="text"
                         name="pickPlace"
                         onChange={(e) => {
-                          e.target.value !== "" && setValidation({ ...validation, pickPlace: false });
-                          setBooking({ ...booking, [e.target.name]: e.target.value });
+                          e.target.value !== "" &&
+                            setValidation({ ...validation, pickPlace: false });
+                          setBooking({
+                            ...booking,
+                            [e.target.name]: e.target.value,
+                          });
                         }}
                         className="mb-1 form-control"
                         placeholder="enter place"
@@ -399,7 +451,9 @@ export default function CheckOut() {
                     <div className="col-md-6 col-sm-6 pb-2">
                       <h5>Drop off information</h5>
                       {/* dropTime */}
-                      {validation?.dropTime && <span className=" text-danger">*required</span>}
+                      {validation?.dropTime && (
+                        <span className=" text-danger">*required</span>
+                      )}
                       {booking.dropTime && <p className="my-1">DropTime</p>}
                       <div className="">
                         <Calendar
@@ -408,14 +462,17 @@ export default function CheckOut() {
                           id="calendar-12h"
                           style={{ width: "100%" }}
                           value={booking.dropTime}
-                          minDate={booking.pickTime ? booking.pickTime : new Date()}
+                          minDate={
+                            booking.pickTime ? booking.pickTime : new Date()
+                          }
                           // minTime={
                           //   booking.dropTime && booking.pickTime && booking.dropTime.toDateString() === booking.pickTime.toDateString()
                           //     ? new Date(booking.pickTime.getFullYear(), booking.pickTime.getMonth(), booking.pickTime.getDate())
                           //     : null
                           // }
                           onChange={(e) => {
-                            e.target.value !== "" && setValidation({ ...validation, dropTime: false });
+                            e.target.value !== "" &&
+                              setValidation({ ...validation, dropTime: false });
                             setBooking({ ...booking, dropTime: e.value });
                           }}
                           showTime
@@ -429,13 +486,16 @@ export default function CheckOut() {
                       }} className="form-control hide-seconds" min={booking.pickTime ? booking.pickTime : new Date().toISOString().split(".")[0]} type="datetime-local" /> */}
 
                       {/* dropState */}
-                      {validation?.dropState && <span className=" text-danger">*select State</span>}
+                      {validation?.dropState && (
+                        <span className=" text-danger">*select State</span>
+                      )}
                       {booking.dropState && <p className="my-1 m-0">State</p>}
                       <Select
                         name="dropState"
                         className="mb-2"
                         onChange={(opt, { name }) => {
-                          opt.value !== "" && setValidation({ ...validation, [name]: false });
+                          opt.value !== "" &&
+                            setValidation({ ...validation, [name]: false });
                           setBooking({ ...booking, [name]: opt.value });
                         }}
                         placeholder="Select State"
@@ -444,12 +504,15 @@ export default function CheckOut() {
 
                       {/* dropCity   */}
                       {booking.dropCity && <p className="my-1 m-0">City</p>}
-                      {validation?.dropCity && <span className="ms-1 text-danger">*select City</span>}
+                      {validation?.dropCity && (
+                        <span className="ms-1 text-danger">*select City</span>
+                      )}
                       <Creatable
                         name="dropCity"
                         className="mb-2"
                         onChange={(opt, { name }) => {
-                          opt.value !== "" && setValidation({ ...validation, [name]: false });
+                          opt.value !== "" &&
+                            setValidation({ ...validation, [name]: false });
                           setBooking({ ...booking, [name]: opt.value });
                         }}
                         placeholder="Select City"
@@ -458,19 +521,25 @@ export default function CheckOut() {
 
                       {/* dropPlace */}
                       {booking.dropPlace && <p className="my-1 m-0">Place</p>}
-                      {validation?.dropPlace && <span className=" text-danger">*required</span>}
+                      {validation?.dropPlace && (
+                        <span className=" text-danger">*required</span>
+                      )}
                       <input
                         type="text"
                         name="dropPlace"
                         onChange={(e) => {
-                          e.target.value !== "" && setValidation({ ...validation, dropPlace: false });
-                          setBooking({ ...booking, [e.target.name]: e.target.value });
+                          e.target.value !== "" &&
+                            setValidation({ ...validation, dropPlace: false });
+                          setBooking({
+                            ...booking,
+                            [e.target.name]: e.target.value,
+                          });
                         }}
                         className="mb-1 form-control"
                         placeholder="enter place"
                       />
                     </div>
-                    
+
                     {submit ? (
                       <button className="btn btn-primary" disabled>
                         submit

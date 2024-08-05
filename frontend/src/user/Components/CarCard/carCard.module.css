@@ -1,0 +1,108 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  max-width: 17rem;
+  box-shadow: 4px 4px 20px 15px rgba(168, 168, 168, 0.057);
+  border-radius: 7px;
+  padding: 15px 20px;
+  gap: 15px;
+  border: 1px solid rgba(168, 168, 168, 0.297);
+}
+
+.container img {
+  width: 100%;
+  border-radius: 3px;
+  aspect-ratio: 3/2;
+}
+
+.productName {
+  grid-area: pn;
+}
+
+.rating {
+  grid-area: rt;
+}
+
+.pc {
+  grid-area: pc;
+  white-space: nowrap;
+}
+
+.ac {
+  grid-area: ac;
+}
+
+.at {
+  grid-area: at;
+}
+
+.dr {
+  grid-area: dr;
+}
+
+.divider {
+  grid-area: dv;
+}
+
+.priceTag {
+  grid-area: pt;
+}
+
+.amount {
+  grid-area: am;
+  white-space: nowrap;
+}
+
+.amount span {
+    font-size: 1rem;
+    color: #9C9C9C;
+}
+
+.details {
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: repeat(2, 100px);
+  grid-template-areas:
+    "   pn   pn "
+    "   rt   rt "
+    "   pc   ac "
+    "   at   dr "
+    "   dv   dv "
+    "   pt   am "
+    "   rb   rb "
+    ;
+}
+
+.details h5 {
+  color: #262626;
+  font-weight: 500;
+}
+
+.rating span {
+  color: #808080;
+}
+
+.priceWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rentButton {
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  width: 100%;
+  color: #ffff;
+  background-color: #00816f;
+  grid-area: rb;
+}
+
+.priceTag {
+  color: #595959 !important;
+}
+
+.priceWrapper h5 {
+  font-size: 18px;
+  padding: 0px 3px;
+}
