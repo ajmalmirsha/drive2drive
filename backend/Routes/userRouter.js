@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { signup, login, updateUser, uploadProfileImage} =  require('../controller/authController')
+const { signup, login, updateUser, uploadProfileImage, googleLogin} =  require('../controller/authController')
 const { allVehicles, getVehiclesDetails } = require('../controller/ownerController')
 const { createPaymentIntent, config } = require('../controller/paymentController')
 const { uploadLisence, 
@@ -28,6 +28,8 @@ require('dotenv').config();
 // user signup
 router.post('/signup',signup)
 
+router.post('/google/login',googleLogin)
+
 // user login
 router.post('/login',login)
 
@@ -43,7 +45,7 @@ router.post("/create-payment-intent",userAuthenticator,createPaymentIntent);
 // payment status updation
 router.patch('/payment-success',userAuthenticator,paymentUpdation)
 
-// get all notofications of user
+// get all notifications of user
 router.get('/get-all-notifications/:role',userAuthenticator,getAllNotifications)
 
 // add booking
