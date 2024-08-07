@@ -9,10 +9,10 @@ export default function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const user = localStorage.getItem("user");
   const handleLogOut = () => {
     {
       localStorage.removeItem("user");
-      navigate("/login");
       dispatch(
         setUserDetails({
           id: "",
@@ -27,6 +27,7 @@ export default function Navbar() {
           },
         })
       );
+      navigate("/login");
     }
   };
 
@@ -51,14 +52,20 @@ export default function Navbar() {
         <h5>About Us</h5>
       </div>
 
-      <div className={style.buttonWrapper}>
-        <button onClick={handleLoginClick} className={style.login}>
-          login
+      {user ? (
+        <button onClick={handleLogOut} className={style.logout}>
+          logout
         </button>
-        <button onClick={handleRegisterClick} className={style.register}>
-          register
-        </button>
-      </div>
+      ) : (
+        <div className={style.buttonWrapper}>
+          <button onClick={handleLoginClick} className={style.login}>
+            login
+          </button>
+          <button onClick={handleRegisterClick} className={style.register}>
+            register
+          </button>
+        </div>
+      )}
     </div>
   );
 

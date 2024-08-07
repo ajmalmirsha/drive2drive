@@ -1,18 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import "./viewPage.css";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage } from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect, useState } from "react";
+import style from "./viewPage.module.css";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ReactImageMagnify from "react-image-magnify";
-import img from "../../../../src/images/default.png";
 import { userApi } from "../../../utils/Apis";
 import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler";
 import ChatPage from "../../pages/chat/ChatPage";
-import { ToastContainer, toast } from "react-toastify";
 import { Skeleton } from "primereact/skeleton";
-import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
+import gearIcon from "../../../assets/view-icons/gear.svg";
+import distanceIcon from "../../../assets/view-icons/distance.svg";
+import doorIcon from "../../../assets/view-icons/door.svg";
+import fuelIcon from "../../../assets/view-icons/fuel.svg";
+import seatsIcon from "../../../assets/view-icons/seats.svg";
 
 const ViewPageComponent = () => {
   const [loading, setLoading] = useState(false);
@@ -129,7 +128,6 @@ const ViewPageComponent = () => {
     userApi
       .post("/add-report", { report, proId: vehicle._id })
       .then(({ data: { message } }) => {
-        toast.success(message);
         setReport("");
         setVisible(false);
       })
@@ -145,7 +143,6 @@ const ViewPageComponent = () => {
         if (data?.success) {
           navigate(`/checkout/${vehicle._id}`);
         } else {
-          toast.error(data.message);
         }
       })
       .catch((err) => {
@@ -154,12 +151,15 @@ const ViewPageComponent = () => {
   };
 
   return (
-    <div className="product-details-container">
-      <div className="row w-100">
-        <div className="col-lg-6 ">
+    <div className={style.viewContainer}>
+      <div className={style.productContainer}>
+        <div className={style.productView}>
+          <h1 className={style.productTitle}>BMW</h1>
+          <h1 className={style.productPrice}>
+            $25 <span>/day</span>
+          </h1>
           {!loading ? (
             <ReactImageMagnify
-              className="zoom-image"
               {...{
                 smallImage: {
                   alt: "loading",
@@ -168,8 +168,8 @@ const ViewPageComponent = () => {
                 },
                 largeImage: {
                   src: vehicle?.image?.length && vehicle?.image[mainImage]?.url,
-                  width: 1250,
-                  height: 1200,
+                  width: 1000,
+                  height: 800,
                 },
                 enlargedImageContainerDimensions: {
                   width: "100%",
@@ -178,263 +178,79 @@ const ViewPageComponent = () => {
               }}
             />
           ) : (
-            <Skeleton width="100%" height="100%"></Skeleton>
+            <Skeleton width={600} height={400}></Skeleton>
           )}
-          <div className="row">
-            {vehicle?.image?.length &&
-              vehicle?.image.map((x, i) => {
-                return (
-                  i !== mainImage &&
-                  (loading ? (
-                    <Skeleton width="100%" height="100%"></Skeleton>
-                  ) : (
-                    <img
-                      key={i}
-                      src={x.url}
-                      alt="loading"
-                      onClick={() => {
-                        setMainImage(i);
-                      }}
-                      className="col-md-4 col-sm-4 col-4 my-5   sub-images"
-                    />
-                  ))
-                );
-              })}
-          </div>
-          <div class="">
-            <button
-              type="button"
-              class="btn btn-danger"
-              onClick={() => setVisible(true)}
-            >
-              Report spam
-            </button>
-            <Dialog
-              header="Report spam"
-              visible={visible}
-              modal={false}
-              style={{ width: "50vw" }}
-              onHide={() => setVisible(false)}
-            >
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  report && handleReportSubmit(e);
-                }}
-              >
-                <textarea
-                  value={report}
-                  onChange={(e) => setReport(e.target.value)}
-                  className="d-block w-100"
-                  name=""
-                  id=""
-                  cols="30"
-                  rows="10"
-                ></textarea>
-                <div className="d-flex pt-2 justify-content-center">
-                  <button
-                    className={`d-block btn btn-danger ${
-                      report ? "" : "disabled"
-                    }`}
-                    type="submit"
-                  >
-                    Report
-                  </button>
-                </div>
-              </form>
-            </Dialog>
-            {/* <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="#">
-    <form onSubmit={handleReportSubmit} >
-      <h4 className='text-danger'>Report spam</h4>
-        <textarea value={report} onChange={(e) => setReport(e.target.value)} className='d-block' name="" id="" cols="30" rows="10"></textarea>
-        <div className="d-flex pt-2 justify-content-center">
-        <button className='d-block btn btn-danger' type='submit'>Report</button>
         </div>
-      </form>
-      </a></li>
-  </ul> */}
-          </div>
-        </div>
-        <div className="col-lg-6 ">
-          <div className="product-info">
-            <h2 className="product-name">{vehicle?.product_name}</h2>
-            {/* total average stars */}
-            <div className="total-review-stars">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <span
-                  key={value}
-                  style={{ fontSize: "24px" }}
-                  className={`star-icon ${value <= avgRating ? "filled" : ""}`}
-                >
-                  ★
-                </span>
-              ))}
-            </div>
-            <div className="product-brand">Brand: {vehicle?.brand}</div>
-            <div className="product-model">Model: {vehicle?.model}</div>
-            <div className="product-year">Year: {vehicle?.year}</div>
-            <div className="product-price">{vehicle?.price}</div>
-            <div className="product-description">{vehicle?.description}</div>
-            <div className="row">
-              <div className="col-md-6 col-sm-6 col-6">
-                <button
-                  onClick={redirectToCheckOut}
-                  className="btn btn-primary"
-                >
-                  Book Now
-                </button>
-              </div>
-              <div className="col-md-6 col-sm-6 col-6">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOwnerId(vehicle?.ownerId);
-                    setChatVisible(true);
-                  }}
-                  class="btn btn-primary"
-                >
-                  chat with owner
-                </button>
-                <Dialog
-                  visible={chatVisible}
-                  headerStyle={{
-                    height: "5px",
-                    padding: "0",
-                    marginRight: "20px",
-                  }}
-                  showHeader={true}
-                  modal={false}
-                  style={{ width: "60vw", height: "80vh" }}
-                  onHide={() => setChatVisible(false)}
-                >
-                  {ownerId && <ChatPage ownerId={ownerId} />}
-                </Dialog>
-              </div>
-            </div>
-            {vehicle?.bookedUsers?.length > 0 &&
-              vehicle?.bookedUsers?.includes(user.id) && (
-                <form onSubmit={handleSubmit}>
-                  <div className="rating-container">
-                    <span className="rating-label">Rate this product:</span>
-                    <div className="rating-stars">
-                      {[1, 2, 3, 4, 5].map((value) => (
-                        <span
-                          key={value}
-                          className={`star-icon ${
-                            value <= rating ? "filled" : ""
-                          }`}
-                          onClick={() => handleRatingChange(value)}
-                        >
-                          ★
-                        </span>
-                      ))}
-                    </div>
-                  </div>
 
-                  <div className="review-container">
-                    <span className="review-label">
-                      Write a review:{" "}
-                      <label htmlFor="image-upload">
-                        <FontAwesomeIcon icon={faImage} />
-                      </label>
-                    </span>
-                    <textarea
-                      className="review-textarea form-control"
-                      rows={4}
-                      value={review}
-                      onChange={handleReviewChange}
-                      placeholder="Enter your review here..."
-                    />
-                  </div>
-
-                  {/* <div className="selected-images-container">
-                {selectedImages &&
+        <div className={style.imageContainer}>
+          {vehicle?.image?.length &&
+            vehicle?.image.map((x, i) => {
+              return (
+                i !== mainImage &&
+                (loading ? (
+                  <Skeleton width="100%" height="100%"></Skeleton>
+                ) : (
                   <img
-                    className="selected-image img-fluid"
-                    src={selectedImages}
-                    alt={`Selected Image`}
+                    key={i}
+                    src={x.url}
+                    alt="loading"
+                    onClick={() => {
+                      setMainImage(i);
+                    }}
                   />
-                }
-              </div> */}
-
-                  <div className="mb-3">
-                    <input
-                      hidden
-                      className="image-input form-control"
-                      id="image-upload"
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleImageSelect}
-                    />
-                  </div>
-
-                  <button
-                    className="submit-button btn btn-primary"
-                    type="submit"
-                  >
-                    Submit {reviews?.userimage}
-                  </button>
-                </form>
-              )}
-
-            {reviews.length
-              ? reviews.map((review) => (
-                  <ul className="reviews-list h-25 my-4 ">
-                    <li className="review-item row">
-                      <div className="col-md-9">
-                        <div className="review-rating">
-                          <img
-                            className="me-2"
-                            src={
-                              review?.userId?.image?.slice(0, 33) ==
-                              "https://lh3.googleusercontent.com"
-                                ? review?.userId?.image
-                                : review?.userId?.image
-                                ? `${process.env.REACT_APP_URL}/public/images/${review?.userId?.image}`
-                                : img
-                            }
-                            alt=""
-                          />
-                          <span className="review-rating-label">
-                            {review?.userId?.username}
-                          </span>
-                          <div className="review-stars">
-                            {[1, 2, 3, 4, 5].map((value) => (
-                              <span
-                                key={value}
-                                className={`star-icon ${
-                                  value <= review.rating ? "filled" : ""
-                                }`}
-                              >
-                                ★
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                        <p className="review-text">{review.review}</p>
-                      </div>
-                      {review.image && (
-                        <div className="col-md-3">
-                          <img
-                            className="review-image"
-                            src={review.image?.url}
-                            alt=""
-                          />
-                        </div>
-                      )}
-                    </li>
-                  </ul>
                 ))
-              : vehicle?.bookedUsers?.includes(user.id)
-              ? "add your first review"
-              : ""}
-          </div>
+              );
+            })}
         </div>
       </div>
+      <div className={style.detailsContainer}>
+        <h1 className={style.heading}>Technical Specification</h1>
 
-      <ToastContainer />
+        <div className={style.cardContainer}>
+          <div className={style.card}>
+            <img src={gearIcon} alt="gear" />
+            <h4>Gear Box</h4>
+            <h5>Automat</h5>
+          </div>
+
+          <div className={style.card}>
+            <img src={fuelIcon} alt="gear" />
+            <h4>Fuel</h4>
+            <h5>Petrol</h5>
+          </div>
+
+          <div className={style.card}>
+            <img src={doorIcon} alt="gear" />
+            <h4>Doors</h4>
+            <h5>4</h5>
+          </div>
+
+          <div className={style.card}>
+            <img src={gearIcon} alt="gear" />
+            <h4>Air Conditioner</h4>
+            <h5>Yes</h5>
+          </div>
+
+          <div className={style.card}>
+            <img src={seatsIcon} alt="gear" />
+            <h4>Seats</h4>
+            <h5>5</h5>
+          </div>
+
+          <div className={style.card}>
+            <img src={distanceIcon} alt="gear" />
+            <h4>Distance</h4>
+            <h5>500KM</h5>
+          </div>
+        </div>
+
+        <button
+          onClick={() => navigate(`/checkout/${vehicle._id}`)}
+          className={style.rentBtn}
+        >
+          Rent a Car
+        </button>
+      </div>
     </div>
   );
 };

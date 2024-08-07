@@ -48,6 +48,16 @@
   font-weight: 500;
 }
 
+.logout {
+  background-color: #fea501;
+  border: 1px solid #fea501;
+  padding: 10px 30px;
+  border-radius: 5px;
+  color: #2b2b2b;
+  font-size: 18px;
+  font-weight: 500;
+}
+
 @keyframes navSlide {
   from {
     transform: translateY(-100%);

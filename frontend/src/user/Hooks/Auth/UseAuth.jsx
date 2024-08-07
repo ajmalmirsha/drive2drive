@@ -2,7 +2,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "../../../redux/userSlice";
 import { useNavigate } from "react-router-dom";
-import { loginApi, signUpUser } from "../../../Routes/authApi";
+import { googleLoginApi, loginApi, signUpUser } from "../../../Routes/authApi";
 import jwt_decode from 'jwt-decode'
 
 export default function useAuthHook() {
@@ -66,6 +66,42 @@ export default function useAuthHook() {
       }
     };
 
+    const googleLogin = async (data) => {
+      const {
+        data: { success, message, token, user },
+      } = await googleLoginApi(data);
+      if (!success) {
+        toast.error(message);
+      } else {
+        localStorage.setItem("user", token);
+        dispatch(
+          setUserDetails({
+            id: user._id,
+            username: user.username,
+            email: user.email,
+            phone: user?.phone,
+            image: {
+              url: user?.image?.url,
+              id: user?.image?.id,
+            },
+            dob: user?.dob,
+            license: {
+              front: {
+                url: user.license?.front?.url,
+                id: user.license?.front?.id,
+              },
+              back: {
+                url: user.license?.rear?.url,
+                id: user.license?.rear?.id,
+              },
+              verification: user?.license?.verification,
+            },
+          })
+        );
+        navigate("/");
+      }
+    }
+
     function googleSuccess(response) {
       const decoded = jwt_decode(response.credential);
       const user = {
@@ -73,7 +109,7 @@ export default function useAuthHook() {
         email: decoded.email,
         password: decoded.sub,
       };
-      verifyUser(user);
+      googleLogin(user);
     }
 
     return {

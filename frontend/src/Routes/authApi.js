@@ -8,3 +8,6 @@ export const loginApi = async (users) => {
   return await axios.post(process.env.REACT_APP_URL + "/login", { users });
 };
 
+export const googleLoginApi = async (data) => {
+  return await axios.post(process.env.REACT_APP_URL + "/google/login", data);
+};

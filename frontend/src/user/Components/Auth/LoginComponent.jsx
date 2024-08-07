@@ -6,7 +6,7 @@ import img2 from "../../../images/login/signup.png";
 import ClipLoader from "react-spinners/ClipLoader";
 import toast from "react-hot-toast";
 import useAuthHook from "../../Hooks/Auth/UseAuth";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function LoginComponent() {
   const emailRef = useRef(null);
@@ -18,7 +18,9 @@ function LoginComponent() {
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState("signin");
   const formRef = useRef(null);
-  const [url, setUrl] = useSearchParams()
+  const [url, setUrl] = useSearchParams();
+
+  const navigate = useNavigate();
 
   const { handleSignUp, verifyUser, googleSuccess } = useAuthHook();
 
@@ -54,11 +56,11 @@ function LoginComponent() {
     }
   };
 
-  useEffect(()=>{
-    if(url?.get("t") === "r"){
-      setRole("signup")
+  useEffect(() => {
+    if (url?.get("t") === "r") {
+      setRole("signup");
     }
-  },[])
+  }, []);
 
   return (
     // <!----------------------- Main Container -------------------------->
@@ -249,7 +251,10 @@ function LoginComponent() {
                   <a
                     href="#"
                     className="signup"
-                    onClick={() => setRole("signin")}
+                    onClick={() => {
+                      navigate("/login?l=l");
+                      setRole("signin");
+                    }}
                   >
                     Sign In
                   </a>
@@ -257,7 +262,14 @@ function LoginComponent() {
               ) : (
                 <small className="signup">
                   Don't have account?{" "}
-                  <a href="#" className="signup" onClick={() => setRole("signup")}>
+                  <a
+                    href="#"
+                    className="signup"
+                    onClick={() => {
+                      navigate("/login?l=r");
+                      setRole("signup");
+                    }}
+                  >
                     Sign Up
                   </a>
                 </small>
