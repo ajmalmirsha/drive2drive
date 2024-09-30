@@ -9,140 +9,132 @@ const {
   removeFromCloudinary,
   uploadToCloudinary,
 } = require("../config/cloudnary");
+const { genToken } = require("../utils/jwt");
+const { SuccessResponse, ErrorResponse } = require("../utils/response");
 
 function handleError(err) {
   if (err.code === 11000) {
     const emailMatch = err.message.match(/email: "(.*?)"/);
-    if (emailMatch) return "this email already registered !";
+    if (emailMatch) return "email already registered";
   }
+  return err;
 }
 module.exports = {
-  // signup for user
-
-  signup(req, res, next) {
+  /**
+   * Register a new user by checking username, email and password.
+   * returns user details and a jwt token
+   */
+  async register(req, res) {
     try {
-      const { username, email, password } = req.body.user;
+      const { username, email, password } = req.body;
+
+      if (!username) throw "Username is required";
+      if (!email) throw "Email is required";
+      if (!password) throw "Password is required";
+
       const image = {
-        url: req.body.user?.image,
+        url: req.body.user?.image || "",
         id: "",
       };
-      userModel
-        .create({ username, email, password, image })
-        .then((response) => {
-          const token = jwt.sign(
-            { userId: response._id },
-            process.env.USER_JWT_SECRET,
-            { expiresIn: "1day" }
-          );
-          res
-            .status(200)
-            .json({
-              success: true,
-              message: "user registered successfully",
-              token,
-              user: response,
-            });
-        })
-        .catch((err) => {
-          const error = handleError(err);
-          res.status(401).json({ success: false, message: error });
-        });
-    } catch (error) {
-      next();
+      const user = await userModel.create({ username, email, password, image });
+
+      const token = genToken({ userId: user._id });
+
+      if (!token) throw "Token not generated";
+
+      SuccessResponse(res, { token }, "user registered successfully");
+    } catch (err) {
+      ErrorResponse(res, handleError(err), 401);
     }
   },
 
-  // login for user
-
-  async login(req, res, next) {
+  /**
+   * Login a user by checking email and password.
+   * returns user details and a jwt token
+   */
+  async login(req, res) {
     try {
-      const { email, password } = req.body.users;
-      const user = await userModel.findOne({ email });
-      if (user) {
-        if (user.block) {
-          return res.json({ success: false, message: "you blocked by admin" });
-        }
-        bcrypt.compare(password, user.password).then((response) => {
-          if (response) {
-            const token = jwt.sign(
-              { userId: user._id },
-              process.env.USER_JWT_SECRET,
-              { expiresIn: "1day" }
-            );
-            res.json({
-              success: true,
-              message: "login successful",
-              token,
-              user,
-            });
-          } else {
-            res.json({ success: false, message: "invalid password" });
-          }
-        });
-      } else {
-        res.json({ success: false, message: "invalid email" });
-      }
-    } catch (e) {
-      next();
+      const { email, password } = req.body;
+
+      if (!email) throw "Email is required";
+      if (!password) throw "Password is required";
+
+      const user = await userModel.findOne({ email }).select("+password");
+
+      if (!user) throw "Invalid Email";
+      if (user?.block) throw "User Blocked by Admin";
+
+      if (!(await user.matchPassword(password))) throw "Invalid Password";
+
+      const token = genToken({ userId: user._id });
+
+      if (!token) throw "Token not generated";
+
+      SuccessResponse(res, { token }, "user login successful");
+    } catch (err) {
+      ErrorResponse(res, err, 401);
     }
   },
 
-  // google login
+  /**
+   * Login a user by checking email and password if not existed will create one.
+   * returns user details and a jwt token
+   */
   async googleLogin(req, res, next) {
     try {
       const { username, email, password } = req.body;
 
-      const user = await userModel.findOne({ email });
+      if (!email) throw "Email is required";
+      if (!password) throw "Password is required";
+
+      const user = await userModel.findOne({ email }).select("+password");
+
       if (user) {
-        if (user.block) {
-          return res.json({ success: false, message: "you blocked by admin" });
-        }
-        bcrypt.compare(password, user.password).then((response) => {
-          if (response) {
-            const token = jwt.sign(
-              { userId: user._id },
-              process.env.USER_JWT_SECRET,
-              { expiresIn: "1day" }
-            );
-            res.json({
-              success: true,
-              message: "login successful",
-              token,
-              user,
-            });
-          } else {
-            res.json({ success: false, message: "invalid password" });
-          }
-        });
+        if (user?.block) throw "User Blocked by Admin";
+        console.log("user", user);
+        if (!(await user.matchPassword(password))) throw "Invalid Password";
+        const token = genToken({ userId: user._id });
+
+        if (!token) throw "Token not generated";
+
+        delete user.password;
+
+        // remove: prev response
+        // res.json({
+        //   success: true,
+        //   message: "login successful",
+        //   token,
+        //   user,
+        // });
+        SuccessResponse(res, { token, user }, "user login successful");
       } else {
         const image = {
           url: req.body?.image,
           id: "",
         };
-        userModel
-          .create({ username, email, password, image })
-          .then((response) => {
-            const token = jwt.sign(
-              { userId: response._id },
-              process.env.USER_JWT_SECRET,
-              { expiresIn: "1day" }
-            );
-            res
-              .status(200)
-              .json({
-                success: true,
-                message: "user registered successfully",
-                token,
-                user: response,
-              });
-          })
-          .catch((err) => {
-            const error = handleError(err);
-            res.status(401).json({ success: false, message: error });
-          });
+        const user = await userModel.create({
+          username,
+          email,
+          password,
+          image,
+        });
+        const token = genToken({ userId: user._id });
+
+        if (!token) throw "Token not generated";
+
+        delete user.password;
+
+        // remove: prev response
+        // res.json({
+        //   success: true,
+        //   message: "login successful",
+        //   token,
+        //   user,
+        // });
+        SuccessResponse(res, { token }, "user registered successfully");
       }
-    } catch (e) {
-      next();
+    } catch (err) {
+      ErrorResponse(res, handleError(err), 401);
     }
   },
 
@@ -165,13 +157,11 @@ module.exports = {
           { new: true }
         )
         .then((response) => {
-          res
-            .status(200)
-            .json({
-              success: true,
-              userData: response,
-              message: "details updated successfully",
-            });
+          res.status(200).json({
+            success: true,
+            userData: response,
+            message: "details updated successfully",
+          });
         })
         .catch((err) => {
           const error = handleError(err);
@@ -207,13 +197,11 @@ module.exports = {
           { new: true }
         )
         .then((response) => {
-          res
-            .status(200)
-            .json({
-              success: true,
-              message: "profile picture updated successfully",
-              user: response,
-            });
+          res.status(200).json({
+            success: true,
+            message: "profile picture updated successfully",
+            user: response,
+          });
         });
     } catch (error) {
       next();
@@ -299,21 +287,17 @@ module.exports = {
               process.env.ADMIN_JWT_SECRET,
               { expiresIn: "1day" }
             );
-            res
-              .status(200)
-              .json({
-                success: true,
-                message: "login succesfully",
-                token,
-                data: admin,
-              });
+            res.status(200).json({
+              success: true,
+              message: "login succesfully",
+              token,
+              data: admin,
+            });
           } else
-            res
-              .status(401)
-              .json({
-                success: false,
-                message: "email and password not matched",
-              });
+            res.status(401).json({
+              success: false,
+              message: "email and password not matched",
+            });
         });
       } else {
         res.status(401).json({ success: false, message: "email not found" });

@@ -49,7 +49,7 @@ export default function CarCard({
 
         <button
           onClick={() => {
-            navigate(`/veiw-detail/${x._id}`);
+            navigate(`/view-detail/${x._id}`);
           }}
           className={style.rentButton}
         >

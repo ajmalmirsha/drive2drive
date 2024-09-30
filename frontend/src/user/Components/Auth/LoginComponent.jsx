@@ -7,6 +7,9 @@ import ClipLoader from "react-spinners/ClipLoader";
 import toast from "react-hot-toast";
 import useAuthHook from "../../Hooks/Auth/UseAuth";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { googleLogin, loginUser, registerUser } from "../../../Api/api";
+import jwt_decode from "jwt-decode";
+
 
 function LoginComponent() {
   const emailRef = useRef(null);
@@ -24,15 +27,120 @@ function LoginComponent() {
 
   const { handleSignUp, verifyUser, googleSuccess } = useAuthHook();
 
-  const handleSignUpSubmit = async () => {
-    setLoading(true);
-    await handleSignUp(
-      SignUpNameRef?.current?.value,
-      SignUpEmailRef?.current?.value,
-      SignUpPasswordRef?.current?.value,
-      SignUpConfirmPassword?.current?.value
-    );
-    setLoading(false);
+  /**
+   * Registers a new user by sending a POST request with user data.
+   *
+   * If successful, returns a JWT token.
+   *
+   * 1. Validates input fields (username, email, password).
+   * 2. Sends the registration request and stores the token.
+   * 3. Shows an error if something goes wrong.
+   *
+   */
+  const handleRegister = async (e) => {
+    try {
+      e?.preventDefault();
+      setLoading(true);
+
+      const user = {
+        username: SignUpNameRef?.current?.value,
+        email: SignUpEmailRef?.current?.value,
+        password: SignUpPasswordRef?.current?.value,
+      };
+
+      if (!user.username.trim()) throw "username is required";
+      if (!user.email.trim()) throw "email is required";
+      if (!user.password.trim()) throw "password is required";
+      if (SignUpConfirmPassword?.current?.value !== user.password)
+        throw "passwords doesn't match";
+
+      const { data } = await registerUser(user);
+
+      if (!data?.data?.token) throw "token not found";
+
+      localStorage.setItem("token", data?.token);
+      navigate("/");
+    } catch (error) {
+      const errMsg = `${
+        error?.response?.data?.message || error?.message || error
+      }`;
+      toast.error(errMsg);
+      console.error(errMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Registers a new user by sending a POST request with user data.
+   *
+   * If successful, returns a JWT token.
+   *
+   * 1. Validates input fields (username, email, password).
+   * 2. Sends the registration request and stores the token.
+   * 3. Shows an error if something goes wrong.
+   *
+   */
+  const handleLogin = async (e) => {
+    try {
+      e?.preventDefault();
+      setLoading(true);
+
+      const user = {
+        email: emailRef?.current?.value,
+        password: passwordRef?.current?.value,
+      };
+      if (!user.username.trim()) throw "username is required";
+      if (!user.email.trim()) throw "email is required";
+      if (!user.password.trim()) throw "password is required";
+
+      const { data } = await loginUser(user);
+
+      if (!data?.data?.token) throw "token not found";
+
+      localStorage.setItem("token", data?.token);
+
+      navigate("/");
+    } catch (error) {
+      const errMsg = `${
+        error?.response?.data?.message || error?.message || error
+      }`;
+      toast.error(errMsg);
+      console.error(errMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (response) => {
+    try {
+      const decoded = jwt_decode(response.credential);
+      const user = {
+        username: decoded.name,
+        email: decoded.email,
+        password: decoded.sub,
+      };
+
+      if (!user.username.trim()) throw "username is required";
+      if (!user.email.trim()) throw "email is required";
+      if (!user.password.trim()) throw "password is required";
+
+      const { data } = await googleLogin(user);
+
+      if (!data?.data?.token) throw "token not found";
+
+      localStorage.setItem("token", data?.data?.token);
+
+      navigate("/");
+    } catch (error) {
+      const errMsg = `${
+        error?.response?.data?.message || error?.message || error
+      }`;
+      toast.error(errMsg);
+      console.error(errMsg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   function googleError(response) {
@@ -40,25 +148,13 @@ function LoginComponent() {
     toast.error(response);
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!emailRef?.current?.value) {
-      return toast.error("enter your email !");
-    } else if (!passwordRef?.current?.value) {
-      return toast.error("enter your password");
-    } else {
-      setLoading(true);
-      await verifyUser({
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-      });
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (url?.get("t") === "r") {
       setRole("signup");
+    }
+
+    if(localStorage.getItem("token")){
+       navigate("/")
     }
   }, []);
 
@@ -138,7 +234,7 @@ function LoginComponent() {
             )}
 
             {role === "signin" && (
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleLogin}>
                 <div class="input-group mb-3">
                   <input
                     ref={emailRef}
@@ -181,7 +277,7 @@ function LoginComponent() {
               </form>
             )}
             {role === "signup" && (
-              <form ref={formRef} onSubmit={handleSignUpSubmit}>
+              <form ref={formRef} onSubmit={handleRegister}>
                 <div class="input-group mb-3">
                   <input
                     ref={SignUpNameRef}
@@ -231,6 +327,7 @@ function LoginComponent() {
                     </button>
                   ) : (
                     <button
+                      type="submit"
                       class="btn btn-lg btn-primary w-100 fs-6"
                       style={{ backgroundColor: "#2a9d8f", border: "none" }}
                     >
@@ -241,7 +338,10 @@ function LoginComponent() {
               </form>
             )}
             <div class="input-group mb-3 d-flex justify-content-center">
-              <GoogleLogin onSuccess={googleSuccess} onError={googleError} />
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={googleError}
+              />
               {/* <button class="btn btn-lg btn-light w-100 fs-6"><img src="images/google.png" style={{width:'20px'}} class="me-2"/><small>Sign In with Google</small></button> */}
             </div>
             <div class="row">

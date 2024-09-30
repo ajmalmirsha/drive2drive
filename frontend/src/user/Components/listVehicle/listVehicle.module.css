@@ -1,11 +1,46 @@
 .cardContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 20rem);
-    justify-content: center;
-    gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 20rem);
+  justify-content: center;
+  gap: 10px;
 }
 
 .notFound {
-    width: auto;
-    height: 100vh;
+  width: clamp(100vw, 70vw, 80vw);
+  height: 70vh;
+  object-fit: contain;
+}
+
+.endContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.filterCardContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+
+.filterCard {
+  border: 1px solid #00816f;
+  border-radius: 1rem;
+  padding: 0.1rem 0.5rem;
+  padding-right: 0.2rem;
+  height: fit-content;
+}
+
+.filterCard img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.homeIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-left: 1.5rem;
+  cursor: pointer;
 }

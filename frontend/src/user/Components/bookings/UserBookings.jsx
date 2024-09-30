@@ -151,7 +151,7 @@ export default function UserBookings() {
               <>
                 <div className="bookings row m-3" >
                   <div className="col-md-2 d-flex justify-content-center align-items-center">
-                    <img onClick={() => navigate(`/veiw-detail/${x.vehicle._id}`) } className="booking-verify-vehicle-img" src={x.vehicle.image[0].url} alt="" style={{cursor:'pointer'}} />
+                    <img onClick={() => navigate(`/view-detail/${x.vehicle._id}`) } className="booking-verify-vehicle-img" src={x.vehicle.image[0].url} alt="" style={{cursor:'pointer'}} />
                   </div>
                   <div className="col-md-6 vehicle-details row">
                     <div className="row">

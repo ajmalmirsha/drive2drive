@@ -21,8 +21,8 @@
   right: 0;
   z-index: 2;
   top: 50%;
-  transform: translateY(-28%);
-  animation: carAnimation 1s ease-in;
+  transform: translate(100%, -28%);
+  /* animation: carAnimation 1s ease-in; */
 }
 
 .content {
@@ -134,7 +134,7 @@
   }
 }
 
-@keyframes carAnimation {
+/* @keyframes carAnimation {
   from {
     transform: translate(50%, -28%);
   }
@@ -142,7 +142,7 @@
   to {
     transform: translateX(0%, -28%);
   }
-}
+} */
 
 @media screen and (max-width: 1200px) {
   .content h1 {

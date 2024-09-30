@@ -9,10 +9,10 @@ export default function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const user = localStorage.getItem("user");
+  const user = localStorage.getItem("token");
   const handleLogOut = () => {
     {
-      localStorage.removeItem("user");
+      localStorage.removeItem("token");
       dispatch(
         setUserDetails({
           id: "",

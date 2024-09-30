@@ -26,16 +26,16 @@ export default function AddressInputs({ handleSubmit }) {
   const [placeOptions, setPlaceOption] = useState([]);
   const [place, setPlace] = useState({});
   const { userAuthenticationHandler } = useErrorHandler();
-  useEffect(() => {
-    userApi
-      .get("/available-places")
-      .then(({ data: { data } }) => {
-        setPlaceOption(data);
-      })
-      .catch((err) => {
-        userAuthenticationHandler(err);
-      });
-  }, []);
+  // useEffect(() => {
+  //   userApi
+  //     .get("/available-places")
+  //     .then(({ data: { data } }) => {
+  //       setPlaceOption(data);
+  //     })
+  //     .catch((err) => {
+  //       userAuthenticationHandler(err);
+  //     });
+  // }, []);
 
   function handleStartDateChange(dateStr) {
     const date = new Date(dateStr);

@@ -1,6 +1,6 @@
 import LoginComponent from "../../Components/Auth/LoginComponent"
 
- function Signin(){
+ function SignIn(){
     return(
         <>
       <LoginComponent/>
@@ -8,4 +8,4 @@ import LoginComponent from "../../Components/Auth/LoginComponent"
     )
 }
 
-export default Signin
+export default SignIn

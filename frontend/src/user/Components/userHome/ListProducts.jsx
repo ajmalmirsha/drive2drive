@@ -27,7 +27,7 @@ function ListProducts({ vehicle, title }) {
         {records.map((x) => (
           <div
             onClick={() => {
-              navigate(`/veiw-detail/${x._id}`);
+              navigate(`/view-detail/${x._id}`);
             }}
             className="card "
             style={{ width: "18rem" }}

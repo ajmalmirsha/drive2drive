@@ -2,8 +2,8 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "../../../redux/userSlice";
 import { useNavigate } from "react-router-dom";
-import { googleLoginApi, loginApi, signUpUser } from "../../../Routes/authApi";
-import jwt_decode from 'jwt-decode'
+import { googleLogin, loginUser, registerUser } from "../../../Api/api";
+import jwt_decode from "jwt-decode";
 
 export default function useAuthHook() {
   const dispatch = useDispatch();
@@ -26,14 +26,16 @@ export default function useAuthHook() {
           return toast.error("password and confirm password are not match");
         }
 
-        signUpUser({ name, email, password });
-      } catch (error) {}
+        registerUser({ name, email, password });
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     const verifyUser = async (users) => {
       const {
         data: { success, message, token, user },
-      } = await loginApi(users);
+      } = await loginUser(users);
       if (!success) {
         toast.error(message);
       } else {
@@ -69,11 +71,11 @@ export default function useAuthHook() {
     const googleLogin = async (data) => {
       const {
         data: { success, message, token, user },
-      } = await googleLoginApi(data);
+      } = await googleLogin(data);
       if (!success) {
         toast.error(message);
       } else {
-        localStorage.setItem("user", token);
+        localStorage.setItem("token", token);
         dispatch(
           setUserDetails({
             id: user._id,
@@ -100,7 +102,7 @@ export default function useAuthHook() {
         );
         navigate("/");
       }
-    }
+    };
 
     function googleSuccess(response) {
       const decoded = jwt_decode(response.credential);

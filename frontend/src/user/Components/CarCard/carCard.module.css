@@ -17,6 +17,7 @@
 
 .productName {
   grid-area: pn;
+  height: 3rem;
 }
 
 .rating {

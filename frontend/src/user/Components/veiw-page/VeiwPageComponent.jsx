@@ -156,7 +156,7 @@ const ViewPageComponent = () => {
         <div className={style.productView}>
           <h1 className={style.productTitle}>BMW</h1>
           <h1 className={style.productPrice}>
-            $25 <span>/day</span>
+            ₹25 <span>/day</span>
           </h1>
           {!loading ? (
             <ReactImageMagnify

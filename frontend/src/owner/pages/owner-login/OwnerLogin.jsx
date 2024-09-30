@@ -1,9 +1,7 @@
-import OwnerLoginComponent from "../../components/OwnerLoginComponent"
+import OwnerLoginComponent from "../../components/OwnerLoginComponent";
 
-function OwnerLogin () {
-    return (
-        <OwnerLoginComponent/>
-    )
+function OwnerLogin() {
+  return <OwnerLoginComponent />;
 }
 
-export default OwnerLogin
+export default OwnerLogin;

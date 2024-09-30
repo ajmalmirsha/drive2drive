@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import style from "./listVehicle.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone, faSquare } from "@fortawesome/free-solid-svg-icons";
@@ -7,67 +7,45 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import img from "../../../images/default.png";
-import { Chip } from "primereact/chip";
 import { Menubar } from "primereact/menubar";
 import { InputText } from "primereact/inputtext";
 import CarCard from "../CarCard/CarCard";
+import { getAllVehicles } from "../../../Api/api";
+import { useErrorHandler } from "../../ErrorHandlers/ErrorHandler";
+import Spinner from "../../../common/spinners/Spinner";
+import closeIcon from "../../../assets/closeIcon.svg";
+import leftArrow from "../../../assets/leftArrow.svg";
+import notFound from "../../../assets/not_found.jpg";
 
-export default function ListVehicleComponent({ props }) {
-  const navigate = useNavigate();
+const cache = {};
+
+export default function ListVehicleComponent() {
+  const { userAuthenticationHandler } = useErrorHandler();
+
   const [vehicles, setVehicles] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [uniquePlaces, setUniquePlaces] = useState([]);
-  const [sortOption, setSortOption] = useState("");
-  // const [ filteredVehicles , setFilteredVehicle ] = useState([])
+  const [filter, setFilter] = useState({
+    category: "",
+    segment: "",
+    type: "",
+  });
+  const [sort, setSort] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const debounceTimeout = useRef(null);
 
-  useEffect(() => {
-    setVehicles(props);
-    const data = [
-      ...new Set(
-        props.flatMap((item) => item.places.map((place) => place.value))
-      ),
-    ].map((value) => ({ label: value }));
-    setUniquePlaces(data);
-  }, [props]);
+  const navigate = useNavigate();
 
   // Handle search input change
   const handleSearchInputChange = (e) => {
-    setSearchInput(e.target.value);
+    if (!e?.target?.value) return setSearchInput(e.target.value);
+
+    clearTimeout(debounceTimeout.current);
+
+    debounceTimeout.current = setTimeout(() => {
+      setSearchInput(e.target.value);
+    }, 500);
   };
 
-  // Filter vehicles based on search input
-  const filteredVehicles = vehicles.filter(
-    (vehicle) =>
-      vehicle.places.some((place) =>
-        place.value.toLowerCase().includes(searchInput.toLowerCase())
-      ) ||
-      vehicle.price.toString().toLowerCase().includes(searchInput.toLowerCase())
-  );
-
-  // Function to sort vehicles in ascending order based on price
-  const sortByLowToHigh = () => {
-    let sortedVehicles = [...filteredVehicles];
-    sortedVehicles.sort((a, b) => a.price - b.price);
-    setVehicles(sortedVehicles);
-    setSortOption("lowToHigh");
-  };
-
-  // Function to sort vehicles in descending order based on price
-  const sortByHighToLow = () => {
-    let sortedVehicles = [...filteredVehicles];
-    sortedVehicles.sort((a, b) => b.price - a.price);
-    setVehicles(sortedVehicles);
-    setSortOption("highToLow");
-  };
-  // pagination
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 4;
-  const lastIndex = currentPage * recordsPerPage;
-  const firstIndex = lastIndex - recordsPerPage;
-  const records = filteredVehicles.slice(firstIndex, lastIndex);
-  const npage = Math.ceil(filteredVehicles.length / recordsPerPage);
-  const numbers = [...Array(npage + 1).keys()].slice(1);
   let {
     transcript,
     listening,
@@ -76,8 +54,53 @@ export default function ListVehicleComponent({ props }) {
   } = useSpeechRecognition();
 
   useEffect(() => {
-    setSearchInput(searchInput + transcript);
+    if (transcript) {
+      setSearchInput(searchInput + transcript);
+    }
   }, [transcript]);
+
+  function isFiveMinutesLater(storedTime) {
+    const currentTime = Date.now();
+    const fiveMinutesInMs = 5 * 60 * 1000;
+
+    if (currentTime - storedTime >= fiveMinutesInMs) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  const fetchVehicles = async () => {
+    try {
+      const key = `${searchInput} ${sort} ${filter?.category} ${filter?.segment} ${filter?.type}`;
+      if (cache[key]) {
+        if (!isFiveMinutesLater(cache[key].createdAt)) {
+          setVehicles(cache[key]?.data || []);
+          return;
+        }
+      }
+
+      setLoading(true);
+      const { data } = await getAllVehicles(
+        searchInput,
+        sort,
+        filter?.category,
+        filter?.segment,
+        filter?.type
+      );
+      setVehicles(data?.data || []);
+      cache[key] = { createdAt: new Date(), data: data?.data || [] };
+      console.log("set cache[key]", cache);
+    } catch (err) {
+      userAuthenticationHandler(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVehicles();
+  }, [searchInput, sort, filter]);
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
@@ -86,28 +109,6 @@ export default function ListVehicleComponent({ props }) {
   navigator.mediaDevices
     .getUserMedia({ audio: true })
     .catch(function (error) {});
-  const handleDropdownChange = ({ target }) => {
-    if (target?.key === "places") {
-      return setVehicles(
-        props.filter((vehicle) => {
-          return vehicle.places.some((place) => place.value === target?.value);
-        })
-      );
-    }
-    if (target?.key) {
-      setVehicles(
-        props.filter((vehicle) => {
-          return vehicle[target?.key] === target?.value;
-        })
-      );
-    }
-    // setSearchInput(target.value)
-    //    const result = vehicles.filter((vehicle) =>
-    //   vehicle.places.some((place) =>
-    //     place.value.toLowerCase().includes(event.target.value.toLowerCase())
-    //   )
-    // );
-  };
 
   const items = [
     {
@@ -117,31 +118,24 @@ export default function ListVehicleComponent({ props }) {
         {
           label: "Low To High",
           icon: "pi pi-fw pi-align-left",
-          command: () => sortByLowToHigh(),
+          command: () => {
+            setSort(1);
+          },
         },
         {
           label: "High To Low",
           icon: "pi pi-fw pi-align-right",
-          command: () => sortByHighToLow(),
+          command: () => {
+            setSort(-1);
+          },
         },
       ],
     },
     {
       label: "Filter",
       icon: "pi pi-fw pi-calendar",
+      submenu: false,
       items: [
-        {
-          label: "Places",
-          icon: "pi pi-fw pi-pencil",
-          items: uniquePlaces.map((place) => ({
-            label: place.label,
-            icon: "pi pi-fw pi-home",
-            command: () =>
-              handleDropdownChange({
-                target: { value: place.label, key: "places" },
-              }),
-          })),
-        },
         {
           label: "Category",
           icon: "pi pi-fw pi-pencil",
@@ -149,18 +143,16 @@ export default function ListVehicleComponent({ props }) {
             {
               label: "Manual",
               icon: "pi pi-fw pi-home",
-              command: () =>
-                handleDropdownChange({
-                  target: { value: "manual", key: "category" },
-                }),
+              command: () => {
+                setFilter((prev) => ({ ...prev, category: "manual" }));
+              },
             },
             {
               label: "Automatic",
               icon: "pi pi-fw pi-home",
-              command: () =>
-                handleDropdownChange({
-                  target: { value: "automatic", key: "category" },
-                }),
+              command: () => {
+                setFilter((prev) => ({ ...prev, category: "automatic" }));
+              },
             },
           ],
         },
@@ -171,26 +163,23 @@ export default function ListVehicleComponent({ props }) {
             {
               label: "Vintage",
               icon: "pi pi-fw pi-home",
-              command: () =>
-                handleDropdownChange({
-                  target: { value: "vintage", key: "segment" },
-                }),
+              command: () => {
+                setFilter((prev) => ({ ...prev, segment: "vintage" }));
+              },
             },
             {
               label: "Premium",
               icon: "pi pi-fw pi-home",
-              command: () =>
-                handleDropdownChange({
-                  target: { value: "premium", key: "segment" },
-                }),
+              command: () => {
+                setFilter((prev) => ({ ...prev, segment: "premium" }));
+              },
             },
             {
               label: "Normal",
               icon: "pi pi-fw pi-home",
-              command: () =>
-                handleDropdownChange({
-                  target: { value: "normal", key: "segment" },
-                }),
+              command: () => {
+                setFilter((prev) => ({ ...prev, segment: "normal" }));
+              },
             },
           ],
         },
@@ -201,65 +190,92 @@ export default function ListVehicleComponent({ props }) {
             {
               label: "Sedan",
               icon: "pi pi-fw pi-home",
-              command: () =>
-                handleDropdownChange({
-                  target: { value: "Sedan", key: "type" },
-                }),
+              command: () => {
+                setFilter((prev) => ({ ...prev, type: "Sedan" }));
+              },
             },
             {
               label: "Hatchback",
               icon: "pi pi-fw pi-home",
-              command: () =>
-                handleDropdownChange({
-                  target: { value: "Hatchback", key: "type" },
-                }),
+              command: () => {
+                setFilter((prev) => ({ ...prev, type: "Hatchback" }));
+              },
             },
             {
               label: "SUV",
               icon: "pi pi-fw pi-home",
-              command: () =>
-                handleDropdownChange({ target: { value: "SUV", key: "type" } }),
+              command: () => {
+                setFilter((prev) => ({ ...prev, type: "SUV" }));
+              },
             },
             {
               label: "Crossover",
               icon: "pi pi-fw pi-home",
-              command: () =>
-                handleDropdownChange({
-                  target: { value: "Crossover", key: "type" },
-                }),
+              command: () => {
+                setFilter((prev) => ({ ...prev, type: "Crossover" }));
+              },
             },
             {
               label: "Coupe",
               icon: "pi pi-fw pi-home",
-              command: () =>
-                handleDropdownChange({
-                  target: { value: "Coupe", key: "type" },
-                }),
+              command: () => {
+                setFilter((prev) => ({ ...prev, type: "Coupe" }));
+              },
             },
             {
               label: "Convertible",
               icon: "pi pi-fw pi-home",
-              command: () =>
-                handleDropdownChange({
-                  target: { value: "Convertible", key: "type" },
-                }),
+              command: () => {
+                setFilter((prev) => ({ ...prev, type: "Convertible" }));
+              },
             },
           ],
         },
       ],
     },
+    {
+      icon: () => (
+        <div className={style.filterCardContainer}>
+          {sort && (
+            <FilterCard
+              onDelete={() => setSort(null)}
+              name={sort === 1 ? "Low To High" : "High To Low"}
+            />
+          )}
+          {Object.keys(filter).map((item, i) => {
+            if (filter[item]) {
+              return (
+                <FilterCard
+                  key={i}
+                  onDelete={() => {
+                    setFilter((prev) => ({ ...prev, [item]: "" }));
+                  }}
+                  name={filter[item]}
+                />
+              );
+            }
+          })}
+        </div>
+      ),
+    },
   ];
 
+  const FilterCard = ({ name, onDelete }) => (
+    <div className={style.filterCard}>
+      {name} <img onClick={onDelete} src={closeIcon} />
+    </div>
+  );
+
   const end = (
-    <div className="">
+    <div className={style.endContainer}>
       <InputText
-        value={searchInput}
+        // value={searchInput}
         onChange={handleSearchInputChange}
         placeholder="Search"
         type="text"
         className="w-full"
       />
-      <span class="px-2">
+      <span className="px-2">
         {listening ? (
           <FontAwesomeIcon
             onClick={SpeechRecognition.stopListening}
@@ -276,22 +292,29 @@ export default function ListVehicleComponent({ props }) {
     </div>
   );
 
+  const Start = () => (
+    <img
+      onClick={() => navigate(-1)}
+      className={style.homeIcon}
+      src={leftArrow}
+    />
+  );
+
   return (
     <section>
-      <div class="row justify-content-center my-5 mx-3">
-        <div class="">
+      <div className="row justify-content-center my-5 mx-3">
+        <div>
           <div className="card">
-            <Menubar model={items} end={end} />
+            <Menubar start={<Start />} model={items} end={end} />
           </div>
         </div>
 
-        {/* <div style={{ height: "20vh" }}></div> */}
-
-        {records.length > 0 ? (
-          <div className={style.cardContainer}>
-            {!!records.length &&
-              [...records, ...records].map((x) => (
+        {!loading ? (
+          vehicles.length > 0 ? (
+            <div className={style.cardContainer}>
+              {vehicles.map((x, i) => (
                 <CarCard
+                  key={i}
                   x={x}
                   reviews={x.reviews}
                   category={x.category}
@@ -302,60 +325,14 @@ export default function ListVehicleComponent({ props }) {
                   name={x.product_name}
                 />
               ))}
-          </div>
+            </div>
+          ) : (
+            <img className={style.notFound} src={notFound} alt="" />
+          )
         ) : (
-          <img
-          className={style.notFound}
-            src="https://cdn.dribbble.com/users/2382015/screenshots/6065978/no_result_still_2x.gif?compress=1&resize=400x300&vertical=top"
-            alt=""
-          />
+          <Spinner />
         )}
       </div>
-      {filteredVehicles.length > recordsPerPage && (
-        <nav className="d-flex  justify-content-center">
-          <ul className="pagination">
-            <li className="page-item">
-              <a className="page-link" onClick={prevPage}>
-                Prev
-              </a>
-            </li>
-            {numbers.map((n, i) => {
-              return (
-                <li
-                  className={`page-item ${currentPage === n && "active"}`}
-                  key={i}
-                >
-                  <a
-                    className="page-link"
-                    onClick={() => {
-                      changeCPage(n);
-                    }}
-                  >
-                    {n}
-                  </a>
-                </li>
-              );
-            })}
-            <li className="page-item">
-              <a className="page-link" onClick={nextPage}>
-                Next
-              </a>
-            </li>
-          </ul>
-        </nav>
-      )}
     </section>
   );
-
-  function prevPage() {
-    currentPage !== 1 && setCurrentPage(currentPage - 1);
-  }
-
-  function nextPage() {
-    currentPage !== npage && setCurrentPage(currentPage + 1);
-  }
-
-  function changeCPage(id) {
-    setCurrentPage(id);
-  }
 }

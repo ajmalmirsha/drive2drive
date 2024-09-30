@@ -9,7 +9,10 @@ const ownerModel = require("../model/ownerModel");
 const reportModel = require("../model/reportModel");
 const couponModel = require("../model/couponModel");
 const bannerModel = require("../model/bannerModel");
-const { uploadToCloudinary, removeFromCloudinary } = require("../config/cloudnary");
+const {
+  uploadToCloudinary,
+  removeFromCloudinary,
+} = require("../config/cloudnary");
 
 module.exports = {
   // upload lisence
@@ -29,10 +32,16 @@ module.exports = {
         }
       });
       if (req?.files["license[front]"][0]?.path) {
-        licenseFront = await uploadToCloudinary(req.files["license[front]"][0]?.path, "license-images");
+        licenseFront = await uploadToCloudinary(
+          req.files["license[front]"][0]?.path,
+          "license-images"
+        );
       }
       if (req?.files["license[back]"][0]?.path) {
-        licenseBack = await uploadToCloudinary(req.files["license[back]"][0]?.path, "license-images");
+        licenseBack = await uploadToCloudinary(
+          req.files["license[back]"][0]?.path,
+          "license-images"
+        );
       }
 
       userModel
@@ -96,7 +105,11 @@ module.exports = {
           },
         })
         .then((response) => {
-          res.status(200).json({ success: true, message: "review added succesfully", data: response.reviews });
+          res.status(200).json({
+            success: true,
+            message: "review added succesfully",
+            data: response.reviews,
+          });
         });
     } catch (error) {
       next();
@@ -122,9 +135,64 @@ module.exports = {
 
   async getAllVehicleDetails(req, res, next) {
     try {
-      const allVehicle = await vehicleModel.find({}).populate("ownerId");
-      res.status(200).json({ success: true, allVehicle });
+      const { searchQuery, sort, category, segment, type } = req.query;
+
+      const matchQuery = {};
+      const sortQuery = {};
+
+      const filterPipeline = [];
+
+      if (searchQuery) {
+        filterPipeline.push({
+          product_name: { $regex: new RegExp(searchQuery, "i") },
+        });
+      }
+
+      if (category) {
+        filterPipeline.push({ category: category.toLowerCase() });
+      }
+
+      if (segment) {
+        filterPipeline.push({ segment: segment.toLowerCase() });
+      }
+
+      if (type) {
+        filterPipeline.push({ type: type });
+      }
+
+      if (!!filterPipeline.length) {
+        matchQuery.$and = filterPipeline;
+      }
+
+      const pipeline = [{ $match: matchQuery }];
+
+      const sortValue = Number(sort);
+
+      if (sortValue === -1 || sortValue === 1) {
+        sortQuery.price = sortValue;
+      }
+
+      if (!!Object.keys(sortQuery).length) {
+        pipeline.push({ $sort: sortQuery });
+      }
+
+      pipeline.push({
+        $project: {
+          product_name: 1,
+          category: 1,
+          seats: 1,
+          type: 1,
+          year: 1,
+          price: 1,
+          image: 1,
+        },
+      });
+
+      const data = await vehicleModel.aggregate(pipeline);
+      res.status(200).json({ success: true, data });
     } catch (error) {
+      console.log(error);
+
       next();
     }
   },
@@ -155,18 +223,26 @@ module.exports = {
           _id: req.body.data.vehicle._id,
           bookings: {
             $elemMatch: {
-              $and: [{ form: { $gte: newPickTime } }, { to: { $lte: newPickTime } }],
+              $and: [
+                { form: { $gte: newPickTime } },
+                { to: { $lte: newPickTime } },
+              ],
             },
           },
         })
         .then((matchedBooking) => {
           if (matchedBooking) {
-            return res.status(500).json({ success: true, message: "the vehicle is already busy on this time" });
+            return res.status(500).json({
+              success: true,
+              message: "the vehicle is already busy on this time",
+            });
           } else {
             bookingModel.create({ ...req.body.data }).then((response) => {
-              res
-                .status(200)
-                .json({ success: true, message: "your booking request sent to owner wait for response !" });
+              res.status(200).json({
+                success: true,
+                message:
+                  "your booking request sent to owner wait for response !",
+              });
             });
           }
         });
@@ -185,7 +261,12 @@ module.exports = {
         .findByIdAndUpdate(
           { _id: bookingId },
           {
-            $set: { paid: true, "payment.paymentId": paymentId, "payment.method": paymentMethod, status: "completed" },
+            $set: {
+              paid: true,
+              "payment.paymentId": paymentId,
+              "payment.method": paymentMethod,
+              status: "completed",
+            },
           },
           { new: true }
         )
@@ -205,7 +286,9 @@ module.exports = {
             .then(() => {});
 
           if (couponId) {
-            couponModel.updateOne({ _id: couponId }, { $addToSet: { used: userId } }).then(() => {});
+            couponModel
+              .updateOne({ _id: couponId }, { $addToSet: { used: userId } })
+              .then(() => {});
           }
           const pickUpTime = new Date(response.address.pickUp.pickTime);
           const today = new Date();
@@ -215,7 +298,10 @@ module.exports = {
             const time = timeDifference;
             setTimeout(() => {
               vehicleModel
-                .updateOne({ _id: response.vehicle._id }, { $addToSet: { bookedUsers: userId }, $set: { free: false } })
+                .updateOne(
+                  { _id: response.vehicle._id },
+                  { $addToSet: { bookedUsers: userId }, $set: { free: false } }
+                )
                 .then(() => {
                   const dropTime = new Date(response.address.dropOff.dropTime);
                   const busyTime = dropTime.getTime() - pickUpTime.getTime();
@@ -223,7 +309,10 @@ module.exports = {
                     vehicleModel
                       .updateOne(
                         { _id: response.vehicle._id },
-                        { $addToSet: { bookedUsers: userId }, $set: { free: true } }
+                        {
+                          $addToSet: { bookedUsers: userId },
+                          $set: { free: true },
+                        }
                       )
                       .then(() => {});
                   }, busyTime);
@@ -231,7 +320,10 @@ module.exports = {
             }, time);
           } else {
             vehicleModel
-              .updateOne({ _id: response.vehicle._id }, { $addToSet: { bookedUsers: userId }, $set: { free: false } })
+              .updateOne(
+                { _id: response.vehicle._id },
+                { $addToSet: { bookedUsers: userId }, $set: { free: false } }
+              )
               .then(() => {});
           }
           bookingModel
@@ -290,8 +382,12 @@ module.exports = {
         users: [from, to],
         sender: from,
       });
-      if (data) return res.status(200).json({ msg: "Message added successfully." });
-      else return res.status(500).json({ msg: "Failed to add message to the database" });
+      if (data)
+        return res.status(200).json({ msg: "Message added successfully." });
+      else
+        return res
+          .status(500)
+          .json({ msg: "Failed to add message to the database" });
     } catch (e) {
       next();
     }
@@ -321,15 +417,22 @@ module.exports = {
         } else if (timeAgo < 60) {
           timeString = `${timeAgo} minutes ago`;
         } else if (timeAgo < 1440) {
-          const updatedTime = new Date(msg.updatedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-          timeString = updatedTime.includes(":") ? updatedTime.replace(" ", "") : updatedTime;
+          const updatedTime = new Date(msg.updatedAt).toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit",
+          });
+          timeString = updatedTime.includes(":")
+            ? updatedTime.replace(" ", "")
+            : updatedTime;
         } else {
           const updatedTime = new Date(msg.updatedAt).toLocaleString([], {
             hour: "numeric",
             minute: "2-digit",
             hour12: true,
           });
-          timeString = updatedTime.includes(",") ? updatedTime.replace(",", "") : updatedTime;
+          timeString = updatedTime.includes(",")
+            ? updatedTime.replace(",", "")
+            : updatedTime;
         }
         return {
           fromSelf: msg.sender.toString() === from,
@@ -350,10 +453,14 @@ module.exports = {
     try {
       const id = req.headers?.ownerId ?? req.headers?.userId;
       chatModel.distinct("sender").then((response) => {
-        const senderIds = response.map((sender) => sender.toString()).filter((x) => x !== req.headers?.ownerId);
-        userModel.find({ _id: { $in: senderIds } }, { username: 1, image: 1 }).then((users) => {
-          res.status(200).json({ success: true, data: users });
-        });
+        const senderIds = response
+          .map((sender) => sender.toString())
+          .filter((x) => x !== req.headers?.ownerId);
+        userModel
+          .find({ _id: { $in: senderIds } }, { username: 1, image: 1 })
+          .then((users) => {
+            res.status(200).json({ success: true, data: users });
+          });
       });
     } catch (e) {
       next();
@@ -392,9 +499,13 @@ module.exports = {
     try {
       const { report, proId } = req.body;
       const { userId } = req.headers;
-      reportModel.create({ report, productId: proId, reportedBy: userId }).then(() => {
-        res.status(200).json({ success: true, message: "report sent successfully" });
-      });
+      reportModel
+        .create({ report, productId: proId, reportedBy: userId })
+        .then(() => {
+          res
+            .status(200)
+            .json({ success: true, message: "report sent successfully" });
+        });
     } catch (e) {
       next();
     }
@@ -408,9 +519,13 @@ module.exports = {
       const { userId } = req.headers;
       couponModel.findOne({ code: coupon }).then((data) => {
         if (data.used.includes(userId)) {
-          res.status(409).json({ success: false, message: "this coupon already used" });
+          res
+            .status(409)
+            .json({ success: false, message: "this coupon already used" });
         } else if (data.expire < new Date()) {
-          res.status(409).json({ success: false, message: "this coupon expired" });
+          res
+            .status(409)
+            .json({ success: false, message: "this coupon expired" });
         } else {
           res.status(200).json({ success: true, data });
         }
@@ -436,11 +551,17 @@ module.exports = {
     try {
       userModel.findById(req.headers.userId).then((response) => {
         if (response.license.verification === "pending") {
-          res.json({ success: false, message: "your license verificaion is pending !" });
+          res.json({
+            success: false,
+            message: "your license verificaion is pending !",
+          });
         } else if (response.license.verification === "verified") {
           res.json({ success: true });
         } else if (response.license.verification === "declined") {
-          res.json({ success: false, message: "your license verificaion is declined !" });
+          res.json({
+            success: false,
+            message: "your license verificaion is declined !",
+          });
         }
       });
     } catch (e) {

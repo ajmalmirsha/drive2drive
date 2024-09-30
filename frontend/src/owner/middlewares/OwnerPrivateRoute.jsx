@@ -1,10 +1,15 @@
-import { Navigate } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom";
 
+export default function OwnerPrivateRoute({children}) {
+  const navigate = useNavigate();
 
-export default function OwnerPrivateRoute (props) {
-    if(localStorage.getItem('owner')){
-        return props.children
-    }else{
-        return <Navigate to={'/owner-login'} />
-    }
+  if (!localStorage.getItem("owner")) {
+    return navigate("/owner-login");
+  }
+  return (
+    <>
+      {children}
+      <Outlet />
+    </>
+  );
 }
